@@ -1,0 +1,11 @@
+torch==2.3.1
+torchvision==0.18.1
+einops==0.4.1
+tqdm==4.65.0
+numpy==1.26.4
+fvcore==0.1.5.post20221221
+timm==0.9.16
+mamba-ssm==2.2.2
+datasets>=2.19
+open_clip_torch>=2.24
+matplotlib>=3.7
