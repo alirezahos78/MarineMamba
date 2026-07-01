@@ -1,49 +1,22 @@
 import argparse
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Train SpyMamba experiments.")
-    parser.add_argument(
-        "--datasets",
-        nargs="+",
-        help="Dataset config names to run, e.g. aqua20_clip, aqua20, or fathomnet_pretrain.",
-    )
-    parser.add_argument(
-        "--branch-settings",
-        nargs="+",
-        default=None,
-        help="Branch settings to run, e.g. full no_local_2.",
-    )
-    parser.add_argument("--data-dir", help="Override the selected dataset's data directory.")
-    parser.add_argument("--num-classes", type=int, help="Override the selected dataset's class count.")
-    parser.add_argument("--epochs", type=int, help="Override epoch count.")
-    parser.add_argument("--batch-size", type=int, help="Override batch size.")
-    parser.add_argument("--pretrained-path", help="Load compatible weights before training.")
-    parser.add_argument(
-        "--freeze-first-blocks-on-transfer",
-        type=int,
-        help="Freeze this many first Mamba blocks after loading --pretrained-path.",
-    )
+    parser = argparse.ArgumentParser(description="Train SpyMamba (PyramidCLIPSpyMamba).")
+    parser.add_argument("--configs", nargs="+", default=["aqua20_pyramid_hybrid_128_focal_balanced"],
+                        help="Config names to run.")
+    parser.add_argument("--seed", type=int, default=42)
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
-    from spiral_project.trainer import run_experiments, save_and_print_results
-
-    overrides = {
-        "data_dir": args.data_dir,
-        "num_classes": args.num_classes,
-        "epochs": args.epochs,
-        "batch_size": args.batch_size,
-        "pretrained_path": args.pretrained_path,
-        "freeze_first_blocks_on_transfer": args.freeze_first_blocks_on_transfer,
-    }
-    results = run_experiments(
-        datasets_to_run=args.datasets,
-        branch_settings=args.branch_settings,
-        config_overrides=overrides,
-    )
+    from spymamba.trainer import run_experiments, save_and_print_results
+    results = run_experiments(config_names=args.configs, seed=args.seed)
     save_and_print_results(results)
 
 
