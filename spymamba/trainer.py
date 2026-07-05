@@ -4,17 +4,19 @@ import math
 import os
 import sys
 
+import numpy as np
 import torch
-import torch.nn as nn
 import torch.optim as optim
 from tqdm import tqdm
 
-from .config import RUN_SEED, get_config
+from .config import get_config
 from .data import build_dataloaders
 from .losses import build_criterion
 from .model import PyramidCLIPSpyMamba
 from .paths import LOGS_DIR, PROJECT_ROOT, RESULTS_PATH
 from .utils import Logger, ensure_dir, set_seed
+
+SEEDS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 
 def build_model(config, device):
@@ -39,22 +41,18 @@ def build_model(config, device):
     return model
 
 
-def make_run_name(config_name, seed):
+def _make_run_name(config_name, seed):
     return f"{config_name}_seed_{seed}"
 
 
-def train(config_name, seed=RUN_SEED):
-    config = get_config(config_name)
-    run_name = make_run_name(config_name, seed)
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+def train(config_name, seed):
+    config   = get_config(config_name)
+    run_name = _make_run_name(config_name, seed)
+    device   = "cuda" if torch.cuda.is_available() else "cpu"
 
     print(f"\n{'=' * 60}")
-    print(f"Training: {config['name']}")
-    print(f"   Device : {device}")
-    print(f"   Seed   : {seed}")
-    print(f"   Fine   : B/16  {config['fine_input_dim']}×{config['fine_h']}×{config['fine_w']}  depth={config['fine_depth']}")
-    print(f"   Coarse : B/32  {config['coarse_input_dim']}×{config['coarse_h']}×{config['coarse_w']}  depth={config['coarse_depth']}")
-    print(f"   Dim    : {config['dim']}  Epochs: {config['epochs']}  BS: {config['batch_size']}")
+    print(f"Config : {config['name']}")
+    print(f"Device : {device}  |  Seed: {seed}")
     print(f"{'=' * 60}")
 
     ensure_dir(LOGS_DIR)
@@ -63,7 +61,7 @@ def train(config_name, seed=RUN_SEED):
     sys.stdout = logger
 
     try:
-        result = _train_logged(config, config_name, run_name, seed, device)
+        result = _train_logged(config, run_name, seed, device)
     finally:
         sys.stdout = original_stdout
         logger.close()
@@ -71,55 +69,53 @@ def train(config_name, seed=RUN_SEED):
     return result
 
 
-def _train_logged(config, config_name, run_name, seed, device):
+def _train_logged(config, run_name, seed, device):
     set_seed(seed)
     model = build_model(config, device)
 
-    total_params = sum(p.numel() for p in model.parameters())
-    fine_params = sum(p.numel() for p in model.fine_branch.parameters())
+    total_params  = sum(p.numel() for p in model.parameters())
+    fine_params   = sum(p.numel() for p in model.fine_branch.parameters())
     coarse_params = sum(p.numel() for p in model.coarse_branch.parameters())
     print(f"\nModel parameters: {total_params / 1e6:.3f} M total "
           f"(fine {fine_params / 1e6:.3f} M  |  coarse {coarse_params / 1e6:.3f} M)")
 
-    print(f"\nLoading dataset...")
+    print("\nLoading dataset...")
     trainloader, testloader = build_dataloaders(config)
-    print(f"   Train: {len(trainloader.dataset)} samples  |  Test: {len(testloader.dataset)} samples")
+    print(f"  Train: {len(trainloader.dataset)} samples  |  Test: {len(testloader.dataset)} samples")
 
-    train_labels  = trainloader.dataset.labels if hasattr(trainloader.dataset, "labels") else None
-    class_counts  = torch.bincount(train_labels, minlength=config["num_classes"]) if train_labels is not None else None
-    criterion      = build_criterion(config, config["num_classes"], class_counts, device)
-    test_criterion = nn.CrossEntropyLoss(label_smoothing=0.0)
+    train_labels = trainloader.dataset.labels if hasattr(trainloader.dataset, "labels") else None
+    class_counts = torch.bincount(train_labels, minlength=config["num_classes"]) if train_labels is not None else None
+    criterion    = build_criterion(config, config["num_classes"], class_counts, device)
 
-    optimizer = optim.AdamW(model.parameters(), lr=config["lr"], weight_decay=config["weight_decay"])
-
-    total_steps = config["epochs"] * len(trainloader)
+    optimizer    = optim.AdamW(model.parameters(), lr=config["lr"], weight_decay=config["weight_decay"])
+    total_steps  = config["epochs"] * len(trainloader)
     warmup_steps = config["warmup_epochs"] * len(trainloader)
 
     def lr_lambda(step):
         if step < warmup_steps:
             return float(step) / float(max(1, warmup_steps))
-        t = step - warmup_steps
+        t     = step - warmup_steps
         t_max = total_steps - warmup_steps
         return 0.5 * (1.0 + math.cos(math.pi * t / t_max))
 
     scheduler = optim.lr_scheduler.LambdaLR(optimizer, lr_lambda)
-    best_acc = 0.0
+    best_acc  = 0.0
     epochs_without_improvement = 0
-    patience = config.get("early_stopping_patience")
-    nb = device == "cuda"
+    patience  = config.get("early_stopping_patience")
+    nb        = device == "cuda"
 
     for epoch in range(config["epochs"]):
         model.train()
         train_loss, correct_train, total_train = 0.0, 0, 0
 
-        loop = tqdm(trainloader, desc=f"Ep {epoch + 1}/{config['epochs']}", leave=False)
+        loop = tqdm(trainloader, desc=f"Ep {epoch + 1}/{config['epochs']}", leave=False, file=sys.stderr)
         for batch in loop:
             fine_feats, coarse_feats, fine_cls, coarse_cls, targets = batch
-            fine_feats   = fine_feats.to(device, non_blocking=nb)
-            coarse_feats = coarse_feats.to(device, non_blocking=nb)
-            fine_cls     = fine_cls.to(device, non_blocking=nb)
-            coarse_cls   = coarse_cls.to(device, non_blocking=nb)
-            targets      = targets.to(device, non_blocking=nb)
+            fine_feats   = fine_feats.to(device,   non_blocking=nb)
+            coarse_feats = coarse_feats.to(device,  non_blocking=nb)
+            fine_cls     = fine_cls.to(device,      non_blocking=nb)
+            coarse_cls   = coarse_cls.to(device,    non_blocking=nb)
+            targets      = targets.to(device,       non_blocking=nb)
 
             optimizer.zero_grad(set_to_none=True)
             outputs = model(fine_feats, coarse_feats, fine_cls, coarse_cls)
@@ -135,21 +131,20 @@ def _train_logged(config, config_name, run_name, seed, device):
             loop.set_postfix(loss=loss.item())
 
         train_acc = 100.0 * correct_train / total_train
-        avg_loss = train_loss / len(trainloader)
+        avg_loss  = train_loss / len(trainloader)
 
         model.eval()
         correct_test = {1: 0, 2: 0, 3: 0}
-        total_test = 0
+        total_test   = 0
         with torch.inference_mode():
             for batch in testloader:
                 fine_feats, coarse_feats, fine_cls, coarse_cls, targets = batch
-                fine_feats   = fine_feats.to(device, non_blocking=nb)
-                coarse_feats = coarse_feats.to(device, non_blocking=nb)
-                fine_cls     = fine_cls.to(device, non_blocking=nb)
-                coarse_cls   = coarse_cls.to(device, non_blocking=nb)
-                targets      = targets.to(device, non_blocking=nb)
+                fine_feats   = fine_feats.to(device,   non_blocking=nb)
+                coarse_feats = coarse_feats.to(device,  non_blocking=nb)
+                fine_cls     = fine_cls.to(device,      non_blocking=nb)
+                coarse_cls   = coarse_cls.to(device,    non_blocking=nb)
+                targets      = targets.to(device,       non_blocking=nb)
                 outputs      = model(fine_feats, coarse_feats, fine_cls, coarse_cls)
-                _ = test_criterion(outputs, targets).item()
                 topk = outputs.topk(3, dim=1).indices
                 lbl  = targets.unsqueeze(1)
                 total_test += targets.size(0)
@@ -166,7 +161,7 @@ def _train_logged(config, config_name, run_name, seed, device):
             epochs_without_improvement = 0
             ckpt = os.path.join(PROJECT_ROOT, f"best_model_{run_name}.pth")
             torch.save(model.state_dict(), ckpt)
-            print(f"New best: {best_acc:.2f}%  (saved {ckpt})")
+            print(f"New best: {best_acc:.2f}%")
         else:
             epochs_without_improvement += 1
 
@@ -186,43 +181,70 @@ def _train_logged(config, config_name, run_name, seed, device):
         torch.cuda.empty_cache()
 
     return {
-        "name": config["name"],
-        "seed": seed,
-        "accuracy": best_acc,
-        "params_m": total_params / 1e6,
-        "fine_depth": config["fine_depth"],
+        "name":         config["name"],
+        "seed":         seed,
+        "accuracy":     best_acc,
+        "params_m":     total_params / 1e6,
+        "fine_depth":   config["fine_depth"],
         "coarse_depth": config["coarse_depth"],
-        "dim": config["dim"],
-        "num_classes": config["num_classes"],
+        "dim":          config["dim"],
+        "num_classes":  config["num_classes"],
     }
 
 
-def run_experiments(config_names=None, seed=RUN_SEED):
+def run_multi_seed(config_names=None, seeds=None):
+    """
+    Train each config across all seeds, then report mean and variance.
+
+    Results are written to results.json as:
+        {config_name: {per_seed: {seed: acc}, mean: float, std: float, variance: float}}
+    """
     config_names = config_names or ["aqua20_pyramid_hybrid_128_focal_balanced"]
-    results = {}
-    for name in config_names:
+    seeds        = seeds or SEEDS
+
+    all_results = {}
+
+    for config_name in config_names:
         print(f"\n{'=' * 70}")
-        print(f"{name.upper()}  [seed {seed}]")
+        print(f"Config: {config_name}  |  Seeds: {seeds}")
         print(f"{'=' * 70}")
-        try:
-            results[make_run_name(name, seed)] = train(name, seed)
-        except Exception as exc:
-            print(f"Error: {exc}")
-    return results
 
+        per_seed = {}
+        for seed in seeds:
+            result = train(config_name, seed)
+            per_seed[seed] = result["accuracy"]
+            print(f"  Seed {seed:3d} -> {result['accuracy']:.4f}%")
 
-def save_and_print_results(results):
-    if not results:
-        print("\nNo results.")
-        return
+        accs     = list(per_seed.values())
+        mean     = float(np.mean(accs))
+        std      = float(np.std(accs))
+        variance = float(np.var(accs))
+
+        all_results[config_name] = {
+            "name":     get_config(config_name)["name"],
+            "seeds":    seeds,
+            "per_seed": {str(s): round(a, 4) for s, a in per_seed.items()},
+            "mean":     round(mean, 4),
+            "std":      round(std, 4),
+            "variance": round(variance, 4),
+            "params_m": result["params_m"],
+            "num_classes": result["num_classes"],
+        }
+
+        print(f"\n  {config_name}")
+        print(f"  Accuracy : {mean:.2f}% +/- {std:.2f}%  (var={variance:.4f})")
+        print(f"  Min / Max: {min(accs):.2f}% / {max(accs):.2f}%")
 
     print(f"\n{'=' * 70}")
-    print("RESULTS")
+    print("FINAL SUMMARY")
     print(f"{'=' * 70}")
-    for key, m in results.items():
-        print(f"  {key}: {m['accuracy']:.2f}%  ({m['params_m']:.3f}M params)")
+    for cfg, r in all_results.items():
+        print(f"  {cfg}")
+        print(f"    Mean +/- Std : {r['mean']:.2f} +/- {r['std']:.2f}%")
+        print(f"    Variance     : {r['variance']:.4f}")
 
-    payload = {"seed": RUN_SEED, "runs": results}
     with open(RESULTS_PATH, "w") as f:
-        json.dump(payload, f, indent=4)
-    print(f"\nSaved to {RESULTS_PATH}")
+        json.dump(all_results, f, indent=4)
+    print(f"\nResults saved to results.json")
+
+    return all_results

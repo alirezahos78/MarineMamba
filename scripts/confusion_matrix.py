@@ -18,7 +18,6 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from spymamba.config import get_config
-from spymamba.paths import CLS_FEATURES_PATH
 from spymamba.trainer import build_model
 
 
@@ -48,7 +47,7 @@ def main():
     # ── Load test features ───────────────────────────────────────────────────
     fine_data   = torch.load(config["fine_test_path"],   map_location="cpu")
     coarse_data = torch.load(config["coarse_test_path"], map_location="cpu")
-    cls_raw     = torch.load(CLS_FEATURES_PATH,          map_location="cpu")["test"]
+    cls_raw     = torch.load(config["cls_path"],         map_location="cpu")["test"]
 
     fine_feats     = fine_data["features"].float()
     coarse_feats   = coarse_data["features"].float()

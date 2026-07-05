@@ -1,7 +1,8 @@
 import os
 from copy import deepcopy
 from .paths import (B16_FEATURES_ROOT, B32_FEATURES_ROOT, CLS_FEATURES_PATH,
-                    SEA23_B16_ROOT, SEA23_B32_ROOT, SEA23_CLS_PATH)
+                    SEA23_B16_ROOT, SEA23_B32_ROOT, SEA23_CLS_PATH,
+                    FISH4K_B16_ROOT, FISH4K_B32_ROOT, FISH4K_CLS_PATH)
 
 
 def _base():
@@ -21,7 +22,6 @@ def _base():
         "label_smoothing": 0.0, "warmup_epochs": 5,
         "balanced_sampling": "sqrt", "early_stopping_patience": 15,
         "num_workers": 0,
-        "feature_aug": False,
         "loss": "focal",
         "focal_gamma": 2.0,
         "focal_alpha": "balanced",
@@ -29,13 +29,13 @@ def _base():
 
 
 CONFIGS = {
-    # ── AQUA20 (20 classes) ───────────────────────────────────────────────────
+    # ── AQUA20 (20 classes) ──────────────────────────────────────────────────
     "aqua20_pyramid_hybrid_128_focal_balanced": {
         **_base(),
         "name": "AQUA20 Hybrid dim=128 + Focal (gamma=2, balanced alpha)",
     },
 
-    # ── Sea Animals 23 (vencerlanz09/sea-animals-image-dataste, 23 classes) ───
+    # ── Sea Animals 23 (23 classes) ──────────────────────────────────────────
     "sea23_pyramid_hybrid_128_focal_balanced": {
         **_base(),
         "name": "SEA23 Hybrid dim=128 + Focal (gamma=2, balanced alpha)",
@@ -45,6 +45,18 @@ CONFIGS = {
         "coarse_train_path": os.path.join(SEA23_B32_ROOT, "train_features.pt"),
         "coarse_test_path":  os.path.join(SEA23_B32_ROOT, "test_features.pt"),
         "cls_path": SEA23_CLS_PATH,
+    },
+
+    # ── Fish4Knowledge 23 (23 classes) ───────────────────────────────────────
+    "fish4k_baseline": {
+        **_base(),
+        "name": "Fish4K Focal + sqrt sampler (baseline)",
+        "num_classes": 23,
+        "fine_train_path":   os.path.join(FISH4K_B16_ROOT, "train_features.pt"),
+        "fine_test_path":    os.path.join(FISH4K_B16_ROOT, "test_features.pt"),
+        "coarse_train_path": os.path.join(FISH4K_B32_ROOT, "train_features.pt"),
+        "coarse_test_path":  os.path.join(FISH4K_B32_ROOT, "test_features.pt"),
+        "cls_path": FISH4K_CLS_PATH,
     },
 }
 

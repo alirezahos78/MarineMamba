@@ -17,7 +17,7 @@ def set_seed(seed):
     # warn_only=True avoids crashes on ops without a deterministic impl
     torch.use_deterministic_algorithms(True, warn_only=True)
     os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
-    print(f"⚙️ Global Seed set to {seed}")
+    print(f"Seed: {seed}")
 
 
 def ensure_dir(path):
