@@ -1,0 +1,64 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\def\@LN@column{1}
+\@writefile{toc}{\contentsline {title}{PyramidCLIPSpyMamba for Underwater Species Recognition}{1}{chapter.1}\protected@file@percent }
+\@writefile{toc}{\authcount {1}}
+\@writefile{toc}{\contentsline {author}{Anonymous ECCV 2026{} Submission}{1}{chapter.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\newlabel{sec:intro}{{1}{1}{Introduction}{section.1}{}}
+\newlabel{sec:intro@cref}{{[section][1][]1}{[1][1][]1}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{1}{section.2}\protected@file@percent }
+\newlabel{sec:related}{{2}{1}{Related Work}{section.2}{}}
+\newlabel{sec:related@cref}{{[section][2][]2}{[1][1][]1}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Methodology}{1}{section.3}\protected@file@percent }
+\newlabel{sec:method}{{3}{1}{Methodology}{section.3}{}}
+\newlabel{sec:method@cref}{{[section][3][]3}{[1][1][]1}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Overview}{1}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Multi-Resolution CLIP Feature Extraction}{1}{subsection.3.2}\protected@file@percent }
+\newlabel{eq:clip-features}{{1}{1}{Multi-Resolution CLIP Feature Extraction}{equation.1}{}}
+\newlabel{eq:clip-features@cref}{{[equation][1][]1}{[1][1][]1}{}{}{}}
+\def\@LN@column{1}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Overview of PyramidCLIPSpyMamba. Frozen CLIP encoders extract fine and coarse spatial features together with global CLS embeddings. The proposed SpyMamba branches model each resolution using spiral state-space scanning, and their outputs are concatenated for underwater species classification.}}{2}{figure.caption.2}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:architecture}{{1}{2}{Overview of PyramidCLIPSpyMamba. Frozen CLIP encoders extract fine and coarse spatial features together with global CLS embeddings. The proposed SpyMamba branches model each resolution using spiral state-space scanning, and their outputs are concatenated for underwater species classification}{figure.caption.2}{}}
+\newlabel{fig:architecture@cref}{{[figure][1][]1}{[1][1][]2}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Pyramid SpyMamba Encoder}{2}{subsection.3.3}\protected@file@percent }
+\newlabel{eq:token-projection}{{2}{2}{Pyramid SpyMamba Encoder}{equation.2}{}}
+\newlabel{eq:token-projection@cref}{{[equation][2][]2}{[1][1][]2}{}{}{}}
+\newlabel{eq:branch-pooling}{{3}{2}{Pyramid SpyMamba Encoder}{equation.3}{}}
+\newlabel{eq:branch-pooling@cref}{{[equation][3][]3}{[1][2][]2}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Spiral State-Space Block}{2}{subsection.3.4}\protected@file@percent }
+\def\@LN@column{1}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Forward and reverse spiral token ordering. Spatial CLIP patches are scanned in spiral order before Mamba processing, then restored to their original grid layout for spatial attention.}}{3}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:spiral-scan}{{2}{3}{Forward and reverse spiral token ordering. Spatial CLIP patches are scanned in spiral order before Mamba processing, then restored to their original grid layout for spatial attention}{figure.caption.3}{}}
+\newlabel{fig:spiral-scan@cref}{{[figure][2][]2}{[1][3][]3}{}{}{}}
+\newlabel{eq:spiral-mamba}{{4}{3}{Spiral State-Space Block}{equation.4}{}}
+\newlabel{eq:spiral-mamba@cref}{{[equation][4][]4}{[1][2][]3}{}{}{}}
+\newlabel{eq:direction-fusion}{{5}{3}{Spiral State-Space Block}{equation.5}{}}
+\newlabel{eq:direction-fusion@cref}{{[equation][5][]5}{[1][3][]3}{}{}{}}
+\newlabel{eq:attention}{{6}{3}{Spiral State-Space Block}{equation.6}{}}
+\newlabel{eq:attention@cref}{{[equation][6][]6}{[1][3][]3}{}{}{}}
+\newlabel{eq:block-update}{{7}{3}{Spiral State-Space Block}{equation.7}{}}
+\newlabel{eq:block-update@cref}{{[equation][7][]7}{[1][3][]3}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Feature Fusion and Classification}{3}{subsection.3.5}\protected@file@percent }
+\newlabel{eq:feature-fusion}{{8}{3}{Feature Fusion and Classification}{equation.8}{}}
+\newlabel{eq:feature-fusion@cref}{{[equation][8][]8}{[1][3][]3}{}{}{}}
+\def\@LN@column{1}
+\newlabel{eq:classifier}{{9}{4}{Feature Fusion and Classification}{equation.9}{}}
+\newlabel{eq:classifier@cref}{{[equation][9][]9}{[1][3][]4}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Objective Function}{4}{subsection.3.6}\protected@file@percent }
+\newlabel{eq:true-probability}{{10}{4}{Objective Function}{equation.10}{}}
+\newlabel{eq:true-probability@cref}{{[equation][10][]10}{[1][4][]4}{}{}{}}
+\newlabel{eq:focal-loss}{{11}{4}{Objective Function}{equation.11}{}}
+\newlabel{eq:focal-loss@cref}{{[equation][11][]11}{[1][4][]4}{}{}{}}
+\newlabel{eq:class-balanced-alpha}{{12}{4}{Objective Function}{equation.12}{}}
+\newlabel{eq:class-balanced-alpha@cref}{{[equation][12][]12}{[1][4][]4}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Experiments}{4}{section.4}\protected@file@percent }
+\newlabel{sec:experiments}{{4}{4}{Experiments}{section.4}{}}
+\newlabel{sec:experiments@cref}{{[section][4][]4}{[1][4][]4}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusion}{4}{section.5}\protected@file@percent }
+\newlabel{sec:conclusion}{{5}{4}{Conclusion}{section.5}{}}
+\newlabel{sec:conclusion@cref}{{[section][5][]5}{[1][4][]4}{}{}{}}
+\gdef \@abspage@last{4}

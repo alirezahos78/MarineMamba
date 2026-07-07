@@ -1,0 +1,191 @@
+\section{Methodology}
+\label{sec:method}
+
+\subsection{Overview}
+
+We propose PyramidCLIPSpyMamba, a lightweight recognition model for underwater species classification. The method separates visual representation learning from task-specific classification: two frozen CLIP visual encoders first provide complementary spatial features, and a compact state-space classifier then models their fine- and coarse-scale structure. The fine branch uses local patch evidence from CLIP ViT-B/16, while the coarse branch captures broader context from CLIP ViT-B/32. Each branch injects the corresponding CLIP global token into a spiral-ordered Mamba sequence, and the two branch descriptors are concatenated before classification. \Cref{fig:architecture} gives an overview of the full pipeline.
+
+\begin{figure}[tb]
+  \centering
+  \fbox{%
+    \begin{minipage}[c][4.3cm][c]{0.92\linewidth}
+      \centering
+      Placeholder for the PyramidCLIPSpyMamba architecture.\\[0.4em]
+      Image $\rightarrow$ frozen CLIP ViT-B/16 and ViT-B/32 features\\
+      $\rightarrow$ fine/coarse SpyMamba branches\\
+      $\rightarrow$ feature concatenation $\rightarrow$ MLP classifier.
+    \end{minipage}
+  }
+  \caption{Overview of PyramidCLIPSpyMamba. Frozen CLIP encoders extract fine and coarse spatial features together with global CLS embeddings. The proposed SpyMamba branches model each resolution using spiral state-space scanning, and their outputs are concatenated for underwater species classification.}
+  \label{fig:architecture}
+\end{figure}
+
+\subsection{Multi-Resolution CLIP Feature Extraction}
+
+Given an input image $x$, we use two frozen CLIP visual encoders, denoted by $\Phi_{16}$ and $\Phi_{32}$, to obtain features at two spatial resolutions:
+\begin{equation}
+  (\mathbf{S}_{16}, \mathbf{g}_{16}) = \Phi_{16}(x), \qquad
+  (\mathbf{S}_{32}, \mathbf{g}_{32}) = \Phi_{32}(x).
+  \label{eq:clip-features}
+\end{equation}
+Here, $\mathbf{S}_{16}$ has size $768 \times 14 \times 14$ and denotes the fine spatial grid from ViT-B/16, while $\mathbf{S}_{32}$ has size $768 \times 7 \times 7$ and denotes the coarse spatial grid from ViT-B/32. The vectors $\mathbf{g}_{16}$ and $\mathbf{g}_{32}$ are 512-dimensional CLIP global embeddings. The CLIP encoders are not updated during training; only the proposed classifier is optimized. This design keeps the trainable parameter count small while preserving strong generic visual features.
+
+\subsection{Pyramid SpyMamba Encoder}
+
+For each resolution $r \in \{16, 32\}$, the spatial grid is flattened into $N_r = H_r W_r$ patch tokens and projected to a common hidden dimension $d=128$. The global CLIP embedding is projected to the same dimension and prepended to the patch sequence:
+\begin{equation}
+  \mathbf{T}_{r}^{0}
+  =
+  \left[
+    \mathbf{W}_{g}^{r}\mathbf{g}_{r};
+    \mathbf{W}_{s}^{r}\operatorname{flat}(\mathbf{S}_{r})
+  \right]
+  +
+  \mathbf{E}_{r},
+  \label{eq:token-projection}
+\end{equation}
+where $\mathbf{W}_{g}^{r}$ and $\mathbf{W}_{s}^{r}$ are learnable projections, $\mathbf{E}_{r}$ is a learnable positional embedding, and $[\cdot;\cdot]$ denotes concatenation along the token dimension. Thus, the fine branch processes $1+14\times14=197$ tokens, while the coarse branch processes $1+7\times7=50$ tokens.
+
+The sequence $\mathbf{T}_{r}^{0}$ is passed through a SpyMamba block. After the final block, the branch descriptor is obtained by mean pooling over both the injected global token and the spatial tokens:
+\begin{equation}
+  \mathbf{h}_{r}
+  =
+  \frac{1}{N_r+1}
+  \sum_{j=0}^{N_r}
+  \operatorname{LN}(\mathbf{T}_{r}^{L})_{j},
+  \qquad
+  \mathbf{h}_{r} \text{ is 128-dimensional}.
+  \label{eq:branch-pooling}
+\end{equation}
+
+\subsection{Spiral State-Space Block}
+
+The central component of each branch is a spiral state-space block. A standard raster ordering creates artificial discontinuities at row boundaries, which is undesirable for modeling local underwater structures such as fins, bodies, textures, and surrounding context. We therefore reorder spatial tokens using a spiral traversal. Let $\pi_r(\cdot)$ denote the forward spiral order and $\bar{\pi}_r(\cdot)$ its reverse order. After layer normalization, the CLS token is separated from the spatial tokens and prepended to both ordered sequences:
+\begin{align}
+  \mathbf{Y}_{f}
+  &=
+  \mathcal{M}
+  \left(
+    [\mathbf{t}_{\mathrm{cls}}; \pi_r(\mathbf{T}_{\mathrm{sp}})]
+  \right),
+  \nonumber \\
+  \mathbf{Y}_{b}
+  &=
+  \mathcal{M}
+  \left(
+    [\mathbf{t}_{\mathrm{cls}}; \bar{\pi}_r(\mathbf{T}_{\mathrm{sp}})]
+  \right),
+  \label{eq:spiral-mamba}
+\end{align}
+where $\mathcal{M}$ is a Mamba state-space layer shared by the two directions. The bidirectional scan allows the branch to aggregate information from outside-in and center-out token orders. \Cref{fig:spiral-scan} illustrates the two orderings.
+
+\begin{figure}[tb]
+  \centering
+  \fbox{%
+    \begin{minipage}[c][3.8cm][c]{0.82\linewidth}
+      \centering
+      Placeholder for spiral token ordering.\\[0.4em]
+      Show forward outside-in spiral and reverse spiral\\
+      on $14 \times 14$ and/or $7 \times 7$ patch grids.
+    \end{minipage}
+  }
+  \caption{Forward and reverse spiral token ordering. Spatial CLIP patches are scanned in spiral order before Mamba processing, then restored to their original grid layout for spatial attention.}
+  \label{fig:spiral-scan}
+\end{figure}
+
+After the Mamba layer, the CLS outputs from the two directions are averaged. The spatial outputs are restored to raster layout and fused with a learnable scalar coefficient $\lambda$:
+\begin{equation}
+  \mathbf{Y}_{\mathrm{sp}}
+  =
+  \lambda \pi_r^{-1}(\mathbf{Y}_{f,\mathrm{sp}})
+  +
+  (1-\lambda)\bar{\pi}_r^{-1}(\mathbf{Y}_{b,\mathrm{sp}}).
+  \label{eq:direction-fusion}
+\end{equation}
+The fused spatial tokens are reshaped back to a two-dimensional feature map and refined by channel and spatial attention:
+\begin{equation}
+  \widehat{\mathbf{Y}}_{\mathrm{sp}}
+  =
+  A_s(A_c(\mathbf{Y}_{\mathrm{sp}})\odot \mathbf{Y}_{\mathrm{sp}})
+  \odot
+  (A_c(\mathbf{Y}_{\mathrm{sp}})\odot \mathbf{Y}_{\mathrm{sp}}),
+  \label{eq:attention}
+\end{equation}
+where $A_c$ and $A_s$ denote channel and spatial attention maps, respectively, and $\odot$ is element-wise multiplication. Finally, the block uses a residual update followed by a feed-forward network:
+\begin{align}
+  \widetilde{\mathbf{T}}
+  &=
+  \mathbf{T}
+  +
+  \boldsymbol{\gamma}_{1}\odot
+  [\mathbf{y}_{\mathrm{cls}};\widehat{\mathbf{Y}}_{\mathrm{sp}}],
+  \nonumber \\
+  \mathbf{T}^{+}
+  &=
+  \widetilde{\mathbf{T}}
+  +
+  \boldsymbol{\gamma}_{2}\odot
+  \operatorname{FFN}(\operatorname{LN}(\widetilde{\mathbf{T}})),
+  \label{eq:block-update}
+\end{align}
+where $\boldsymbol{\gamma}_{1}$ and $\boldsymbol{\gamma}_{2}$ are learnable LayerScale parameters.
+
+\subsection{Feature Fusion and Classification}
+
+The fine and coarse branch descriptors are concatenated into a 256-dimensional representation:
+\begin{equation}
+  \mathbf{h}
+  =
+  [\mathbf{h}_{16};\mathbf{h}_{32}],
+  \qquad
+  \mathbf{h} \text{ is 256-dimensional}.
+  \label{eq:feature-fusion}
+\end{equation}
+The final classifier is a two-layer MLP composed of layer normalization, a hidden linear layer, GELU activation, dropout, and an output linear layer:
+\begin{equation}
+  \mathbf{z}
+  =
+  h_{\theta}(\mathbf{h})
+  =
+  \mathbf{W}_{2}
+  \operatorname{Dropout}
+  \left(
+    \operatorname{GELU}
+    \left(
+      \mathbf{W}_{1}\operatorname{LN}(\mathbf{h}) + \mathbf{b}_{1}
+    \right)
+  \right)
+  +
+  \mathbf{b}_{2},
+  \label{eq:classifier}
+\end{equation}
+where $\mathbf{z}$ contains the logits for $C$ underwater species.
+
+\subsection{Objective Function}
+
+Underwater recognition datasets often contain visually similar categories and class imbalance. We therefore train the classifier with class-balanced focal loss. For the $i$-th sample, let $y_i$ be the ground-truth class and
+\begin{equation}
+  p_{t,i}
+  =
+  \operatorname{softmax}(\mathbf{z}_{i})_{y_i}
+  \label{eq:true-probability}
+\end{equation}
+be the predicted probability assigned to the correct class. The objective over a mini-batch of size $B$ is
+\begin{equation}
+  \mathcal{L}
+  =
+  -\frac{1}{B}
+  \sum_{i=1}^{B}
+  \alpha_{y_i}
+  (1-p_{t,i})^{\gamma}
+  \log(p_{t,i}),
+  \label{eq:focal-loss}
+\end{equation}
+with $\gamma=2$. The class coefficient $\alpha_c$ is computed from the number of training samples in class $c$:
+\begin{equation}
+  \alpha_c
+  =
+  \frac{N}{C n_c},
+  \label{eq:class-balanced-alpha}
+\end{equation}
+where $N$ is the total number of training samples, $C$ is the number of classes, and $n_c$ is the sample count of class $c$. In implementation, the coefficients are normalized so that the average class weight remains stable. This loss increases the contribution of rare classes and hard examples while reducing the effect of already well-classified samples.

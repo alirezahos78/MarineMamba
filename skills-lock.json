@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "paper-polish-workflow": {
+      "source": "lylll9436/paper-polish-workflow-skill",
+      "sourceType": "github",
+      "skillPath": "skills/paper-polish-workflow/SKILL.md",
+      "computedHash": "3b633916ee6b0af2c35bc49ff735f97e1365a7b5063845bbb2b95df437f9b729"
+    }
+  }
+}

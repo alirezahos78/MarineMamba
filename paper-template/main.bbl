@@ -1,0 +1,33 @@
+\begin{thebibliography}{1}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\providecommand{\doi}[1]{https://doi.org/#1}
+
+\bibitem{Alpher02}
+Alpher, F.: Frobnication. IEEE TPAMI  \textbf{12}(1),  234--778 (2002)
+
+\bibitem{Alpher03}
+Alpher, F., Fotheringham-Smythe, F.: Frobnication revisited. Journal of Foo
+  \textbf{13}(1),  234--778 (2003)
+
+\bibitem{Alpher04}
+Alpher, F., Fotheringham-Smythe, F., Gamow, F.: Can a machine frobnicate?
+  Journal of Foo  \textbf{14}(1),  234--778 (2004)
+
+\bibitem{Alpher05}
+Alpher, F., Gamow, F.: Can a computer frobnicate? In: CVPR. pp. 234--778 (2005)
+
+\bibitem{Anonymous24}
+Anonymous: The frobnicatable foo filter (2024), {ECCV} submission ID 00324,
+  supplied as supplemental material {\tt 00324.pdf}
+
+\bibitem{Anonymous24b}
+Anonymous: Frobnication tutorial (2024), supplied as supplemental material {\tt
+  tr.pdf}
+
+\bibitem{ECCV2022}
+Avidan, S., Brostow, G., Cissé, M., Farinella, G.M., Hassner, T. (eds.):
+  Computer Vision -- ECCV 2022. Springer (2022).
+  \doi{10.1007/978-3-031-19769-7}
+
+\end{thebibliography}

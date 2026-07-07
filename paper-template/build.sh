@@ -1,0 +1,1 @@
+latexmk -pdflatex -interaction=nonstopmode -synctex=1 -f main.tex
