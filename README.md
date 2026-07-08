@@ -112,6 +112,7 @@ SpyMamba/
 │   ├── build_clip_features.py      # extract and cache CLIP spatial + CLS features
 │   ├── confusion_matrix.py         # per-checkpoint confusion matrix and F1 report
 │   ├── ablation.py                 # all ablations (scan order + model components)
+│   ├── baseline_vim.py             # Vim-tiny baseline fine-tuning (reproduces comparison numbers)
 │   └── umap_vis.py                 # 6-panel UMAP visualisation (all 3 datasets)
 ├── data/                           # feature caches and raw images (not tracked by git)
 └── logs/                           # per-seed training logs and plots (not tracked by git)
@@ -229,6 +230,35 @@ python3 scripts/umap_vis.py --config fish4k_baseline --seed 9
 ```
 
 Panels: CLIP B/16 · CLIP B/32 · Mamba fine branch · Mamba coarse branch · Concat · Raw images.
+
+---
+
+## Vim-tiny Baseline
+
+Evaluates pretrained Vim-tiny (ImageNet-1k, 76.1% top-1) with three freeze modes so the comparison against SpyMamba is explicit and fair.
+
+**Citation:** Zhu et al., "Vision Mamba: Efficient Visual Representation Learning with Bidirectional State Space Model", ICML 2024. [arXiv:2401.13586](https://arxiv.org/abs/2401.13586)
+
+| Mode | Trainable params | LR default | Notes |
+|------|-----------------|-----------|-------|
+| `head_only` | ~4 K | 1e-3 | Linear probe — **fair comparison** (backbone frozen, same constraint as SpyMamba) |
+| `last_block` | ~0.4 M | 1e-4 | Last Mamba block + head |
+| `full` | 6.96 M | 5e-5 | Full fine-tune (original setup, upper bound) |
+
+```bash
+# Fair comparison — backbone frozen, only head trained (default)
+python3 scripts/baseline_vim.py --dataset aqua20 --freeze head_only --seeds 0 1 2 42
+python3 scripts/baseline_vim.py --dataset sea23  --freeze head_only --seeds 0 1 2 42
+python3 scripts/baseline_vim.py --dataset fish4k --freeze head_only --seeds 0
+
+# Last Mamba block + head
+python3 scripts/baseline_vim.py --dataset aqua20 --freeze last_block
+
+# Full fine-tune (upper bound)
+python3 scripts/baseline_vim.py --dataset aqua20 --freeze full
+```
+
+Results saved to `results_vim_{dataset}_{freeze}.json`. First run auto-clones the Vim repo into `data/_vim_repo/`.
 
 ---
 
