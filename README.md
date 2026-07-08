@@ -249,7 +249,7 @@ Evaluates pretrained Vim-tiny (ImageNet-1k, 76.1% top-1) with three freeze modes
 # Fair comparison — backbone frozen, only head trained (default)
 python3 scripts/baseline_vim.py --dataset aqua20 --freeze head_only --seeds 0 1 2 42
 python3 scripts/baseline_vim.py --dataset sea23  --freeze head_only --seeds 0 1 2 42
-python3 scripts/baseline_vim.py --dataset fish4k --freeze head_only --seeds 0
+python3 scripts/baseline_vim.py --dataset fish4k --freeze head_only --seeds 0 1 2 42
 
 # Last Mamba block + head
 python3 scripts/baseline_vim.py --dataset aqua20 --freeze last_block

@@ -16,24 +16,29 @@ The Vim model code is pulled from the official repository:
 It is cloned automatically on first run into a local cache directory.
 
 Freeze modes (--freeze):
-    head_only   Train only the linear classifier head (~4K params for 20 classes).
-                Fair comparison to SpyMamba, which also uses a frozen CLIP backbone.
-                Default LR: 1e-3
-    last_block  Train the last Mamba block + final norm + head (~0.4M params).
+    matched     Last 4 Mamba blocks (20-23) + norm_f + head = 1.132M trainable params.
+                Closest match to SpyMamba's 1.031M trainable params — the fair comparison.
                 Default LR: 1e-4
-    full        Full fine-tune (all 6.96M params, original setup).
+    head_only   Train only the linear classifier head (~4K params).
+                Strictest linear-probe baseline.
+                Default LR: 1e-3
+    full        Full fine-tune (all 6.96M params, upper bound).
                 Default LR: 5e-5
 
+Param counts (Vim-tiny has 6.96M total, 282K per block):
+    matched    : layers 20-23 + norm_f + head = 1,132,244 params  ← ≈ SpyMamba 1.031M
+    head_only  : head only                  =     3,860 params  (AQUA20)
+
 Usage:
-    # Fair comparison (frozen backbone, head only):
+    # Fair comparison — matched param count with SpyMamba:
+    python3 scripts/baseline_vim.py --dataset aqua20 --freeze matched --seeds 0 1 2 42
+    python3 scripts/baseline_vim.py --dataset sea23  --freeze matched --seeds 0 1 2 42
+    python3 scripts/baseline_vim.py --dataset fish4k --freeze matched --seeds 0 1 2 42
+
+    # Linear probe:
     python3 scripts/baseline_vim.py --dataset aqua20 --freeze head_only
-    python3 scripts/baseline_vim.py --dataset sea23  --freeze head_only
-    python3 scripts/baseline_vim.py --dataset fish4k --freeze head_only
 
-    # Last Mamba block + head:
-    python3 scripts/baseline_vim.py --dataset aqua20 --freeze last_block
-
-    # Full fine-tune:
+    # Full fine-tune (upper bound):
     python3 scripts/baseline_vim.py --dataset aqua20 --freeze full
 """
 
@@ -92,10 +97,13 @@ DATASET_CFG = {
 
 # Default LR per freeze mode — tuned independently
 _DEFAULT_LR = {
-    "head_only":  1e-3,
-    "last_block": 1e-4,
-    "full":       5e-5,
+    "matched":   1e-4,   # last 4 blocks + head, ~1.13M params ≈ SpyMamba
+    "head_only": 1e-3,
+    "full":      5e-5,
 }
+
+# Vim-tiny depth=24; last 4 blocks (indices 20-23) + norm_f + head ≈ 1.132M params
+_MATCHED_BLOCK_START = 20
 
 _IMAGENET_MEAN = (0.485, 0.456, 0.406)
 _IMAGENET_STD  = (0.229, 0.224, 0.225)
@@ -160,9 +168,9 @@ def apply_freeze(model: nn.Module, mode: str) -> int:
     """
     Freeze backbone parameters according to mode.
 
-    head_only  : freeze everything except head.* (linear probe)
-    last_block : freeze everything except layers.23.*, norm_f.*, head.*
-    full       : no freezing (full fine-tune)
+    matched   : unfreeze last 4 blocks (20-23) + norm_f + head ≈ 1.132M params
+    head_only : freeze everything except head.* (linear probe)
+    full      : no freezing (full fine-tune)
 
     Returns the number of trainable parameters.
     """
@@ -174,12 +182,15 @@ def apply_freeze(model: nn.Module, mode: str) -> int:
             if not name.startswith("head."):
                 param.requires_grad = False
 
-    elif mode == "last_block":
+    elif mode == "matched":
+        # Unfreeze last 4 Mamba blocks (20-23) + norm_f + head ≈ 1.132M params,
+        # matching SpyMamba's 1.031M trainable params as closely as one block allows.
         for name, param in model.named_parameters():
             is_trainable = (
                 name.startswith("head.")
                 or name.startswith("norm_f.")
-                or name.startswith("layers.23.")
+                or any(name.startswith(f"layers.{i}.")
+                       for i in range(_MATCHED_BLOCK_START, 24))
             )
             if not is_trainable:
                 param.requires_grad = False
@@ -331,16 +342,16 @@ def main():
         description="Vim-tiny baseline on AQUA20 / Sea23 / Fish4K"
     )
     p.add_argument("--dataset",       choices=list(DATASET_CFG), required=True)
-    p.add_argument("--freeze",        choices=["head_only", "last_block", "full"],
-                   default="head_only",
-                   help="head_only: linear probe (fair comparison); "
-                        "last_block: last Mamba block + head; "
+    p.add_argument("--freeze",        choices=["matched", "head_only", "full"],
+                   default="matched",
+                   help="matched: last 4 blocks + head ≈ 1.13M params (fair vs SpyMamba); "
+                        "head_only: linear probe; "
                         "full: full fine-tune")
     p.add_argument("--seeds",         type=int, nargs="+", default=[0, 1, 2, 42])
     p.add_argument("--epochs",        type=int,   default=100)
     p.add_argument("--lr",            type=float, default=None,
-                   help="Learning rate (default: 1e-3 for head_only, "
-                        "1e-4 for last_block, 5e-5 for full)")
+                   help="Learning rate (default: 1e-4 for matched, "
+                        "1e-3 for head_only, 5e-5 for full)")
     p.add_argument("--batch-size",    type=int,   default=64)
     p.add_argument("--warmup-epochs", type=int,   default=5,  dest="warmup_epochs")
     p.add_argument("--patience",      type=int,   default=20)
