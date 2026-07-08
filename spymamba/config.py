@@ -21,7 +21,7 @@ def _base():
         "batch_size": 128, "epochs": 60, "lr": 3e-4, "weight_decay": 0.05,
         "label_smoothing": 0.0, "warmup_epochs": 5,
         "balanced_sampling": "sqrt", "early_stopping_patience": 15,
-        "num_workers": 0,
+        "num_workers": 2,
         "loss": "focal",
         "focal_gamma": 2.0,
         "focal_alpha": "balanced",
@@ -58,6 +58,7 @@ CONFIGS = {
         "coarse_test_path":  os.path.join(FISH4K_B32_ROOT, "test_features.pt"),
         "cls_path": FISH4K_CLS_PATH,
     },
+
 }
 
 RUN_SEED = 42

@@ -34,31 +34,58 @@ Image
 
 ---
 
-## Results (seed 42 — 10-seed mean ± std pending)
+## Results (11 seeds: 0–9 + 42, mean ± std)
 
 ### AQUA20 — 20 aquatic species
 
-| Method | Params | Top-1 |
-|--------|--------|-------|
+| Method | Params | Top-1 Acc |
+|--------|--------|-----------|
 | ResNet-50 (fine-tuned) | 25 M | ~92% |
 | EfficientNet-B4 | 19 M | ~93% |
-| **PyramidCLIPSpyMamba** | **1.03 M** | **94.23%** |
+| Vim-tiny (fine-tuned, 4 seeds) | 6.96 M | 89.59 ± 0.33% |
+| **PyramidCLIPSpyMamba (ours)** | **1.03 M** | **93.46 ± 0.57%** |
 
 ### Sea Animals 23 — 23 sea species
 
-| Method | Top-1 | Top-2 | Top-3 | Macro-F1 |
-|--------|-------|-------|-------|----------|
-| Standard CNN (public notebook) | 88.77% | — | — | — |
-| **PyramidCLIPSpyMamba** | **96.78%** | **99.23%** | **99.71%** | **96.25%** |
+| Method | Params | Top-1 Acc |
+|--------|--------|-----------|
+| Standard CNN (public baseline) | — | 88.77% |
+| Vim-tiny (fine-tuned, 4 seeds) | 6.96 M | 89.48 ± 0.36% |
+| **PyramidCLIPSpyMamba (ours)** | **1.03 M** | **95.90 ± 0.80%** |
 
 ### Fish4Knowledge — 23 fish species (raw imbalanced split, ratio 1100:1)
 
-| Method | Split | Top-1 | Macro-F1 |
-|--------|-------|-------|----------|
-| Multi-level ResVGGNet [2021] | balanced | 99.69% | — |
-| **PyramidCLIPSpyMamba** | **imbalanced** | **98.46%** | **88.37%** |
+| Method | Split | Top-1 Acc |
+|--------|-------|-----------|
+| Multi-level ResVGGNet [2021] | balanced | 99.69% |
+| Vim-tiny (fine-tuned, 1 seed) | imbalanced | 99.82% |
+| **PyramidCLIPSpyMamba (ours)** | **imbalanced** | **98.25 ± 0.26%** |
 
-> The 99.69% ResVGGNet result uses a curated balanced split; our split preserves the raw 1100:1 class imbalance, making it a strictly harder evaluation.
+> The ResVGGNet result uses a curated balanced split; our split preserves the raw 1100:1 class imbalance, making it a strictly harder evaluation.
+
+---
+
+## Ablation Study (AQUA20, seeds 0/1/2)
+
+### Scan order
+
+| Variant | Top-1 Acc | Δ vs Full |
+|---------|-----------|-----------|
+| **Spiral (ours)** | **93.44 ± 0.13%** | — |
+| Raster | 92.91 ± 0.82% | −0.53% |
+
+### Model components
+
+| Variant | Top-1 Acc | Δ vs Full |
+|---------|-----------|-----------|
+| **Full model (spiral)** | **93.44 ± 0.13%** | — |
+| Coarse branch only (B/32) | 93.51 ± 0.41% | +0.06% |
+| Fine branch only (B/16) | 92.29 ± 0.93% | −1.15% |
+| No focal loss (CE only) | 92.83 ± 0.96% | −0.61% |
+| No Mamba (FFN only) | 85.98 ± 0.44% | −7.46% |
+| No CLS token injection | 85.07 ± 0.61% | −8.37% |
+
+> Coarse-only achieves similar mean accuracy (+0.06%) but 3× higher std (0.41% vs 0.13%), confirming that the dual branch improves stability, not just accuracy.
 
 ---
 
@@ -69,7 +96,7 @@ SpyMamba/
 ├── main.py                         # entry point — train across multiple seeds
 ├── requirements.txt
 ├── results.json                    # populated by main.py after training
-├── paper_guideline.txt             # paper writing reference
+├── ablation_results.json           # all ablation results (scan + model components)
 ├── spymamba/
 │   ├── model.py                    # PyramidCLIPSpyMamba, SpyMambaBlock, SpiralScanner, CBAM
 │   ├── trainer.py                  # training loop, multi-seed orchestration, checkpointing
@@ -84,8 +111,8 @@ SpyMamba/
 │   ├── prepare_sea23.py            # 80/20 stratified split for Sea23
 │   ├── build_clip_features.py      # extract and cache CLIP spatial + CLS features
 │   ├── confusion_matrix.py         # per-checkpoint confusion matrix and F1 report
-│   ├── infer.py                    # per-sample softmax / logit inspection
-│   └── umap_vis.py                 # 6-panel UMAP visualisation (AQUA20)
+│   ├── ablation.py                 # all ablations (scan order + model components)
+│   └── umap_vis.py                 # 6-panel UMAP visualisation (all 3 datasets)
 ├── data/                           # feature caches and raw images (not tracked by git)
 └── logs/                           # per-seed training logs and plots (not tracked by git)
 ```
@@ -109,7 +136,7 @@ python3 scripts/download_aqua20.py
 # 2. Extract CLIP features (run once, ~15 min on GPU)
 python3 scripts/build_clip_features.py
 
-# 3. Train across 10 seeds and report mean +/- std
+# 3. Train across 11 seeds and report mean ± std
 python3 main.py --configs aqua20_pyramid_hybrid_128_focal_balanced
 ```
 
@@ -161,29 +188,54 @@ python3 main.py --configs \
 ## Custom Seeds
 
 ```bash
-# Use specific seeds instead of the default 0-9
 python3 main.py --configs aqua20_pyramid_hybrid_128_focal_balanced --seeds 0 1 2 3 4
 ```
 
-Output format after all seeds finish:
+Output after all seeds finish:
 ```
   aqua20_pyramid_hybrid_128_focal_balanced
-    Mean +/- Std : 94.31 +/- 0.41%
-    Variance     : 0.1681
+    Mean ± Std : 93.46 ± 0.57%
+    Variance   : 0.3216
 ```
 
 Results are also written to `results.json`.
 
 ---
 
-## Evaluate a Checkpoint
+## Ablation Scripts
 
 ```bash
-# Confusion matrix + per-class F1 (terminal output)
-python3 scripts/confusion_matrix.py --config aqua20_pyramid_hybrid_128_focal_balanced --seed 0
+# All variants (AQUA20, seeds 0 1 2)
+python3 scripts/ablation.py
 
-# Save a PNG heatmap to logs/
-python3 scripts/confusion_matrix.py --config aqua20_pyramid_hybrid_128_focal_balanced --seed 0 --save-png
+# Specific variants only
+python3 scripts/ablation.py --variants spiral raster
+python3 scripts/ablation.py --variants no_mamba no_cls --seeds 0 1 2
+```
+
+Available variants: `spiral`, `raster`, `no_focal_loss`, `no_mamba`, `no_cls`, `fine_only`, `coarse_only`.
+
+Results are written to `ablation_results.json`.
+
+---
+
+## UMAP Visualisation
+
+```bash
+# 6-panel UMAP for any dataset (train + test)
+python3 scripts/umap_vis.py --config aqua20_pyramid_hybrid_128_focal_balanced --seed 4
+python3 scripts/umap_vis.py --config sea23_pyramid_hybrid_128_focal_balanced --seed 3
+python3 scripts/umap_vis.py --config fish4k_baseline --seed 9
+```
+
+Panels: CLIP B/16 · CLIP B/32 · Mamba fine branch · Mamba coarse branch · Concat · Raw images.
+
+---
+
+## Confusion Matrix
+
+```bash
+python3 scripts/confusion_matrix.py --config aqua20_pyramid_hybrid_128_focal_balanced --seed 4 --save-png
 ```
 
 ---

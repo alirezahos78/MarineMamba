@@ -69,7 +69,11 @@ def build_dataloaders(config):
 
     use_cuda     = torch.cuda.is_available()
     num_workers  = config.get("num_workers", 0)
-    loader_kwargs = {"num_workers": num_workers, "pin_memory": use_cuda}
+    loader_kwargs = {
+        "num_workers": num_workers,
+        "pin_memory": use_cuda,
+        "persistent_workers": num_workers > 0,
+    }
 
     mode = config.get("balanced_sampling")
     if mode in ("sqrt", "uniform"):

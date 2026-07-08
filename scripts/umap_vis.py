@@ -47,13 +47,19 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from spymamba.config import get_config
 from spymamba.trainer import build_model
 from spymamba.paths import (
-    AQUA20_ROOT,
+    AQUA20_ROOT, SEA23_ROOT, FISH4K_ROOT,
     B16_FEATURES_ROOT,
     B32_FEATURES_ROOT,
     CLS_FEATURES_PATH,
     LOGS_DIR,
     PROJECT_ROOT as _ROOT,
 )
+
+_DATASET_ROOTS = {
+    "aqua20_pyramid_hybrid_128_focal_balanced": AQUA20_ROOT,
+    "sea23_pyramid_hybrid_128_focal_balanced":  SEA23_ROOT,
+    "fish4k_baseline":                          FISH4K_ROOT,
+}
 
 ROOT = Path(_ROOT)
 
@@ -288,7 +294,7 @@ def main():
     test_only = args.test_only
     split_label = "test only" if test_only else "train + test"
     print("=" * 65)
-    print(f"UMAP Visualisation — AQUA20 {split_label}")
+    print(f"UMAP Visualisation — {args.config}  [{split_label}]")
     print(f"  Config    : {args.config}")
     print(f"  Device    : {device}")
     print(f"  UMAP      : n_neighbors={args.n_neighbors}  min_dist={args.min_dist}")
@@ -383,11 +389,12 @@ def main():
 
     # ── Raw images ────────────────────────────────────────────────────────────
     print(f"\n[6] Raw images ({args.img_size}×{args.img_size})...")
-    img_te, img_lbl_te = load_raw_images(AQUA20_ROOT, classes, args.img_size, "test")
+    img_root = _DATASET_ROOTS.get(args.config, AQUA20_ROOT)
+    img_te, img_lbl_te = load_raw_images(img_root, classes, args.img_size, "test")
     if test_only:
         img_fit, img_lbl_tr, emb_img_tr = img_te, np.empty(0, dtype=np.int64), None
     else:
-        img_tr, img_lbl_tr = load_raw_images(AQUA20_ROOT, classes, args.img_size, "train")
+        img_tr, img_lbl_tr = load_raw_images(img_root, classes, args.img_size, "train")
         img_fit = np.concatenate([img_tr, img_te])
     print(f"  test={len(img_lbl_te)}  dim={img_te.shape[1]}")
     print("  Panel 6 — Raw images:")
@@ -450,7 +457,7 @@ def main():
                framealpha=0.9, edgecolor="#ccc", bbox_to_anchor=(0.5, -0.03))
 
     hi_note = f"  highlighted: {args.highlight}" if args.highlight else ""
-    title_str = f"UMAP — AQUA20 {split_label}    " \
+    title_str = f"UMAP — {args.config}  [{split_label}]    " \
                 f"n_neighbors={args.n_neighbors}  min_dist={args.min_dist}  " \
                 f"PCA-pre={args.pca_dim if args.pca_dim else 'off'}{hi_note}"
     fig.suptitle(title_str, fontsize=10.5, y=1.01)
