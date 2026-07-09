@@ -1,5 +1,5 @@
 """
-baseline_vim.py — Pretrained Vision Mamba (Vim-tiny) baseline on AQUA20, Sea23, Fish4K.
+baseline_vim.py — Fine-tune pretrained Vision Mamba (Vim-tiny) on AQUA20, Sea23, Fish4K.
 
 Used as a comparison baseline against PyramidCLIPSpyMamba.
 
@@ -11,35 +11,10 @@ Vision Mamba reference:
 Pretrained weights (ImageNet-1k, 76.1% top-1):
     https://huggingface.co/hustvl/Vim-tiny-midclstok
 
-The Vim model code is pulled from the official repository:
-    https://github.com/hustvl/Vim
-It is cloned automatically on first run into a local cache directory.
-
-Freeze modes (--freeze):
-    matched     Last 4 Mamba blocks (20-23) + norm_f + head = 1.132M trainable params.
-                Closest match to SpyMamba's 1.031M trainable params — the fair comparison.
-                Default LR: 1e-4
-    head_only   Train only the linear classifier head (~4K params).
-                Strictest linear-probe baseline.
-                Default LR: 1e-3
-    full        Full fine-tune (all 6.96M params, upper bound).
-                Default LR: 5e-5
-
-Param counts (Vim-tiny has 6.96M total, 282K per block):
-    matched    : layers 20-23 + norm_f + head = 1,132,244 params  ← ≈ SpyMamba 1.031M
-    head_only  : head only                  =     3,860 params  (AQUA20)
-
 Usage:
-    # Fair comparison — matched param count with SpyMamba:
-    python3 scripts/baseline_vim.py --dataset aqua20 --freeze matched --seeds 0 1 2 42
-    python3 scripts/baseline_vim.py --dataset sea23  --freeze matched --seeds 0 1 2 42
-    python3 scripts/baseline_vim.py --dataset fish4k --freeze matched --seeds 0 1 2 42
-
-    # Linear probe:
-    python3 scripts/baseline_vim.py --dataset aqua20 --freeze head_only
-
-    # Full fine-tune (upper bound):
-    python3 scripts/baseline_vim.py --dataset aqua20 --freeze full
+    python3 scripts/baseline_vim.py --dataset aqua20 --seeds 0 1 2 42
+    python3 scripts/baseline_vim.py --dataset sea23  --seeds 0 1 2 42
+    python3 scripts/baseline_vim.py --dataset fish4k --seeds 0 1 2 42
 """
 
 import argparse
@@ -68,11 +43,8 @@ from spymamba.utils import set_seed, ensure_dir
 
 # ── Vim model cache ───────────────────────────────────────────────────────────
 
-# The original fine-tuning repo contains an older Vim commit whose models_mamba.py
-# defines its own Mamba class (compatible with the installed mamba_ssm / causal-conv1d).
-# The latest GitHub clone uses a newer models_mamba.py that imports Mamba from
-# mamba_ssm.modules — which breaks with the system mamba_ssm version here.
-# So we prefer the existing working clone and only fall back to cloning if absent.
+# Prefer the existing working clone (older commit whose models_mamba.py defines
+# Mamba locally, compatible with the installed mamba_ssm / causal-conv1d).
 _FINETUNING_VIM = Path(
     "/localhome/ehoseinz/PycharmProjects/EEG/finetuning vimamba/Vim"
 )
@@ -81,8 +53,8 @@ VIM_CACHE = (
     if _FINETUNING_VIM.exists()
     else PROJECT_ROOT / "data" / "_vim_repo" / "vim"
 )
-VIM_REPO  = "https://github.com/hustvl/Vim.git"
-VIM_CKPT  = Path(os.path.expanduser(
+VIM_REPO = "https://github.com/hustvl/Vim.git"
+VIM_CKPT = Path(os.path.expanduser(
     "~/.cache/huggingface/hub/"
     "models--hustvl--Vim-tiny-midclstok/snapshots/"
     "07c00e0e4ea2973d8e343afdd807128a57bc9fd5/"
@@ -94,16 +66,6 @@ DATASET_CFG = {
     "sea23":  {"path": Path(SEA23_ROOT),  "num_classes": 23},
     "fish4k": {"path": Path(FISH4K_ROOT), "num_classes": 23},
 }
-
-# Default LR per freeze mode — tuned independently
-_DEFAULT_LR = {
-    "matched":   1e-4,   # last 4 blocks + head, ~1.13M params ≈ SpyMamba
-    "head_only": 1e-3,
-    "full":      5e-5,
-}
-
-# Vim-tiny depth=24; last 4 blocks (indices 20-23) + norm_f + head ≈ 1.132M params
-_MATCHED_BLOCK_START = 20
 
 _IMAGENET_MEAN = (0.485, 0.456, 0.406)
 _IMAGENET_STD  = (0.229, 0.224, 0.225)
@@ -161,45 +123,9 @@ def build_vim(num_classes: int, device: str) -> nn.Module:
         f"Unexpected missing keys: {missing}"
     assert not unexpected, f"Unexpected extra keys: {unexpected}"
 
+    total = sum(p.numel() for p in model.parameters())
+    print(f"  Vim-tiny loaded  ({total/1e6:.2f}M params, full fine-tune)")
     return model.to(device)
-
-
-def apply_freeze(model: nn.Module, mode: str) -> int:
-    """
-    Freeze backbone parameters according to mode.
-
-    matched   : unfreeze last 4 blocks (20-23) + norm_f + head ≈ 1.132M params
-    head_only : freeze everything except head.* (linear probe)
-    full      : no freezing (full fine-tune)
-
-    Returns the number of trainable parameters.
-    """
-    if mode == "full":
-        pass
-
-    elif mode == "head_only":
-        for name, param in model.named_parameters():
-            if not name.startswith("head."):
-                param.requires_grad = False
-
-    elif mode == "matched":
-        # Unfreeze last 4 Mamba blocks (20-23) + norm_f + head ≈ 1.132M params,
-        # matching SpyMamba's 1.031M trainable params as closely as one block allows.
-        for name, param in model.named_parameters():
-            is_trainable = (
-                name.startswith("head.")
-                or name.startswith("norm_f.")
-                or any(name.startswith(f"layers.{i}.")
-                       for i in range(_MATCHED_BLOCK_START, 24))
-            )
-            if not is_trainable:
-                param.requires_grad = False
-
-    trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    total     = sum(p.numel() for p in model.parameters())
-    print(f"  Freeze mode : {mode}")
-    print(f"  Trainable   : {trainable:,} / {total:,} params  ({trainable/1e6:.4f}M)")
-    return trainable
 
 
 # ── Data ───────────────────────────────────────────────────────────────────────
@@ -247,7 +173,7 @@ def train_one_seed(dataset: str, seed: int, cfg: dict, args) -> float:
     set_seed(seed)
 
     ensure_dir(LOGS_DIR)
-    log_path = os.path.join(LOGS_DIR, f"log_vim_{dataset}_{args.freeze}_seed_{seed}.txt")
+    log_path = os.path.join(LOGS_DIR, f"log_vim_{dataset}_seed_{seed}.txt")
 
     class _Tee:
         def __init__(self, path):
@@ -259,19 +185,15 @@ def train_one_seed(dataset: str, seed: int, cfg: dict, args) -> float:
 
     sys.stdout = _Tee(log_path)
     try:
-        print(f"Vim-tiny | dataset={dataset} freeze={args.freeze} seed={seed} device={device}")
+        print(f"Vim-tiny | dataset={dataset} seed={seed} device={device}")
         print(f"epochs={args.epochs} lr={args.lr} batch={args.batch_size} patience={args.patience}")
 
         train_loader, test_loader, classes = build_loaders(cfg["path"], args.batch_size)
         print(f"Train={len(train_loader.dataset)}  Test={len(test_loader.dataset)}  Classes={len(classes)}")
 
-        model = build_vim(cfg["num_classes"], device)
-        apply_freeze(model, args.freeze)
-
+        model     = build_vim(cfg["num_classes"], device)
         criterion = nn.CrossEntropyLoss(label_smoothing=0.1)
-        # Optimizer only sees trainable params
-        trainable_params = [p for p in model.parameters() if p.requires_grad]
-        optimizer = optim.AdamW(trainable_params, lr=args.lr, weight_decay=0.05)
+        optimizer = optim.AdamW(model.parameters(), lr=args.lr, weight_decay=0.05)
 
         total_steps  = args.epochs * len(train_loader)
         warmup_steps = args.warmup_epochs * len(train_loader)
@@ -297,7 +219,7 @@ def train_one_seed(dataset: str, seed: int, cfg: dict, args) -> float:
                 out  = model(imgs)
                 loss = criterion(out, labels)
                 loss.backward()
-                torch.nn.utils.clip_grad_norm_(trainable_params, 1.0)
+                torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
                 optimizer.step()
                 scheduler.step()
                 tr_loss    += loss.item()
@@ -339,51 +261,39 @@ def train_one_seed(dataset: str, seed: int, cfg: dict, args) -> float:
 
 def main():
     p = argparse.ArgumentParser(
-        description="Vim-tiny baseline on AQUA20 / Sea23 / Fish4K"
+        description="Fine-tune Vim-tiny on AQUA20 / Sea23 / Fish4K"
     )
     p.add_argument("--dataset",       choices=list(DATASET_CFG), required=True)
-    p.add_argument("--freeze",        choices=["matched", "head_only", "full"],
-                   default="matched",
-                   help="matched: last 4 blocks + head ≈ 1.13M params (fair vs SpyMamba); "
-                        "head_only: linear probe; "
-                        "full: full fine-tune")
     p.add_argument("--seeds",         type=int, nargs="+", default=[0, 1, 2, 42])
     p.add_argument("--epochs",        type=int,   default=100)
-    p.add_argument("--lr",            type=float, default=None,
-                   help="Learning rate (default: 1e-4 for matched, "
-                        "1e-3 for head_only, 5e-5 for full)")
+    p.add_argument("--lr",            type=float, default=5e-5)
     p.add_argument("--batch-size",    type=int,   default=64)
     p.add_argument("--warmup-epochs", type=int,   default=5,  dest="warmup_epochs")
     p.add_argument("--patience",      type=int,   default=20)
     args = p.parse_args()
 
-    # Apply mode-appropriate default LR if not set explicitly
-    if args.lr is None:
-        args.lr = _DEFAULT_LR[args.freeze]
-
     cfg     = DATASET_CFG[args.dataset]
     results = {}
 
     for seed in args.seeds:
-        print(f"\n{'='*60}\nSeed {seed} — {args.dataset} [{args.freeze}]\n{'='*60}")
+        print(f"\n{'='*60}\nSeed {seed} — {args.dataset}\n{'='*60}")
         acc = train_one_seed(args.dataset, seed, cfg, args)
         results[str(seed)] = round(acc, 4)
         print(f"Seed {seed}: {acc:.4f}%")
 
     vals = list(results.values())
     summary = {
-        "freeze": args.freeze,
-        "seeds":  results,
-        "mean":   round(float(np.mean(vals)), 4),
-        "std":    round(float(np.std(vals)),  4),
+        "seeds": results,
+        "mean":  round(float(np.mean(vals)), 4),
+        "std":   round(float(np.std(vals)),  4),
     }
 
-    out_path = PROJECT_ROOT / f"results_vim_{args.dataset}_{args.freeze}.json"
+    out_path = PROJECT_ROOT / f"results_vim_{args.dataset}.json"
     with open(out_path, "w") as f:
         json.dump(summary, f, indent=2)
 
     print(f"\n{'='*60}")
-    print(f"Vim-tiny [{args.freeze}] — {args.dataset}")
+    print(f"Vim-tiny — {args.dataset}")
     print(f"  Seeds : {results}")
     print(f"  Mean  : {summary['mean']:.4f}%  Std: {summary['std']:.4f}%")
     print(f"  Saved : {out_path}")

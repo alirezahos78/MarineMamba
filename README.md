@@ -42,7 +42,7 @@ Image
 |--------|--------|-----------|
 | ResNet-50 (fine-tuned) | 25 M | ~92% |
 | EfficientNet-B4 | 19 M | ~93% |
-| Vim-tiny (fine-tuned, 4 seeds) | 6.96 M | 89.59 ± 0.33% |
+| Vim-tiny (fine-tuned, 4 seeds) | 6.96 M | 89.47 ± 0.53% |
 | **PyramidCLIPSpyMamba (ours)** | **1.03 M** | **93.46 ± 0.57%** |
 
 ### Sea Animals 23 — 23 sea species
@@ -50,7 +50,7 @@ Image
 | Method | Params | Top-1 Acc |
 |--------|--------|-----------|
 | Standard CNN (public baseline) | — | 88.77% |
-| Vim-tiny (fine-tuned, 4 seeds) | 6.96 M | 89.48 ± 0.36% |
+| Vim-tiny (fine-tuned, 4 seeds) | 6.96 M | 89.89 ± 0.45% |
 | **PyramidCLIPSpyMamba (ours)** | **1.03 M** | **95.90 ± 0.80%** |
 
 ### Fish4Knowledge — 23 fish species (raw imbalanced split, ratio 1100:1)
@@ -58,7 +58,7 @@ Image
 | Method | Split | Top-1 Acc |
 |--------|-------|-----------|
 | Multi-level ResVGGNet [2021] | balanced | 99.69% |
-| Vim-tiny (fine-tuned, 1 seed) | imbalanced | 99.82% |
+| Vim-tiny (fine-tuned, 4 seeds) | imbalanced | 99.75 ± 0.04% |
 | **PyramidCLIPSpyMamba (ours)** | **imbalanced** | **98.25 ± 0.26%** |
 
 > The ResVGGNet result uses a curated balanced split; our split preserves the raw 1100:1 class imbalance, making it a strictly harder evaluation.
@@ -239,26 +239,15 @@ Evaluates pretrained Vim-tiny (ImageNet-1k, 76.1% top-1) with three freeze modes
 
 **Citation:** Zhu et al., "Vision Mamba: Efficient Visual Representation Learning with Bidirectional State Space Model", ICML 2024. [arXiv:2401.13586](https://arxiv.org/abs/2401.13586)
 
-| Mode | Trainable params | LR default | Notes |
-|------|-----------------|-----------|-------|
-| `head_only` | ~4 K | 1e-3 | Linear probe — **fair comparison** (backbone frozen, same constraint as SpyMamba) |
-| `last_block` | ~0.4 M | 1e-4 | Last Mamba block + head |
-| `full` | 6.96 M | 5e-5 | Full fine-tune (original setup, upper bound) |
+Full fine-tune of all 6.96M params (lr=5e-5, cosine+warmup, patience=20).
 
 ```bash
-# Fair comparison — backbone frozen, only head trained (default)
-python3 scripts/baseline_vim.py --dataset aqua20 --freeze head_only --seeds 0 1 2 42
-python3 scripts/baseline_vim.py --dataset sea23  --freeze head_only --seeds 0 1 2 42
-python3 scripts/baseline_vim.py --dataset fish4k --freeze head_only --seeds 0 1 2 42
-
-# Last Mamba block + head
-python3 scripts/baseline_vim.py --dataset aqua20 --freeze last_block
-
-# Full fine-tune (upper bound)
-python3 scripts/baseline_vim.py --dataset aqua20 --freeze full
+python3 scripts/baseline_vim.py --dataset aqua20 --seeds 0 1 2 42
+python3 scripts/baseline_vim.py --dataset sea23  --seeds 0 1 2 42
+python3 scripts/baseline_vim.py --dataset fish4k --seeds 0 1 2 42
 ```
 
-Results saved to `results_vim_{dataset}_{freeze}.json`. First run auto-clones the Vim repo into `data/_vim_repo/`.
+Results saved to `results_vim_{dataset}.json`. First run auto-clones the Vim repo into `data/_vim_repo/`.
 
 ---
 
