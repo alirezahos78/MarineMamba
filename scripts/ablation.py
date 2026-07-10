@@ -37,15 +37,15 @@ import torch.optim as optim
 from einops import rearrange
 from tqdm import tqdm
 
-from spymamba.config import get_config
-from spymamba.data import build_dataloaders
-from spymamba.losses import build_criterion
-from spymamba.model import PyramidBranch, PyramidCLIPSpyMamba, SpyMambaBlock, SCAtt
-from spymamba.paths import LOGS_DIR, PROJECT_ROOT, RESULTS_PATH
-from spymamba.trainer import build_model
-from spymamba.utils import Logger, ensure_dir, set_seed
+from marinemamba.config import get_config
+from marinemamba.data import build_dataloaders
+from marinemamba.losses import build_criterion
+from marinemamba.model import PyramidBranch, MarineMamba, MarineMambaBlock, SCAtt
+from marinemamba.paths import LOGS_DIR, PROJECT_ROOT, RESULTS_PATH
+from marinemamba.trainer import build_model
+from marinemamba.utils import Logger, ensure_dir, set_seed
 
-CONFIG_NAME  = "aqua20_pyramid_hybrid_128_focal_balanced"
+CONFIG_NAME  = "aqua20_dual_hybrid_128_focal_balanced"
 RESULTS_FILE = os.path.join(PROJECT_ROOT, "ablation_results.json")
 
 
@@ -76,7 +76,7 @@ class RasterScanner(nn.Module):
 # ---------------------------------------------------------------------------
 
 class FFNBlock(nn.Module):
-    """Token-wise FFN + CBAM — replaces SpyMambaBlock (isolates Mamba contribution)."""
+    """Token-wise FFN + CBAM — replaces MarineMambaBlock (isolates Mamba contribution)."""
     def __init__(self, dim, height, width, ffn_drop=0.0, layer_scale_init=1.0):
         super().__init__()
         self.height = height
@@ -139,7 +139,7 @@ def build_spiral(config, device):
 def build_raster(config, device):
     model = build_model(config, device)
     for block in model.modules():
-        if isinstance(block, SpyMambaBlock):
+        if isinstance(block, MarineMambaBlock):
             block.scanner = RasterScanner(block.height, block.width).to(device)
     return model, config
 
@@ -374,7 +374,7 @@ def main():
     try:
         with open(RESULTS_PATH) as f:
             saved = json.load(f)
-        seed_vals = [saved["aqua20_pyramid_hybrid_128_focal_balanced"]["seeds"].get(str(s))
+        seed_vals = [saved["aqua20_dual_hybrid_128_focal_balanced"]["seeds"].get(str(s))
                      for s in args.seeds]
         seed_vals = [v for v in seed_vals if v is not None]
         if seed_vals:

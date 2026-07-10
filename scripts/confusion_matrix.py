@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-confusion_matrix.py — Print and save the confusion matrix for a trained SpyMamba model.
+confusion_matrix.py — Print and save the confusion matrix for a trained MarineMamba model.
 
 Usage:
-    cd SpyMamba/
+    cd MarineMamba/
     python3 scripts/confusion_matrix.py
-    python3 scripts/confusion_matrix.py --config aqua20_pyramid_hybrid_128_mlp
+    python3 scripts/confusion_matrix.py --config aqua20_dual_hybrid_128_mlp
     python3 scripts/confusion_matrix.py --save-png
 """
 import argparse
@@ -17,13 +17,13 @@ import torch
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from spymamba.config import get_config
-from spymamba.trainer import build_model
+from marinemamba.config import get_config
+from marinemamba.trainer import build_model
 
 
 def parse_args():
     p = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    p.add_argument("--config", default="aqua20_pyramid_hybrid_128_focal_balanced")
+    p.add_argument("--config", default="aqua20_dual_hybrid_128_focal_balanced")
     p.add_argument("--ckpt",   default=None,
                    help="Checkpoint path; defaults to best_{config}_seed_{seed}.pth")
     p.add_argument("--seed",   type=int, default=42)

@@ -3,7 +3,7 @@
 Download AQUA20 from Hugging Face and save it as an ImageFolder dataset.
 
 Output layout:
-    spymamba/data/aqua20/
+    marinemamba/data/aqua20/
         train/<class_name>/*.jpg
         test/<class_name>/*.jpg
 
@@ -19,7 +19,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from spymamba.paths import AQUA20_ROOT
+from marinemamba.paths import AQUA20_ROOT
 
 
 def parse_args():

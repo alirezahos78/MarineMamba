@@ -1,5 +1,5 @@
 {
-  "aqua20_pyramid_hybrid_128_focal_balanced": {
+  "aqua20_dual_hybrid_128_focal_balanced": {
     "seeds": {
       "0": 93.55,
       "1": 92.06,
@@ -17,7 +17,7 @@
     "std": 0.5671,
     "variance": 0.3216
   },
-  "sea23_pyramid_hybrid_128_focal_balanced": {
+  "sea23_dual_hybrid_128_focal_balanced": {
     "seeds": {
       "0": 96.01,
       "1": 94.69,
@@ -35,7 +35,7 @@
     "std": 0.802,
     "variance": 0.6433
   },
-  "fish4k_baseline": {
+  "fish4k_dual_hybrid_128_focal_balanced": {
     "seeds": {
       "0": 98.06,
       "1": 98.28,

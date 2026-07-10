@@ -30,13 +30,13 @@ def _base():
 
 CONFIGS = {
     # ── AQUA20 (20 classes) ──────────────────────────────────────────────────
-    "aqua20_pyramid_hybrid_128_focal_balanced": {
+    "aqua20_dual_hybrid_128_focal_balanced": {
         **_base(),
         "name": "AQUA20 Hybrid dim=128 + Focal (gamma=2, balanced alpha)",
     },
 
     # ── Sea Animals 23 (23 classes) ──────────────────────────────────────────
-    "sea23_pyramid_hybrid_128_focal_balanced": {
+    "sea23_dual_hybrid_128_focal_balanced": {
         **_base(),
         "name": "SEA23 Hybrid dim=128 + Focal (gamma=2, balanced alpha)",
         "num_classes": 23,
@@ -48,7 +48,7 @@ CONFIGS = {
     },
 
     # ── Fish4Knowledge 23 (23 classes) ───────────────────────────────────────
-    "fish4k_baseline": {
+    "fish4k_dual_hybrid_128_focal_balanced": {
         **_base(),
         "name": "Fish4K Focal + sqrt sampler (baseline)",
         "num_classes": 23,

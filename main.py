@@ -8,10 +8,10 @@ SEEDS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Train PyramidCLIPSpyMamba.")
+    parser = argparse.ArgumentParser(description="Train MarineMamba.")
     parser.add_argument(
         "--configs", nargs="+",
-        default=["aqua20_pyramid_hybrid_128_focal_balanced"],
+        default=["aqua20_dual_hybrid_128_focal_balanced"],
         help="Config names to run.",
     )
     parser.add_argument(
@@ -23,7 +23,7 @@ def parse_args():
 
 def main():
     args = parse_args()
-    from spymamba.trainer import run_multi_seed
+    from marinemamba.trainer import run_multi_seed
     run_multi_seed(config_names=args.configs, seeds=args.seeds)
 
 

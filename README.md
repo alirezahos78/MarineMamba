@@ -1,4 +1,4 @@
-# PyramidCLIPSpyMamba
+# MarineMamba: Multi-Granularity CLIP Feature Integration with Dual Mamba for Underwater Classification
 
 Lightweight dual-branch state-space model for aquatic and marine species classification. Operates on frozen CLIP spatial features extracted at two resolutions; only 1.03 M parameters are trained.
 
@@ -7,14 +7,14 @@ Lightweight dual-branch state-space model for aquatic and marine species classif
 ```
 Image
   |
-  |-- CLIP ViT-B/16 (frozen) --> spatial [768, 14, 14]  -->  Fine SpyMamba Branch (dim=128)  --> 128-d -|
-  |                           +  CLS token  [512]         -->  (injected into sequence)                  |
-  |                                                                                                       |--> concat 256-d --> MLP Head --> C classes
-  |-- CLIP ViT-B/32 (frozen) --> spatial [768,  7,  7]  -->  Coarse SpyMamba Branch (dim=128) --> 128-d -|
+  |-- CLIP ViT-B/16 (frozen) --> spatial [768, 14, 14]  -->  Fine MarineMamba Branch (dim=128)  --> 128-d -|
+  |                           +  CLS token  [512]         -->  (injected into sequence)                     |
+  |                                                                                                          |--> concat 256-d --> MLP Head --> C classes
+  |-- CLIP ViT-B/32 (frozen) --> spatial [768,  7,  7]  -->  Coarse MarineMamba Branch (dim=128) --> 128-d -|
                               +  CLS token  [512]         -->  (injected into sequence)
 ```
 
-**SpyMambaBlock** — the core building block:
+**MarineMambaBlock** — the core building block:
 - LayerNorm → SpiralScanner reorders spatial tokens (outside-in and center-out)
 - CLS token prepended to each spiral sequence before Mamba runs
 - Bidirectional Mamba pass (forward spiral + backward spiral) with a learnable fusion gate
@@ -43,7 +43,7 @@ Image
 | ResNet-50 (fine-tuned) | 25 M | ~92% |
 | EfficientNet-B4 | 19 M | ~93% |
 | Vim-tiny (fine-tuned, 4 seeds) | 6.96 M | 89.47 ± 0.53% |
-| **PyramidCLIPSpyMamba (ours)** | **1.03 M** | **93.46 ± 0.57%** |
+| **MarineMamba (ours)** | **1.03 M** | **93.46 ± 0.57%** |
 
 ### Sea Animals 23 — 23 sea species
 
@@ -51,7 +51,7 @@ Image
 |--------|--------|-----------|
 | Standard CNN (public baseline) | — | 88.77% |
 | Vim-tiny (fine-tuned, 4 seeds) | 6.96 M | 89.89 ± 0.45% |
-| **PyramidCLIPSpyMamba (ours)** | **1.03 M** | **95.90 ± 0.80%** |
+| **MarineMamba (ours)** | **1.03 M** | **95.90 ± 0.80%** |
 
 ### Fish4Knowledge — 23 fish species (raw imbalanced split, ratio 1100:1)
 
@@ -59,7 +59,7 @@ Image
 |--------|-------|-----------|
 | Multi-level ResVGGNet [2021] | balanced | 99.69% |
 | Vim-tiny (fine-tuned, 4 seeds) | imbalanced | 99.75 ± 0.04% |
-| **PyramidCLIPSpyMamba (ours)** | **imbalanced** | **98.25 ± 0.26%** |
+| **MarineMamba (ours)** | **imbalanced** | **98.25 ± 0.26%** |
 
 > The ResVGGNet result uses a curated balanced split; our split preserves the raw 1100:1 class imbalance, making it a strictly harder evaluation.
 
@@ -92,13 +92,13 @@ Image
 ## Project Layout
 
 ```
-SpyMamba/
+MarineMamba/
 ├── main.py                         # entry point — train across multiple seeds
 ├── requirements.txt
 ├── results.json                    # populated by main.py after training
 ├── ablation_results.json           # all ablation results (scan + model components)
-├── spymamba/
-│   ├── model.py                    # PyramidCLIPSpyMamba, SpyMambaBlock, SpiralScanner, CBAM
+├── marinemamba/
+│   ├── model.py                    # MarineMamba, MarineMambaBlock, SpiralScanner, CBAM
 │   ├── trainer.py                  # training loop, multi-seed orchestration, checkpointing
 │   ├── config.py                   # named experiment configurations
 │   ├── data.py                     # DualCLIPFeatureDataset, build_dataloaders
@@ -138,7 +138,7 @@ python3 scripts/download_aqua20.py
 python3 scripts/build_clip_features.py
 
 # 3. Train across 11 seeds and report mean ± std
-python3 main.py --configs aqua20_pyramid_hybrid_128_focal_balanced
+python3 main.py --configs aqua20_dual_hybrid_128_focal_balanced
 ```
 
 ### Sea Animals 23
@@ -155,7 +155,7 @@ python3 scripts/build_clip_features.py \
     --out-cls data/sea23_dual_clip_pooled_features.pt
 
 # 3. Train
-python3 main.py --configs sea23_pyramid_hybrid_128_focal_balanced
+python3 main.py --configs sea23_dual_hybrid_128_focal_balanced
 ```
 
 ### Fish4Knowledge
@@ -172,16 +172,16 @@ python3 scripts/build_clip_features.py \
     --out-cls data/fish4k_dual_clip_pooled_features.pt
 
 # 3. Train
-python3 main.py --configs fish4k_baseline
+python3 main.py --configs fish4k_dual_hybrid_128_focal_balanced
 ```
 
 ### All three datasets in one run
 
 ```bash
 python3 main.py --configs \
-    aqua20_pyramid_hybrid_128_focal_balanced \
-    sea23_pyramid_hybrid_128_focal_balanced \
-    fish4k_baseline
+    aqua20_dual_hybrid_128_focal_balanced \
+    sea23_dual_hybrid_128_focal_balanced \
+    fish4k_dual_hybrid_128_focal_balanced
 ```
 
 ---
@@ -189,12 +189,12 @@ python3 main.py --configs \
 ## Custom Seeds
 
 ```bash
-python3 main.py --configs aqua20_pyramid_hybrid_128_focal_balanced --seeds 0 1 2 3 4
+python3 main.py --configs aqua20_dual_hybrid_128_focal_balanced --seeds 0 1 2 3 4
 ```
 
 Output after all seeds finish:
 ```
-  aqua20_pyramid_hybrid_128_focal_balanced
+  aqua20_dual_hybrid_128_focal_balanced
     Mean ± Std : 93.46 ± 0.57%
     Variance   : 0.3216
 ```
@@ -224,9 +224,9 @@ Results are written to `ablation_results.json`.
 
 ```bash
 # 6-panel UMAP for any dataset (train + test)
-python3 scripts/umap_vis.py --config aqua20_pyramid_hybrid_128_focal_balanced --seed 4
-python3 scripts/umap_vis.py --config sea23_pyramid_hybrid_128_focal_balanced --seed 3
-python3 scripts/umap_vis.py --config fish4k_baseline --seed 9
+python3 scripts/umap_vis.py --config aqua20_dual_hybrid_128_focal_balanced --seed 4
+python3 scripts/umap_vis.py --config sea23_dual_hybrid_128_focal_balanced --seed 3
+python3 scripts/umap_vis.py --config fish4k_dual_hybrid_128_focal_balanced --seed 9
 ```
 
 Panels: CLIP B/16 · CLIP B/32 · Mamba fine branch · Mamba coarse branch · Concat · Raw images.
@@ -235,7 +235,7 @@ Panels: CLIP B/16 · CLIP B/32 · Mamba fine branch · Mamba coarse branch · Co
 
 ## Vim-tiny Baseline
 
-Evaluates pretrained Vim-tiny (ImageNet-1k, 76.1% top-1) with three freeze modes so the comparison against SpyMamba is explicit and fair.
+Evaluates pretrained Vim-tiny (ImageNet-1k, 76.1% top-1) with full fine-tuning so the comparison against MarineMamba is explicit and fair.
 
 **Citation:** Zhu et al., "Vision Mamba: Efficient Visual Representation Learning with Bidirectional State Space Model", ICML 2024. [arXiv:2401.13586](https://arxiv.org/abs/2401.13586)
 
@@ -254,7 +254,7 @@ Results saved to `results_vim_{dataset}.json`. First run auto-clones the Vim rep
 ## Confusion Matrix
 
 ```bash
-python3 scripts/confusion_matrix.py --config aqua20_pyramid_hybrid_128_focal_balanced --seed 4 --save-png
+python3 scripts/confusion_matrix.py --config aqua20_dual_hybrid_128_focal_balanced --seed 4 --save-png
 ```
 
 ---

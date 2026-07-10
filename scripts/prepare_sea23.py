@@ -10,7 +10,7 @@ This script performs an 80/20 stratified split and writes:
         test/<class>/<image>
 
 Usage:
-    cd SpyMamba/
+    cd MarineMamba/
     python3 scripts/prepare_sea23.py --src /path/to/raw/sea-animals
 
     # With a custom output dir:

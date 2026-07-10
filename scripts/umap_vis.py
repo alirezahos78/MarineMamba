@@ -10,13 +10,13 @@ make them opaque and everything else semi-transparent.
 Panels:
   1. CLIP ViT-B/16  (mean-pooled 14×14 spatial grid, 768-d)
   2. CLIP ViT-B/32  (mean-pooled  7×7 spatial grid, 768-d)
-  3. Mamba fine branch output   (128-d, post-SpyMamba B/16 branch)
-  4. Mamba coarse branch output (128-d, post-SpyMamba B/32 branch)
+  3. Mamba fine branch output   (128-d, post-MarineMamba B/16 branch)
+  4. Mamba coarse branch output (128-d, post-MarineMamba B/32 branch)
   5. Mamba fine ⊕ coarse concatenated (256-d)
   6. Raw train images (flattened pixels, img_size×img_size×3)
 
 Usage:
-    cd SpyMamba/
+    cd MarineMamba/
     python3 scripts/umap_vis.py
     python3 scripts/umap_vis.py --highlight flatworm rayfish
     python3 scripts/umap_vis.py --no-mamba --highlight flatworm rayfish
@@ -44,9 +44,9 @@ from umap import UMAP
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from spymamba.config import get_config
-from spymamba.trainer import build_model
-from spymamba.paths import (
+from marinemamba.config import get_config
+from marinemamba.trainer import build_model
+from marinemamba.paths import (
     AQUA20_ROOT, SEA23_ROOT, FISH4K_ROOT,
     B16_FEATURES_ROOT,
     B32_FEATURES_ROOT,
@@ -56,9 +56,9 @@ from spymamba.paths import (
 )
 
 _DATASET_ROOTS = {
-    "aqua20_pyramid_hybrid_128_focal_balanced": AQUA20_ROOT,
-    "sea23_pyramid_hybrid_128_focal_balanced":  SEA23_ROOT,
-    "fish4k_baseline":                          FISH4K_ROOT,
+    "aqua20_dual_hybrid_128_focal_balanced": AQUA20_ROOT,
+    "sea23_dual_hybrid_128_focal_balanced":  SEA23_ROOT,
+    "fish4k_dual_hybrid_128_focal_balanced":                          FISH4K_ROOT,
 }
 
 ROOT = Path(_ROOT)
@@ -68,7 +68,7 @@ ROOT = Path(_ROOT)
 
 def parse_args():
     p = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    p.add_argument("--config",      default="aqua20_pyramid_hybrid_128_focal_balanced")
+    p.add_argument("--config",      default="aqua20_dual_hybrid_128_focal_balanced")
     p.add_argument("--ckpt",        default=None)
     p.add_argument("--seed",        type=int, default=42)
     p.add_argument("--n-neighbors", type=int, default=15)

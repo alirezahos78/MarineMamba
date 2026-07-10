@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Build all CLIP feature caches needed by SpyMamba — fully standalone, no SpyMamba dependency.
+Build all CLIP feature caches needed by MarineMamba — fully standalone, no MarineMamba dependency.
 
-Produces three caches inside spymamba/data/:
+Produces three caches inside marinemamba/data/:
   aqua20_clip_vit_b16_spatial_grid_aug/   ← ViT-B/16 spatial patches (14×14)
   aqua20_clip_vit_b32_spatial_grid_aug/   ← ViT-B/32 spatial patches (7×7)
   dual_clip_pooled_features.pt            ← B/16 + B/32 CLS tokens (clean, 1 view)
@@ -22,7 +22,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from spymamba.paths import AQUA20_ROOT, B16_FEATURES_ROOT, B32_FEATURES_ROOT, CLS_FEATURES_PATH
+from marinemamba.paths import AQUA20_ROOT, B16_FEATURES_ROOT, B32_FEATURES_ROOT, CLS_FEATURES_PATH
 
 
 def parse_args():

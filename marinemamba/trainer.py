@@ -12,7 +12,7 @@ from tqdm import tqdm
 from .config import get_config
 from .data import build_dataloaders
 from .losses import build_criterion
-from .model import PyramidCLIPSpyMamba
+from .model import MarineMamba
 from .paths import LOGS_DIR, PROJECT_ROOT, RESULTS_PATH
 from .utils import Logger, ensure_dir, set_seed
 
@@ -20,7 +20,7 @@ SEEDS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 
 def build_model(config, device):
-    model = PyramidCLIPSpyMamba(
+    model = MarineMamba(
         fine_input_dim=config["fine_input_dim"],
         fine_h=config["fine_h"],
         fine_w=config["fine_w"],
@@ -199,7 +199,7 @@ def run_multi_seed(config_names=None, seeds=None):
     Results are written to results.json as:
         {config_name: {per_seed: {seed: acc}, mean: float, std: float, variance: float}}
     """
-    config_names = config_names or ["aqua20_pyramid_hybrid_128_focal_balanced"]
+    config_names = config_names or ["aqua20_dual_hybrid_128_focal_balanced"]
     seeds        = seeds or SEEDS
 
     all_results = {}

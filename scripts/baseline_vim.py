@@ -1,7 +1,7 @@
 """
 baseline_vim.py — Fine-tune pretrained Vision Mamba (Vim-tiny) on AQUA20, Sea23, Fish4K.
 
-Used as a comparison baseline against PyramidCLIPSpyMamba.
+Used as a comparison baseline against MarineMamba.
 
 Vision Mamba reference:
     Zhu et al., "Vision Mamba: Efficient Visual Representation Learning with
@@ -38,8 +38,8 @@ from torchvision import datasets, transforms
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from spymamba.paths import AQUA20_ROOT, SEA23_ROOT, FISH4K_ROOT, LOGS_DIR
-from spymamba.utils import set_seed, ensure_dir
+from marinemamba.paths import AQUA20_ROOT, SEA23_ROOT, FISH4K_ROOT, LOGS_DIR
+from marinemamba.utils import set_seed, ensure_dir
 
 # ── Vim model cache ───────────────────────────────────────────────────────────
 

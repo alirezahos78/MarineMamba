@@ -98,7 +98,7 @@ class SCAtt(nn.Module):
         return x
 
 
-class SpyMambaBlock(nn.Module):
+class MarineMambaBlock(nn.Module):
     """
     Bidirectional spiral Mamba block with CBAM attention, LayerScale, and DropPath.
 
@@ -185,7 +185,7 @@ class PyramidBranch(nn.Module):
     The CLIP CLS token is projected to dim and prepended to the spatial patch
     sequence before the Mamba blocks run:
 
-        [cls_proj(CLS), patch_0, ..., patch_{H*W-1}]  →  SpyMambaBlocks  →  mean-pool
+        [cls_proj(CLS), patch_0, ..., patch_{H*W-1}]  →  MarineMambaBlocks  →  mean-pool
 
     Mean-pooling covers all 1+H*W tokens, so the output fuses global (CLS) and
     local (patch) information as shaped by the Mamba layers.
@@ -206,7 +206,7 @@ class PyramidBranch(nn.Module):
 
         dpr = [x.item() for x in torch.linspace(0, stochastic_depth, depth)]
         self.blocks = nn.ModuleList([
-            SpyMambaBlock(dim, feature_h, feature_w,
+            MarineMambaBlock(dim, feature_h, feature_w,
                           drop_path=dpr[i],
                           ffn_drop=ffn_drop,
                           layer_scale_init=layer_scale_init)
@@ -232,9 +232,9 @@ class PyramidBranch(nn.Module):
         return x.mean(dim=1)                                      # [B, dim]
 
 
-class PyramidCLIPSpyMamba(nn.Module):
+class MarineMamba(nn.Module):
     """
-    Two parallel Mamba branches forming a feature pyramid.
+    Two parallel Mamba branches forming a feature dual.
 
     B/16 branch: [CLS_16, patch_0, ..., patch_195]  (14×14 = 196 spatial tokens)
     B/32 branch: [CLS_32, patch_0, ..., patch_48]   (7×7  =  49 spatial tokens)

@@ -12,7 +12,7 @@ Output layout:
         test/<class_name>/*.png
 
 Usage:
-    cd SpyMamba/
+    cd MarineMamba/
     python3 scripts/download_fish4k.py
     python3 scripts/download_fish4k.py --dst data/fish4k --test-ratio 0.2 --seed 42
 """
@@ -29,7 +29,7 @@ from urllib.request import urlopen, Request
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from spymamba.paths import FISH4K_ROOT
+from marinemamba.paths import FISH4K_ROOT
 
 GITHUB_ZIP = (
     "https://github.com/Callmewuxin/fish4konwledge/archive/refs/heads/master.zip"
@@ -140,7 +140,7 @@ def main():
     print("\nNext step:")
     print("  python3 scripts/build_clip_features.py \\")
     print(f"    --aqua20-root {dst} \\")
-    from spymamba.paths import FISH4K_B16_ROOT, FISH4K_B32_ROOT, FISH4K_CLS_PATH
+    from marinemamba.paths import FISH4K_B16_ROOT, FISH4K_B32_ROOT, FISH4K_CLS_PATH
     print(f"    --out-b16 {FISH4K_B16_ROOT} \\")
     print(f"    --out-b32 {FISH4K_B32_ROOT} \\")
     print(f"    --out-cls {FISH4K_CLS_PATH}")
