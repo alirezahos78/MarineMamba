@@ -6,7 +6,7 @@ Variants:
   raster        — full model with raster (row-major) scan
   no_focal_loss — CrossEntropyLoss instead of Focal Loss
   no_mamba      — token-wise FFN block instead of Mamba SSM
-  no_cls        — no CLS token injected into branches
+  no_cls        — no CLIP Feature Vector injected into branches
   fine_only     — single ViT-B/16 (14×14) branch
   coarse_only   — single ViT-B/32 (7×7) branch
 

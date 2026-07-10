@@ -5,7 +5,7 @@ Build all CLIP feature caches needed by MarineMamba — fully standalone, no Mar
 Produces three caches inside marinemamba/data/:
   aqua20_clip_vit_b16_spatial_grid_aug/   ← ViT-B/16 spatial patches (14×14)
   aqua20_clip_vit_b32_spatial_grid_aug/   ← ViT-B/32 spatial patches (7×7)
-  dual_clip_pooled_features.pt            ← B/16 + B/32 CLS tokens (clean, 1 view)
+  dual_clip_pooled_features.pt            ← B/16 + B/32 CLIP Feature Vectors (clean, 1 view)
 
 Usage:
     python3 scripts/build_clip_features.py --aqua20-root /path/to/aqua20

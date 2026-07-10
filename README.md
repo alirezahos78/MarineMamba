@@ -8,15 +8,15 @@ Lightweight dual-branch state-space model for aquatic and marine species classif
 Image
   |
   |-- CLIP ViT-B/16 (frozen) --> spatial [768, 14, 14]  -->  Fine MarineMamba Branch (dim=128)  --> 128-d -|
-  |                           +  CLS token  [512]         -->  (injected into sequence)                     |
+  |                           +  CLIP Feature Vector [512] -->  (injected into sequence)                    |
   |                                                                                                          |--> concat 256-d --> MLP Head --> C classes
   |-- CLIP ViT-B/32 (frozen) --> spatial [768,  7,  7]  -->  Coarse MarineMamba Branch (dim=128) --> 128-d -|
-                              +  CLS token  [512]         -->  (injected into sequence)
+                              +  CLIP Feature Vector [512] -->  (injected into sequence)
 ```
 
 **MarineMambaBlock** — the core building block:
 - LayerNorm → SpiralScanner reorders spatial tokens (outside-in and center-out)
-- CLS token prepended to each spiral sequence before Mamba runs
+- CLIP Feature Vector prepended to each spiral sequence before Mamba runs
 - Bidirectional Mamba pass (forward spiral + backward spiral) with a learnable fusion gate
 - CBAM channel-and-spatial attention applied to the spatial output
 - LayerScale + DropPath residual for stable deep training
@@ -83,7 +83,7 @@ Image
 | Fine branch only (B/16) | 92.29 ± 0.93% | −1.15% |
 | No focal loss (CE only) | 92.83 ± 0.96% | −0.61% |
 | No Mamba (FFN only) | 85.98 ± 0.44% | −7.46% |
-| No CLS token injection | 85.07 ± 0.61% | −8.37% |
+| No CLIP Feature Vector injection | 85.07 ± 0.61% | −8.37% |
 
 > Coarse-only achieves similar mean accuracy (+0.06%) but 3× higher std (0.41% vs 0.13%), confirming that the dual branch improves stability, not just accuracy.
 
@@ -269,6 +269,6 @@ Features are extracted once and cached as `.pt` files. Training loads directly f
 | `*_clip_vit_b32_spatial_grid_aug/train_features.pt` | B/32 patches [768, 7, 7], 4 views/image |
 | `*_clip_vit_b16_spatial_grid_aug/test_features.pt`  | B/16 patches, 1 view/image (clean) |
 | `*_clip_vit_b32_spatial_grid_aug/test_features.pt`  | B/32 patches, 1 view/image (clean) |
-| `*_dual_clip_pooled_features.pt` | CLS tokens for B/16 and B/32 (clean, 1 view) |
+| `*_dual_clip_pooled_features.pt` | CLIP Feature Vectors for B/16 and B/32 (clean, 1 view) |
 
 The `aug` suffix means 3 augmented crops are extracted per training image at build time (random resized crop, color jitter, horizontal flip, grid-shuffle), giving 4 views per image total.

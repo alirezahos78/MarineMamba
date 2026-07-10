@@ -102,10 +102,10 @@ class MarineMambaBlock(nn.Module):
     """
     Bidirectional spiral Mamba block with CBAM attention, LayerScale, and DropPath.
 
-    Accepts sequences of length H*W (spatial only) or 1+H*W (CLS + spatial).
-    When a CLS token is present at position 0, it is prepended to the
+    Accepts sequences of length H*W (spatial only) or 1+H*W (CLIP Feature Vector + spatial).
+    When a CLIP Feature Vector is present at position 0, it is prepended to the
     spiral-ordered spatial sequence before Mamba runs, so it attends to the
-    full spatial context. After Mamba the CLS output is separated out and
+    full spatial context. After Mamba the CLIP Feature Vector output is separated out and
     the spatial output is restored to raster order before CBAM is applied.
     """
     def __init__(self, dim, height, width, drop_path=0.0, ffn_drop=0.0, layer_scale_init=1.0):
@@ -143,7 +143,7 @@ class MarineMambaBlock(nn.Module):
         else:
             spatial = x
 
-        # Spiral-reorder spatial, prepend CLS so it joins the Mamba sequence
+        # Spiral-reorder spatial, prepend CLIP Feature Vector so it joins the Mamba sequence
         fwd_s, bwd_s = self.scanner(spatial)
         if has_cls:
             fwd = torch.cat([cls_tok, fwd_s], dim=1)  # [B, 1+H*W, dim]
@@ -182,10 +182,10 @@ class PyramidBranch(nn.Module):
     """
     Single-resolution branch.
 
-    The CLIP CLS token is projected to dim and prepended to the spatial patch
+    The CLIP Feature Vector is projected to dim and prepended to the spatial patch
     sequence before the Mamba blocks run:
 
-        [cls_proj(CLS), patch_0, ..., patch_{H*W-1}]  →  MarineMambaBlocks  →  mean-pool
+        [cls_proj(CLIP_FV), patch_0, ..., patch_{H*W-1}]  →  MarineMambaBlocks  →  mean-pool
 
     Mean-pooling covers all 1+H*W tokens, so the output fuses global (CLS) and
     local (patch) information as shaped by the Mamba layers.
@@ -200,7 +200,7 @@ class PyramidBranch(nn.Module):
 
         self.input_projection = nn.Linear(input_dim, dim)
         self.cls_projection   = nn.Linear(cls_input_dim, dim)
-        # pos_embed covers [CLS position, patch_0, ..., patch_{H*W-1}]
+        # pos_embed covers [CLIP Feature Vector position, patch_0, ..., patch_{H*W-1}]
         self.pos_embed = nn.Parameter(torch.zeros(1, 1 + num_spatial, dim))
         nn.init.trunc_normal_(self.pos_embed, std=0.02)
 
@@ -216,7 +216,7 @@ class PyramidBranch(nn.Module):
 
     def forward(self, x, cls):
         # x  : [B, C, H, W]  — spatial CLIP features
-        # cls: [B, cls_input_dim]  — CLIP CLS token
+        # cls: [B, cls_input_dim]  — CLIP Feature Vector
         B = x.shape[0]
         x = x.permute(0, 2, 3, 1).reshape(B, -1, x.shape[1])   # [B, H*W, C]
         x = self.input_projection(x)                              # [B, H*W, dim]
@@ -236,8 +236,8 @@ class MarineMamba(nn.Module):
     """
     Two parallel Mamba branches forming a feature dual.
 
-    B/16 branch: [CLS_16, patch_0, ..., patch_195]  (14×14 = 196 spatial tokens)
-    B/32 branch: [CLS_32, patch_0, ..., patch_48]   (7×7  =  49 spatial tokens)
+    B/16 branch: [CLIP_FV_16, patch_0, ..., patch_195]  (14×14 = 196 spatial tokens)
+    B/32 branch: [CLIP_FV_32, patch_0, ..., patch_48]   (7×7  =  49 spatial tokens)
 
     Each branch outputs a dim-d vector via mean-pooling over all tokens.
     The two outputs are concatenated and fed to an MLP head.
