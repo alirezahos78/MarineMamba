@@ -3,12 +3,6 @@
 \providecommand{\urlprefix}{URL }
 \providecommand{\doi}[1]{https://doi.org/#1}
 
-\bibitem{bai2025spiral}
-Bai, Y., Wu, H., Zhang, L., Guo, H.: Lightweight {Mamba} model based on spiral
-  scanning mechanism for hyperspectral image classification. IEEE Geoscience
-  and Remote Sensing Letters  \textbf{22}, ~1--5 (2025).
-  \doi{10.1109/LGRS.2025.3543315}
-
 \bibitem{cao2025m3amba}
 Cao, M., Xie, W., Zhang, X., Zhang, J., Jiang, K., Lei, J.: {M$^3$amba}:
   {CLIP}-driven {Mamba} model for multi-modal remote sensing classification.
@@ -44,6 +38,11 @@ Fuad, T.R., Ahmed, S., Ivan, S.: {AQUA20}: A benchmark dataset for underwater
   Science and Engineering  (2026), arXiv:2506.17455. Dataset:
   \url{https://huggingface.co/datasets/taufiktrf/AQUA20}
 
+\bibitem{gonzalez2023underwater}
+Gonz{\'a}lez-Sabbagh, S.P., Robles-Kelly, A.: A survey on underwater computer
+  vision. ACM Computing Surveys  \textbf{55}(13s),  1--39 (2023).
+  \doi{10.1145/3578516}
+
 \bibitem{gu2024mamba}
 Gu, A., Dao, T.: {Mamba}: Linear-time sequence modeling with selective state
   spaces. arXiv preprint arXiv:2312.00752  (2023)
@@ -57,11 +56,6 @@ Gu, A., Goel, K., R{\'e}, C.: Efficiently modeling long sequences with
 He, K., Zhang, X., Ren, S., Sun, J.: Deep residual learning for image
   recognition. In: IEEE Conference on Computer Vision and Pattern Recognition
   (CVPR). pp. 770--778 (2016)
-
-\bibitem{huang2016stochasticdepth}
-Huang, G., Sun, Y., Liu, Z., Sedra, D., Weinberger, K.Q.: Deep networks with
-  stochastic depth. In: European Conference on Computer Vision (ECCV). pp.
-  646--661 (2016)
 
 \bibitem{huang2024localmamba}
 Huang, T., Pei, X., You, S., Wang, F., Qian, C., Xu, C.: {LocalMamba}: Visual
@@ -86,11 +80,6 @@ Liu, Y., Tian, Y., Zhao, Y., Yu, H., Xie, L., Wang, Y., Ye, Q., Jiao, J., Liu,
 Liu, Z., Mao, H., Wu, C.Y., Feichtenhofer, C., Darrell, T., Xie, S.: A
   {ConvNet} for the 2020s. In: IEEE/CVF Conference on Computer Vision and
   Pattern Recognition (CVPR). pp. 11976--11986 (2022)
-
-\bibitem{mcinnes2018umap}
-McInnes, L., Healy, J., Melville, J.: {UMAP}: Uniform manifold approximation
-  and projection for dimension reduction. arXiv preprint arXiv:1802.03426
-  (2018)
 
 \bibitem{prasetyo2021resvggnet}
 Prasetyo, E., Suciati, N., Fatichah, C.: Multi-level residual network {VGGNet}
@@ -134,6 +123,16 @@ Touvron, H., Cord, M., Sablayrolles, A., Synnaeve, G., J{\'e}gou, H.: Going
 Woo, S., Park, J., Lee, J.Y., Kweon, I.S.: {CBAM}: Convolutional block
   attention module. In: European Conference on Computer Vision (ECCV). pp.
   3--19 (2018)
+
+\bibitem{yang2024plainmamba}
+Yang, C., Chen, Z., Espinosa, M., Ericsson, L., Wang, Z., Liu, J., Crowley,
+  E.J.: {PlainMamba}: Improving non-hierarchical {Mamba} in visual recognition.
+  In: British Machine Vision Conference (BMVC) (2024)
+
+\bibitem{zhang2024visualmambasurvey}
+Zhang, H., Zhu, Y., Wang, D., Zhang, L., Chen, T., Ye, Z.: A survey on visual
+  {Mamba}. arXiv preprint arXiv:2404.15956  (2024).
+  \doi{10.48550/arXiv.2404.15956}
 
 \bibitem{zhu2024vim}
 Zhu, L., Liao, B., Zhang, Q., Wang, X., Liu, W., Wang, X.: Vision {Mamba}:
