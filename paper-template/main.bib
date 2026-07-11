@@ -1,128 +1,295 @@
-% Long form of conference & journal abbreviations -- especially for camera ready
-@String(PAMI  = {IEEE Trans. Pattern Anal. Mach. Intell.})
-@String(IJCV  = {Int. J. Comput. Vis.})
-@String(CVPR  = {IEEE Conf. Comput. Vis. Pattern Recog.})
-@String(ICCV  = {Int. Conf. Comput. Vis.})
-@String(ECCV  = {Eur. Conf. Comput. Vis.})
-@String(NeurIPS = {Adv. Neural Inform. Process. Syst.})
-@String(ICML  = {Int. Conf. Mach. Learn.})
-@String(ICLR  = {Int. Conf. Learn. Represent.})
-@String(ACCV  = {Asian Conf. Comput. Vis.})
-@String(BMVC  = {Brit. Mach. Vis. Conf.})
-@String(CVPRW = {IEEE Conf. Comput. Vis. Pattern Recog. Worksh.})
-@String(AAAI  = {AAAI})
-@String(IJCAI = {IJCAI})
-@String(ICIP  = {IEEE Int. Conf. Image Process.})
-@String(ICPR  = {Int. Conf. Pattern Recog.})
-@String(ICASSP=	{ICASSP})
-@String(ICME  = {Int. Conf. Multimedia and Expo})
-@String(JMLR  = {J. Mach. Learn. Res.})
-@String(TMLR  = {Trans. Mach. Learn Res.})
-@String(TOG   = {ACM Trans. Graph.})
-@String(TIP   = {IEEE Trans. Image Process.})
-@String(TVCG  = {IEEE Trans. Vis. Comput. Graph.})
-@String(TCSVT = {IEEE Trans. Circuit Syst. Video Technol.})
-@String(TMM   = {IEEE Trans. Multimedia})
-@String(ACMMM = {ACM Int. Conf. Multimedia})
-@String(PR    = {Pattern Recognition})
-
-@String(MNI	  = {Nature Mach. Intell.})
-@String(SPL	  = {IEEE Sign. Process. Letters})
-@String(VR    = {Vis. Res.})
-@String(JOV	  = {J. Vis.})
-@String(TVC   = {The Vis. Comput.})
-@String(JCST  = {J. Comput. Sci. Tech.})
-@String(CGF   = {Comput. Graph. Forum})
-@String(CVM   = {Computational Visual Media})
+% =====================================================================
+% main.bib  --  reconstructed to match every \cite{} key in main.tex
+%
+% SOURCE: the reference list of your compiled main.pdf, cross-checked
+% against the three source papers you uploaded. This is a RECONSTRUCTION,
+% not your original file -- diff it against yours before overwriting.
+%
+% TWO CORRECTIONS vs. the reference list in your current PDF:
+%   [15] "Taufik, R., et al." -> the AQUA20 authors are Fuad, Ahmed and
+%        Ivan; the surname is Fuad, and the paper is now published in the
+%        Arabian Journal for Science and Engineering, not only on HF.
+%   [8]  the Kaggle URL ended in "...-dataste"; corrected to "-dataset".
+%        As printed, the link 404s.
+%
+% VERIFY BEFORE SUBMITTING: spiralmamba and lsfmamba were retrieved from secondary
+% sources (IEEE paywall). Author lists, journal names, volumes and page ranges should
+% be confirmed on IEEE Xplore. Also verify the given names in bai2025spiral.
+% =====================================================================
 
 
-% Short form of conference & journal abbreviations -- especially for submission version
-% if desired, remove these macros in favor of the above ones
-@String(PAMI  = {IEEE TPAMI})
-@String(IJCV  = {IJCV})
-@String(CVPR  = {CVPR})
-@String(ICCV  = {ICCV})
-@String(ECCV  = {ECCV})
-@String(NeurIPS = {NeurIPS})
-@String(ICML  = {ICML})
-@String(ICLR  = {ICLR})
-@String(ACCV  = {ACCV})
-@String(BMVC  =	{BMVC})
-@String(CVPRW = {CVPRW})
-@String(AAAI  = {AAAI})
-@String(IJCAI = {IJCAI})
-@String(ICIP  = {ICIP})
-@String(ICPR  = {ICPR})
-@String(ICASSP=	{ICASSP})
-@String(ICME  =	{ICME})
-@String(JMLR  = {JMLR})
-@String(TMLR  = {TMLR})
-@String(TOG   = {ACM TOG})
-@String(TIP   = {IEEE TIP})
-@String(TVCG  = {IEEE TVCG})
-@String(TCSVT = {IEEE TCSVT})
-@String(TMM   =	{IEEE TMM})
-@String(ACMMM = {ACM MM})
-@String(PR    = {PR})
+% ---------- Backbones and general vision ----------
 
-
-
-@misc{Anonymous24,
- author = {Anonymous},
- title = {The frobnicatable foo filter},
- note = {{ECCV} submission ID 00324, supplied as supplemental material {\tt 00324.pdf}},
- year = 2024
+@inproceedings{dosovitskiy2021vit,
+  author    = {Dosovitskiy, Alexey and Beyer, Lucas and Kolesnikov, Alexander
+               and Weissenborn, Dirk and Zhai, Xiaohua and Unterthiner, Thomas
+               and Dehghani, Mostafa and Minderer, Matthias and Heigold, Georg
+               and Gelly, Sylvain and Uszkoreit, Jakob and Houlsby, Neil},
+  title     = {An Image is Worth 16x16 Words: {Transformers} for Image
+               Recognition at Scale},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2021}
 }
 
-@misc{Anonymous24b,
- author = {Anonymous},
- title = {Frobnication tutorial},
- note = {Supplied as supplemental material {\tt tr.pdf}},
- year = 2024
+@inproceedings{he2016resnet,
+  author    = {He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian},
+  title     = {Deep Residual Learning for Image Recognition},
+  booktitle = {IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pages     = {770--778},
+  year      = {2016}
 }
 
-@article{Alpher02,
-author = {FirstName Alpher},
-title = {Frobnication},
-journal = PAMI,
-volume = 12,
-number = 1,
-pages = {234--778},
-year = 2002
+@inproceedings{tan2019efficientnet,
+  author    = {Tan, Mingxing and Le, Quoc},
+  title     = {{EfficientNet}: Rethinking Model Scaling for Convolutional
+               Neural Networks},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  pages     = {6105--6114},
+  year      = {2019}
 }
 
-@article{Alpher03,
-author = {FirstName Alpher and FirstName Fotheringham-Smythe},
-title = {Frobnication revisited},
-journal = {Journal of Foo},
-volume = 13,
-number = 1,
-pages = {234--778},
-year = 2003
+@inproceedings{liu2022convnext,
+  author    = {Liu, Zhuang and Mao, Hanzi and Wu, Chao-Yuan and
+               Feichtenhofer, Christoph and Darrell, Trevor and Xie, Saining},
+  title     = {A {ConvNet} for the 2020s},
+  booktitle = {IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pages     = {11976--11986},
+  year      = {2022}
 }
 
-@article{Alpher04,
-author = {FirstName Alpher and FirstName Fotheringham-Smythe and FirstName Gamow},
-title = {Can a machine frobnicate?},
-journal = {Journal of Foo},
-volume = 14,
-number = 1,
-pages = {234--778},
-year = 2004
+@inproceedings{radford2021clip,
+  author    = {Radford, Alec and Kim, Jong Wook and Hallacy, Chris and
+               Ramesh, Aditya and Goh, Gabriel and Agarwal, Sandhini and
+               Sastry, Girish and Askell, Amanda and Mishkin, Pamela and
+               Clark, Jack and Krueger, Gretchen and Sutskever, Ilya},
+  title     = {Learning Transferable Visual Models from Natural Language
+               Supervision},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  pages     = {8748--8763},
+  year      = {2021}
 }
 
-@inproceedings{Alpher05,
-author = {FirstName Alpher and FirstName Gamow},
-title = {Can a computer frobnicate?},
-booktitle = CVPR,
-pages = {234--778},
-year = 2005
+
+% ---------- State-space models ----------
+
+@inproceedings{gu2022s4,
+  author    = {Gu, Albert and Goel, Karan and R{\'e}, Christopher},
+  title     = {Efficiently Modeling Long Sequences with Structured State Spaces},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2022}
 }
 
-@book{ECCV2022,
-    editor = {Shai Avidan and Gabriel Brostow and Moustapha Cissé and Giovanni Maria Farinella and Tal Hassner},
-    title = {Computer Vision -- ECCV 2022},
-    year = {2022},
-    publisher = {Springer},
-    doi = {10.1007/978-3-031-19769-7}
+@article{gu2024mamba,
+  author  = {Gu, Albert and Dao, Tri},
+  title   = {{Mamba}: Linear-Time Sequence Modeling with Selective State Spaces},
+  journal = {arXiv preprint arXiv:2312.00752},
+  year    = {2023}
+}
+
+@inproceedings{zhu2024vim,
+  author    = {Zhu, Lianghui and Liao, Bencheng and Zhang, Qian and
+               Wang, Xinlong and Liu, Wenyu and Wang, Xinggang},
+  title     = {Vision {Mamba}: Efficient Visual Representation Learning with
+               Bidirectional State Space Model},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  year      = {2024}
+}
+
+@inproceedings{liu2024vmamba,
+  author    = {Liu, Yue and Tian, Yunjie and Zhao, Yuzhong and Yu, Hongtian and
+               Xie, Lingxi and Wang, Yaowei and Ye, Qixiang and Jiao, Jianbin
+               and Liu, Yunfan},
+  title     = {{VMamba}: Visual State Space Model},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2024}
+}
+
+@inproceedings{huang2024localmamba,
+  author    = {Huang, Tao and Pei, Xiaohuan and You, Shan and Wang, Fei and
+               Qian, Chen and Xu, Chang},
+  title     = {{LocalMamba}: Visual State Space Model with Windowed
+               Selective Scan},
+  booktitle = {Computer Vision -- ECCV 2024 Workshops},
+  pages     = {12--23},
+  year      = {2024}
+}
+
+@article{spiralmamba,
+  author  = {Tang, Xu and Yao, Yuexi and Ma, Jingjing and Zhang, Xiangrong
+             and Yang, Yuqun and Wang, Bo and Jiao, Licheng},
+  title   = {{SpiralMamba}: Spatial-Spectral Complementary {Mamba} with
+             Spatial Spiral Scan for Hyperspectral Image Classification},
+  journal = {IEEE Transactions on Geoscience and Remote Sensing},
+  year    = {2025},
+  note    = {IEEE Xplore document 10960652}
+}
+
+@article{bai2025spiral,
+  author  = {Bai, Yu and Wu, Hao and Zhang, Lin and Guo, Hui},
+  title   = {Lightweight {Mamba} Model Based on Spiral Scanning Mechanism
+             for Hyperspectral Image Classification},
+  journal = {IEEE Geoscience and Remote Sensing Letters},
+  volume  = {22},
+  pages   = {1--5},
+  year    = {2025},
+  doi     = {10.1109/LGRS.2025.3543315}
+}
+
+% VERIFY on Xplore (doc 10919126): the byline shows "All Authors", so there may be
+% more than the six below. Confirm the exact journal name (the breadcrumb reads
+% "IEEE Transactions on Circuits..."), the year, and the page range.
+@article{cao2025m3amba,
+  author  = {Cao, Mingxiang and Xie, Weiying and Zhang, Xin and Zhang, Jiaqing
+             and Jiang, Kai and Lei, Jie},
+  title   = {{M$^3$amba}: {CLIP}-Driven {Mamba} Model for Multi-Modal Remote
+             Sensing Classification},
+  journal = {IEEE Transactions on Circuits and Systems for Video Technology},
+  volume  = {35},
+  number  = {8},
+  year    = {2025},
+  note    = {arXiv:2503.06446; IEEE Xplore document 10919126}
+}
+
+% VERIFY on Xplore (doc 11333329): the byline shows "All Authors", so there may be
+% more than the four below. Confirm the exact journal name (the breadcrumb reads
+% "IEEE Transactions on Circuits..."), the year (vol. 36 no. 5 implies 2026), and
+% the page range.
+@article{lsfmamba,
+  author  = {Chang, Honghao and Bi, Haixia and Xu, Chen and Li, Fan},
+  title   = {{LSFMamba}: Local-Enhanced Spiral Fusion {Mamba} for
+             Multi-Modal Land Cover Classification},
+  journal = {IEEE Transactions on Circuits and Systems for Video Technology},
+  volume  = {36},
+  number  = {5},
+  year    = {2026},
+  note    = {IEEE Xplore document 11333329}
+}
+
+% ---------- Attention, regularization, loss ----------
+
+@inproceedings{woo2018cbam,
+  author    = {Woo, Sanghyun and Park, Jongchan and Lee, Joon-Young and
+               Kweon, In So},
+  title     = {{CBAM}: Convolutional Block Attention Module},
+  booktitle = {European Conference on Computer Vision (ECCV)},
+  pages     = {3--19},
+  year      = {2018}
+}
+
+@inproceedings{touvron2021cait,
+  author    = {Touvron, Hugo and Cord, Matthieu and Sablayrolles, Alexandre and
+               Synnaeve, Gabriel and J{\'e}gou, Herv{\'e}},
+  title     = {Going Deeper with Image Transformers},
+  booktitle = {IEEE/CVF International Conference on Computer Vision (ICCV)},
+  pages     = {32--42},
+  year      = {2021}
+}
+
+@inproceedings{huang2016stochasticdepth,
+  author    = {Huang, Gao and Sun, Yu and Liu, Zhuang and Sedra, Daniel and
+               Weinberger, Kilian Q.},
+  title     = {Deep Networks with Stochastic Depth},
+  booktitle = {European Conference on Computer Vision (ECCV)},
+  pages     = {646--661},
+  year      = {2016}
+}
+
+@inproceedings{lin2017focal,
+  author    = {Lin, Tsung-Yi and Goyal, Priya and Girshick, Ross and
+               He, Kaiming and Doll{\'a}r, Piotr},
+  title     = {Focal Loss for Dense Object Detection},
+  booktitle = {IEEE International Conference on Computer Vision (ICCV)},
+  pages     = {2980--2988},
+  year      = {2017}
+}
+
+
+% ---------- Aquatic / underwater datasets and methods ----------
+
+% CORRECTED: your current reference list has "Tauk, R., et al." and cites
+% only the Hugging Face page. Surname is Fuad; the paper is published.
+@article{fuad2026aqua20,
+  author  = {Fuad, Taufikur Rahman and Ahmed, Sabbir and Ivan, Shahriar},
+  title   = {{AQUA20}: A Benchmark Dataset for Underwater Species
+             Classification under Challenging Conditions},
+  journal = {Arabian Journal for Science and Engineering},
+  year    = {2026},
+  note    = {arXiv:2506.17455. Dataset:
+             \url{https://huggingface.co/datasets/taufiktrf/AQUA20}}
+}
+
+@article{daga2026aquaselect,
+  author  = {Daga, Miit and Naole, Saransh and Ramu, Swarna Priya},
+  title   = {{AquaSelect}: Learning When to Abstain via Score Fusion for
+             Reliable Underwater Species Classification},
+  journal = {Array},
+  volume  = {30},
+  pages   = {100890},
+  year    = {2026},
+  doi     = {10.1016/j.array.2026.100890}
+}
+
+% CORRECTED URL: was ".../sea-animals-image-dataste" (404).
+@misc{sea23,
+  author       = {Lanzarone, Vencer},
+  title        = {Sea Animals Image Dataset},
+  howpublished = {Kaggle},
+  year         = {2023},
+  note         = {\url{https://www.kaggle.com/datasets/vencerlanz09/sea-animals-image-dataset}}
+}
+
+@book{fish4knowledge,
+  editor    = {Fisher, Robert B. and Chen-Burger, Yun-Heh and
+               Giordano, Daniela and Hardman, Lynda and Lin, Fang-Pang},
+  title     = {{Fish4Knowledge}: Collecting and Analyzing Massive Coral Reef
+               Fish Video Data},
+  series    = {Intelligent Systems Reference Library},
+  volume    = {104},
+  publisher = {Springer},
+  year      = {2016}
+}
+
+@article{prasetyo2021resvggnet,
+  author  = {Prasetyo, Eko and Suciati, Nanik and Fatichah, Chastine},
+  title   = {Multi-Level Residual Network {VGGNet} for Fish Species
+             Classification},
+  journal = {Journal of King Saud University -- Computer and Information Sciences},
+  volume  = {34},
+  number  = {8},
+  pages   = {5286--5295},
+  year    = {2022}
+}
+
+@article{qu2024convfishnet,
+  author  = {Qu, Huishan and Wang, Gai-Ge and Li, Yun and Qi, Xin and
+             Zhang, Mengjie},
+  title   = {{ConvFishNet}: An Efficient Backbone for Fish Classification
+             from Composited Underwater Images},
+  journal = {Information Sciences},
+  volume  = {679},
+  pages   = {121078},
+  year    = {2024},
+  doi     = {10.1016/j.ins.2024.121078}
+}
+
+@article{sun2018fishnet,
+  author  = {Sun, Shuyang and Pang, Jiangmiao and Shi, Jianping and
+             Yi, Shuai and Ouyang, Wanli},
+  title   = {{FishNet}: A Versatile Backbone for Image, Region, and Pixel
+             Level Prediction},
+  journal = {Advances in Neural Information Processing Systems},
+  volume  = {31},
+  pages   = {754--764},
+  year    = {2018}
+}
+
+
+% ---------- Visualization ----------
+
+@article{mcinnes2018umap,
+  author  = {McInnes, Leland and Healy, John and Melville, James},
+  title   = {{UMAP}: Uniform Manifold Approximation and Projection for
+             Dimension Reduction},
+  journal = {arXiv preprint arXiv:1802.03426},
+  year    = {2018}
 }
