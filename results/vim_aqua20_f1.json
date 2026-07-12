@@ -1,0 +1,42 @@
+{
+  "model": "Vim-tiny",
+  "dataset": "aqua20",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "top1_mean": 88.98,
+  "top1_std": 0.24,
+  "macro_precision_mean": 87.16,
+  "macro_precision_std": 1.06,
+  "macro_recall_mean": 79.56,
+  "macro_recall_std": 1.87,
+  "macro_f1_mean": 81.9,
+  "macro_f1_std": 1.74,
+  "weighted_f1_mean": 88.78,
+  "weighted_f1_std": 0.33,
+  "per_seed": {
+    "0": {
+      "top1": 89.206,
+      "macro_prec": 85.71,
+      "macro_recall": 80.8,
+      "macro_f1": 82.92,
+      "weighted_f1": 89.1
+    },
+    "1": {
+      "top1": 89.0819,
+      "macro_prec": 88.24,
+      "macro_recall": 80.96,
+      "macro_f1": 83.32,
+      "weighted_f1": 88.92
+    },
+    "2": {
+      "top1": 88.6476,
+      "macro_prec": 87.52,
+      "macro_recall": 76.92,
+      "macro_f1": 79.45,
+      "weighted_f1": 88.33
+    }
+  }
+}

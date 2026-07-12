@@ -1,0 +1,32 @@
+{
+  "fine_branch": 452963,
+  "coarse_branch": 434147,
+  "head": 142356,
+  "grand_total": 1029466,
+  "grand_total_M": 1.0295,
+  "mamba_hyperparams": {
+    "d_model": 128,
+    "d_state": 32,
+    "d_conv": 4,
+    "expand": 2,
+    "dt_rank": 8,
+    "d_inner": 256
+  },
+  "no_mamba_variant": {
+    "trainable_params": 771928,
+    "trainable_params_M": 0.7719
+  },
+  "fine_branch_detail": {
+    "projections": 164096,
+    "pos_embed": 25216,
+    "mamba_block": 263395,
+    "mamba_block_detail": {
+      "mamba": 128768,
+      "layernorm_x2": 512,
+      "cbam": 2146,
+      "ffn": 131712,
+      "layerscale_and_gate": 257
+    },
+    "output_norm": 256
+  }
+}

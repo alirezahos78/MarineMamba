@@ -1,0 +1,42 @@
+{
+  "model": "Vim-tiny",
+  "dataset": "sea23",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "top1_mean": 89.49,
+  "top1_std": 0.03,
+  "macro_precision_mean": 88.68,
+  "macro_precision_std": 0.09,
+  "macro_recall_mean": 88.34,
+  "macro_recall_std": 0.07,
+  "macro_f1_mean": 88.37,
+  "macro_f1_std": 0.02,
+  "weighted_f1_mean": 89.49,
+  "weighted_f1_std": 0.04,
+  "per_seed": {
+    "0": {
+      "top1": 89.5315,
+      "macro_prec": 88.61,
+      "macro_recall": 88.44,
+      "macro_f1": 88.39,
+      "weighted_f1": 89.54
+    },
+    "1": {
+      "top1": 89.4949,
+      "macro_prec": 88.8,
+      "macro_recall": 88.27,
+      "macro_f1": 88.38,
+      "weighted_f1": 89.46
+    },
+    "2": {
+      "top1": 89.4583,
+      "macro_prec": 88.63,
+      "macro_recall": 88.32,
+      "macro_f1": 88.35,
+      "weighted_f1": 89.46
+    }
+  }
+}

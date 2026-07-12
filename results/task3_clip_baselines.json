@@ -1,0 +1,74 @@
+{
+  "a_linear_ce": {
+    "label": "Linear(1024, C) \u2014 CE",
+    "params": 20500,
+    "per_seed": {
+      "0": {
+        "top1": 82.0099,
+        "macro_f1": 68.2587
+      },
+      "1": {
+        "top1": 82.0099,
+        "macro_f1": 66.9496
+      },
+      "2": {
+        "top1": 81.8859,
+        "macro_f1": 67.7418
+      }
+    },
+    "top1_mean": 81.9686,
+    "top1_std": 0.0585,
+    "f1_mean": 67.65,
+    "f1_std": 0.5384
+  },
+  "b_mlp_ce": {
+    "label": "LN\u2192Lin(1024,256)\u2192GELU\u2192Drop(0.3)\u2192Lin(256,C) \u2014 CE",
+    "params": 269588,
+    "per_seed": {
+      "0": {
+        "top1": 89.9504,
+        "macro_f1": 83.5488
+      },
+      "1": {
+        "top1": 88.8958,
+        "macro_f1": 81.5374
+      },
+      "2": {
+        "top1": 89.1439,
+        "macro_f1": 83.7981
+      }
+    },
+    "top1_mean": 89.33,
+    "top1_std": 0.4502,
+    "f1_mean": 82.9614,
+    "f1_std": 1.0121
+  },
+  "c_mlp_focal": {
+    "label": "LN\u2192Lin(1024,256)\u2192GELU\u2192Drop(0.3)\u2192Lin(256,C) \u2014 Focal",
+    "params": 269588,
+    "per_seed": {
+      "0": {
+        "top1": 85.3598,
+        "macro_f1": 80.2828
+      },
+      "1": {
+        "top1": 85.2978,
+        "macro_f1": 80.2399
+      },
+      "2": {
+        "top1": 85.0496,
+        "macro_f1": 79.1151
+      }
+    },
+    "top1_mean": 85.2357,
+    "top1_std": 0.134,
+    "f1_mean": 79.8793,
+    "f1_std": 0.5406
+  },
+  "d_zeroshot": {
+    "label": "CLIP zero-shot (ViT-B/16, 4-template ensemble)",
+    "params": 0,
+    "top1": 55.1489,
+    "macro_f1": 52.9386
+  }
+}

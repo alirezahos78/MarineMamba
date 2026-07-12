@@ -1,0 +1,175 @@
+{
+  "vim_seed": 0,
+  "vim_top1": 99.8171,
+  "vim_macro_prec": 99.74,
+  "vim_macro_recall": 98.75,
+  "vim_macro_f1": 99.19,
+  "vim_weighted_f1": 99.82,
+  "vim_recall_top5": 99.86,
+  "vim_recall_bot10": 98.0,
+  "fish08_vim_recall": 95.35,
+  "fish08_vim_pred_as_fish14_pct": 0.0,
+  "per_class": {
+    "fish_01": {
+      "train": 9690,
+      "test": 2422,
+      "recall": 99.92,
+      "f1": 99.83,
+      "prec": 99.75
+    },
+    "fish_02": {
+      "train": 2147,
+      "test": 536,
+      "recall": 99.81,
+      "f1": 99.81,
+      "prec": 99.81
+    },
+    "fish_03": {
+      "train": 2875,
+      "test": 718,
+      "recall": 99.58,
+      "f1": 99.72,
+      "prec": 99.86
+    },
+    "fish_04": {
+      "train": 3240,
+      "test": 809,
+      "recall": 100.0,
+      "f1": 100.0,
+      "prec": 100.0
+    },
+    "fish_05": {
+      "train": 2028,
+      "test": 506,
+      "recall": 100.0,
+      "f1": 99.9,
+      "prec": 99.8
+    },
+    "fish_06": {
+      "train": 152,
+      "test": 38,
+      "recall": 100.0,
+      "f1": 100.0,
+      "prec": 100.0
+    },
+    "fish_07": {
+      "train": 360,
+      "test": 90,
+      "recall": 100.0,
+      "f1": 100.0,
+      "prec": 100.0
+    },
+    "fish_08": {
+      "train": 175,
+      "test": 43,
+      "recall": 95.35,
+      "f1": 97.62,
+      "prec": 100.0
+    },
+    "fish_09": {
+      "train": 193,
+      "test": 48,
+      "recall": 100.0,
+      "f1": 100.0,
+      "prec": 100.0
+    },
+    "fish_10": {
+      "train": 240,
+      "test": 59,
+      "recall": 100.0,
+      "f1": 100.0,
+      "prec": 100.0
+    },
+    "fish_11": {
+      "train": 79,
+      "test": 19,
+      "recall": 100.0,
+      "f1": 100.0,
+      "prec": 100.0
+    },
+    "fish_12": {
+      "train": 118,
+      "test": 29,
+      "recall": 96.55,
+      "f1": 98.25,
+      "prec": 100.0
+    },
+    "fish_13": {
+      "train": 145,
+      "test": 36,
+      "recall": 100.0,
+      "f1": 100.0,
+      "prec": 100.0
+    },
+    "fish_14": {
+      "train": 72,
+      "test": 18,
+      "recall": 100.0,
+      "f1": 97.3,
+      "prec": 94.74
+    },
+    "fish_15": {
+      "train": 34,
+      "test": 8,
+      "recall": 100.0,
+      "f1": 100.0,
+      "prec": 100.0
+    },
+    "fish_16": {
+      "train": 165,
+      "test": 41,
+      "recall": 100.0,
+      "f1": 100.0,
+      "prec": 100.0
+    },
+    "fish_17": {
+      "train": 40,
+      "test": 9,
+      "recall": 100.0,
+      "f1": 100.0,
+      "prec": 100.0
+    },
+    "fish_18": {
+      "train": 45,
+      "test": 11,
+      "recall": 100.0,
+      "f1": 100.0,
+      "prec": 100.0
+    },
+    "fish_19": {
+      "train": 24,
+      "test": 5,
+      "recall": 100.0,
+      "f1": 100.0,
+      "prec": 100.0
+    },
+    "fish_20": {
+      "train": 16,
+      "test": 5,
+      "recall": 100.0,
+      "f1": 100.0,
+      "prec": 100.0
+    },
+    "fish_21": {
+      "train": 11,
+      "test": 5,
+      "recall": 80.0,
+      "f1": 88.89,
+      "prec": 100.0
+    },
+    "fish_22": {
+      "train": 33,
+      "test": 8,
+      "recall": 100.0,
+      "f1": 100.0,
+      "prec": 100.0
+    },
+    "fish_23": {
+      "train": 20,
+      "test": 5,
+      "recall": 100.0,
+      "f1": 100.0,
+      "prec": 100.0
+    }
+  }
+}
