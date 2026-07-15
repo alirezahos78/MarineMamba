@@ -4,18 +4,19 @@
   "seeds": [
     0,
     1,
-    2
+    2,
+    4
   ],
-  "top1_mean": 89.49,
-  "top1_std": 0.03,
-  "macro_precision_mean": 88.68,
-  "macro_precision_std": 0.09,
-  "macro_recall_mean": 88.34,
-  "macro_recall_std": 0.07,
-  "macro_f1_mean": 88.37,
-  "macro_f1_std": 0.02,
-  "weighted_f1_mean": 89.49,
-  "weighted_f1_std": 0.04,
+  "top1_mean": 89.58,
+  "top1_std": 0.14,
+  "macro_precision_mean": 88.78,
+  "macro_precision_std": 0.18,
+  "macro_recall_mean": 88.45,
+  "macro_recall_std": 0.19,
+  "macro_f1_mean": 88.49,
+  "macro_f1_std": 0.2,
+  "weighted_f1_mean": 89.57,
+  "weighted_f1_std": 0.15,
   "per_seed": {
     "0": {
       "top1": 89.5315,
@@ -37,6 +38,13 @@
       "macro_recall": 88.32,
       "macro_f1": 88.35,
       "weighted_f1": 89.46
+    },
+    "4": {
+      "top1": 89.8243,
+      "macro_prec": 89.07,
+      "macro_recall": 88.76,
+      "macro_f1": 88.83,
+      "weighted_f1": 89.82
     }
   }
 }

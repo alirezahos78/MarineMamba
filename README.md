@@ -34,7 +34,9 @@ Image
 
 ---
 
-## Results (11 seeds: 0–9 + 42, mean ± std)
+## Results
+
+MarineMamba: 11 seeds (0–9 + 42). Vim-tiny baseline: 5 seeds (0–4).
 
 ### AQUA20 — 20 aquatic species
 
@@ -42,7 +44,7 @@ Image
 |--------|--------|-----------|
 | ResNet-50 (fine-tuned) | 25 M | ~92% |
 | EfficientNet-B4 | 19 M | ~93% |
-| Vim-tiny (fine-tuned, 4 seeds) | 6.96 M | 89.47 ± 0.53% |
+| Vim-tiny (fine-tuned, 5 seeds) | 6.96 M | 89.50 ± 0.46% |
 | **MarineMamba (ours)** | **1.03 M** | **93.46 ± 0.57%** |
 
 ### Sea Animals 23 — 23 sea species
@@ -50,7 +52,7 @@ Image
 | Method | Params | Top-1 Acc |
 |--------|--------|-----------|
 | Standard CNN (public baseline) | — | 88.77% |
-| Vim-tiny (fine-tuned, 4 seeds) | 6.96 M | 89.89 ± 0.45% |
+| Vim-tiny (fine-tuned, 5 seeds) | 6.96 M | 89.71 ± 0.33% |
 | **MarineMamba (ours)** | **1.03 M** | **95.90 ± 0.80%** |
 
 ### Fish4Knowledge — 23 fish species (raw imbalanced split, ratio 1100:1)
@@ -58,7 +60,7 @@ Image
 | Method | Split | Top-1 Acc |
 |--------|-------|-----------|
 | Multi-level ResVGGNet [2021] | balanced | 99.69% |
-| Vim-tiny (fine-tuned, 4 seeds) | imbalanced | 99.75 ± 0.04% |
+| Vim-tiny (fine-tuned, 5 seeds) | imbalanced | 99.79 ± 0.01% |
 | **MarineMamba (ours)** | **imbalanced** | **98.25 ± 0.26%** |
 
 > The ResVGGNet result uses a curated balanced split; our split preserves the raw 1100:1 class imbalance, making it a strictly harder evaluation.
@@ -79,13 +81,13 @@ Image
 | Variant | Top-1 Acc | Δ vs Full |
 |---------|-----------|-----------|
 | **Full model (spiral)** | **93.44 ± 0.13%** | — |
-| Coarse branch only (B/32) | 93.51 ± 0.41% | +0.06% |
+| Coarse branch only (B/32) | 93.34 ± 0.51% | −0.10% |
 | Fine branch only (B/16) | 92.29 ± 0.93% | −1.15% |
 | No focal loss (CE only) | 92.83 ± 0.96% | −0.61% |
 | No Mamba (FFN only) | 85.98 ± 0.44% | −7.46% |
 | No CLIP Feature Vector injection | 85.07 ± 0.61% | −8.37% |
 
-> Coarse-only achieves similar mean accuracy (+0.06%) but 3× higher std (0.41% vs 0.13%), confirming that the dual branch improves stability, not just accuracy.
+> The dual branch improves both accuracy and stability: coarse-only trails by 0.10pp with 4× higher std (0.51% vs 0.13%). Removing Mamba (FFN-only) or the CLIP Feature Vector injection causes the largest drops (>7pp), confirming both are critical components.
 
 ---
 
@@ -111,8 +113,8 @@ MarineMamba/
 │   ├── prepare_sea23.py            # 80/20 stratified split for Sea23
 │   ├── build_clip_features.py      # extract and cache CLIP spatial + CLS features
 │   ├── confusion_matrix.py         # per-checkpoint confusion matrix and F1 report
-│   ├── ablation.py                 # all ablations (scan order + model components)
-│   ├── baseline_vim.py             # Vim-tiny baseline fine-tuning (reproduces comparison numbers)
+│   ├── ablation.py                 # all ablations on AQUA20 (scan order + model components)
+│   ├── baseline_vim.py             # Vim-tiny baseline fine-tuning + macro-F1 evaluation
 │   └── umap_vis.py                 # 6-panel UMAP visualisation (all 3 datasets)
 ├── data/                           # feature caches and raw images (not tracked by git)
 └── logs/                           # per-seed training logs and plots (not tracked by git)
@@ -235,19 +237,29 @@ Panels: CLIP B/16 · CLIP B/32 · Mamba fine branch · Mamba coarse branch · Co
 
 ## Vim-tiny Baseline
 
-Evaluates pretrained Vim-tiny (ImageNet-1k, 76.1% top-1) with full fine-tuning so the comparison against MarineMamba is explicit and fair.
+Evaluates pretrained Vim-tiny (ImageNet-1k, 76.1% top-1) with full fine-tuning so the comparison against MarineMamba is explicit and fair. Also saves the best checkpoint per seed and computes macro-F1 / weighted-F1 from the checkpoint.
 
 **Citation:** Zhu et al., "Vision Mamba: Efficient Visual Representation Learning with Bidirectional State Space Model", ICML 2024. [arXiv:2401.13586](https://arxiv.org/abs/2401.13586)
 
-Full fine-tune of all 6.96M params (lr=5e-5, cosine+warmup, patience=20).
+Full fine-tune of all 6.96M params (lr=5e-5, cosine+warmup, patience=20, CE+label_smoothing=0.1).
 
 ```bash
-python3 scripts/baseline_vim.py --dataset aqua20 --seeds 0 1 2 42
-python3 scripts/baseline_vim.py --dataset sea23  --seeds 0 1 2 42
-python3 scripts/baseline_vim.py --dataset fish4k --seeds 0 1 2 42
+# Single dataset
+python3 scripts/baseline_vim.py --datasets aqua20 --seeds 0 1 2 3 4
+
+# All three datasets in one run
+python3 scripts/baseline_vim.py --seeds 0 1 2 3 4
+
+# Specific seeds / datasets
+python3 scripts/baseline_vim.py --datasets fish4k --seeds 3 4
 ```
 
-Results saved to `results_vim_{dataset}.json`. First run auto-clones the Vim repo into `data/_vim_repo/`.
+Outputs per dataset:
+- `results_vim_{dataset}.json` — top-1 summary (mean ± std across seeds)
+- `results/vim_{dataset}_f1.json` — full metrics (macro-F1, weighted-F1, precision, recall)
+- `results/best_model_vim_{dataset}_seed_{N}.pth` — best checkpoint per seed
+
+Resumes automatically: if a checkpoint exists for a seed, training is skipped and only evaluation runs.
 
 ---
 

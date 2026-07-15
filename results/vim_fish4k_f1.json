@@ -1,0 +1,58 @@
+{
+  "model": "Vim-tiny",
+  "dataset": "fish4k",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "top1_mean": 99.8,
+  "top1_std": 0.02,
+  "macro_precision_mean": 99.04,
+  "macro_precision_std": 0.9,
+  "macro_recall_mean": 98.81,
+  "macro_recall_std": 0.54,
+  "macro_f1_mean": 98.86,
+  "macro_f1_std": 0.29,
+  "weighted_f1_mean": 99.8,
+  "weighted_f1_std": 0.02,
+  "per_seed": {
+    "0": {
+      "top1": 99.8171,
+      "macro_prec": 99.74,
+      "macro_recall": 98.75,
+      "macro_f1": 99.19,
+      "weighted_f1": 99.82
+    },
+    "1": {
+      "top1": 99.8171,
+      "macro_prec": 99.72,
+      "macro_recall": 98.08,
+      "macro_f1": 98.83,
+      "weighted_f1": 99.82
+    },
+    "2": {
+      "top1": 99.7988,
+      "macro_prec": 98.96,
+      "macro_recall": 98.56,
+      "macro_f1": 98.69,
+      "weighted_f1": 99.8
+    },
+    "3": {
+      "top1": 99.7988,
+      "macro_prec": 99.45,
+      "macro_recall": 98.96,
+      "macro_f1": 99.15,
+      "weighted_f1": 99.8
+    },
+    "4": {
+      "top1": 99.7623,
+      "macro_prec": 97.34,
+      "macro_recall": 99.72,
+      "macro_f1": 98.43,
+      "weighted_f1": 99.76
+    }
+  }
+}

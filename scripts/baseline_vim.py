@@ -52,7 +52,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from marinemamba.paths import AQUA20_ROOT, SEA23_ROOT, FISH4K_ROOT, LOGS_DIR
 from marinemamba.utils import set_seed, ensure_dir
 
-# ── Vim model cache ───────────────────────────────────────────────────────────
+##  ---── Vim model cache ───────────────────────────────────────────────────────────
 
 _FINETUNING_VIM = Path(
     "/localhome/ehoseinz/PycharmProjects/EEG/finetuning vimamba/Vim"
@@ -167,7 +167,7 @@ def build_loaders(dataset_path: Path, batch_size: int):
     ])
     trainset = _SafeImageFolder(str(dataset_path / "train"), transform=train_tf)
     testset  = _SafeImageFolder(str(dataset_path / "test"),  transform=val_tf)
-    kw = dict(num_workers=1, pin_memory=True)
+    kw = dict(num_workers=0, pin_memory=True)
     return (DataLoader(trainset, batch_size=batch_size, shuffle=True,  **kw),
             DataLoader(testset,  batch_size=batch_size, shuffle=False, **kw),
             testset.classes)
@@ -252,7 +252,7 @@ def train_one_seed(dataset: str, seed: int, cfg: dict, args) -> tuple[float, Pat
                 out  = model(imgs)
                 loss = criterion(out, labels)
                 loss.backward()
-                torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+                torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0, foreach=False)
                 optimizer.step()
                 scheduler.step()
                 tr_loss    += loss.item()
