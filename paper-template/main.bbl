@@ -4,47 +4,46 @@
 \providecommand{\doi}[1]{https://doi.org/#1}
 
 \bibitem{cao2025m3amba}
-Cao, M., Xie, W., Zhang, X., Zhang, J., Jiang, K., Lei, J.: {M$^3$amba}:
-  {CLIP}-driven {Mamba} model for multi-modal remote sensing classification.
-  IEEE Transactions on Circuits and Systems for Video Technology
-  \textbf{35}(8) (2025), arXiv:2503.06446; IEEE Xplore document 10919126
+Cao, M., Xie, W., Zhang, X., Zhang, J., Jiang, K., Lei, J.:
+  M\textsuperscript{3}amba: Clip-driven mamba model for multi-modal remote
+  sensing classification. IEEE Transactions on Circuits and Systems for Video
+  Technology  \textbf{35}(8) (2025). \doi{10.1109/TCSVT.2025.3543181},
+  arXiv:2503.06446
 
 \bibitem{lsfmamba}
-Chang, H., Bi, H., Xu, C., Li, F.: {LSFMamba}: Local-enhanced spiral fusion
-  {Mamba} for multi-modal land cover classification. IEEE Transactions on
-  Circuits and Systems for Video Technology  \textbf{36}(5) (2026), iEEE Xplore
-  document 11333329
+Chang, H., Bi, H., Xu, C., Li, F.: Lsfmamba: Local-enhanced spiral fusion mamba
+  for multi-modal land cover classification. IEEE Transactions on Circuits and
+  Systems for Video Technology  \textbf{36}(5) (2026)
 
 \bibitem{daga2026aquaselect}
-Daga, M., Naole, S., Ramu, S.P.: {AquaSelect}: Learning when to abstain via
-  score fusion for reliable underwater species classification. Array
-  \textbf{30},  100890 (2026). \doi{10.1016/j.array.2026.100890}
+Daga, M., Naole, S., Ramu, S.P.: Aquaselect: Learning when to abstain via score
+  fusion for reliable underwater species classification. Array  \textbf{30},
+  100890 (2026). \doi{10.1016/j.array.2026.100890}
 
 \bibitem{dosovitskiy2021vit}
 Dosovitskiy, A., Beyer, L., Kolesnikov, A., Weissenborn, D., Zhai, X.,
   Unterthiner, T., Dehghani, M., Minderer, M., Heigold, G., Gelly, S.,
-  Uszkoreit, J., Houlsby, N.: An image is worth 16x16 words: {Transformers} for
+  Uszkoreit, J., Houlsby, N.: An image is worth 16x16 words: Transformers for
   image recognition at scale. In: International Conference on Learning
   Representations (ICLR) (2021)
 
 \bibitem{fish4knowledge}
 Fisher, R.B., Chen-Burger, Y.H., Giordano, D., Hardman, L., Lin, F.P. (eds.):
-  {Fish4Knowledge}: Collecting and Analyzing Massive Coral Reef Fish Video
-  Data, Intelligent Systems Reference Library, vol.~104. Springer (2016)
+  Fish4Knowledge: Collecting and Analyzing Massive Coral Reef Fish Video Data,
+  Intelligent Systems Reference Library, vol.~104. Springer (2016)
 
 \bibitem{fuad2026aqua20}
-Fuad, T.R., Ahmed, S., Ivan, S.: {AQUA20}: A benchmark dataset for underwater
+Fuad, T.R., Ahmed, S., Ivan, S.: Aqua20: A benchmark dataset for underwater
   species classification under challenging conditions. Arabian Journal for
   Science and Engineering  (2026), arXiv:2506.17455. Dataset:
   \url{https://huggingface.co/datasets/taufiktrf/AQUA20}
 
 \bibitem{gonzalez2023underwater}
 Gonz{\'a}lez-Sabbagh, S.P., Robles-Kelly, A.: A survey on underwater computer
-  vision. ACM Computing Surveys  \textbf{55}(13s),  1--39 (2023).
-  \doi{10.1145/3578516}
+  vision. ACM Computing Surveys  \textbf{55}(13s) (2023). \doi{10.1145/3578516}
 
 \bibitem{gu2024mamba}
-Gu, A., Dao, T.: {Mamba}: Linear-time sequence modeling with selective state
+Gu, A., Dao, T.: Mamba: Linear-time sequence modeling with selective state
   spaces. arXiv preprint arXiv:2312.00752  (2023)
 
 \bibitem{gu2022s4}
@@ -58,9 +57,14 @@ He, K., Zhang, X., Ren, S., Sun, J.: Deep residual learning for image
   (CVPR). pp. 770--778 (2016)
 
 \bibitem{huang2024localmamba}
-Huang, T., Pei, X., You, S., Wang, F., Qian, C., Xu, C.: {LocalMamba}: Visual
-  state space model with windowed selective scan. In: Computer Vision -- ECCV
-  2024 Workshops. pp. 12--23 (2024)
+Huang, T., Pei, X., You, S., Wang, F., Qian, C., Xu, C.: Localmamba: Visual
+  state space model with windowed selective scan. In: European Conference on
+  Computer Vision (ECCV) Workshops. pp. 12--23. Springer (2024)
+
+\bibitem{iandola2016squeezenet}
+Iandola, F.N., Han, S., Moskewicz, M.W., Ashraf, K., Dally, W.J., Keutzer, K.:
+  Squeezenet: Alexnet-level accuracy with 50x fewer parameters and <0.5mb model
+  size. arXiv preprint arXiv:1602.07360  (2016)
 
 \bibitem{sea23}
 Lanzarone, V.: Sea animals image dataset. Kaggle (2023),
@@ -73,21 +77,31 @@ Lin, T.Y., Goyal, P., Girshick, R., He, K., Doll{\'a}r, P.: Focal loss for
 
 \bibitem{liu2024vmamba}
 Liu, Y., Tian, Y., Zhao, Y., Yu, H., Xie, L., Wang, Y., Ye, Q., Jiao, J., Liu,
-  Y.: {VMamba}: Visual state space model. In: Advances in Neural Information
+  Y.: Vmamba: Visual state space model. In: Advances in Neural Information
   Processing Systems (NeurIPS) (2024)
 
 \bibitem{liu2022convnext}
-Liu, Z., Mao, H., Wu, C.Y., Feichtenhofer, C., Darrell, T., Xie, S.: A
-  {ConvNet} for the 2020s. In: IEEE/CVF Conference on Computer Vision and
-  Pattern Recognition (CVPR). pp. 11976--11986 (2022)
+Liu, Z., Mao, H., Wu, C.Y., Feichtenhofer, C., Darrell, T., Xie, S.: A convnet
+  for the 2020s. In: IEEE/CVF Conference on Computer Vision and Pattern
+  Recognition (CVPR). pp. 11976--11986 (2022)
+
+\bibitem{ma2018shufflenetv2}
+Ma, N., Zhang, X., Zheng, H.T., Sun, J.: Shufflenet v2: Practical guidelines
+  for efficient cnn architecture design. In: European Conference on Computer
+  Vision (ECCV). pp. 116--131 (2018)
+
+\bibitem{mcinnes2018umap}
+McInnes, L., Healy, J., Melville, J.: {UMAP}: Uniform manifold approximation
+  and projection for dimension reduction. arXiv preprint arXiv:1802.03426
+  (2018)
 
 \bibitem{prasetyo2021resvggnet}
-Prasetyo, E., Suciati, N., Fatichah, C.: Multi-level residual network {VGGNet}
-  for fish species classification. Journal of King Saud University -- Computer
+Prasetyo, E., Suciati, N., Fatichah, C.: Multi-level residual network vggnet
+  for fish species classification. Journal of King Saud University - Computer
   and Information Sciences  \textbf{34}(8),  5286--5295 (2022)
 
 \bibitem{qu2024convfishnet}
-Qu, H., Wang, G.G., Li, Y., Qi, X., Zhang, M.: {ConvFishNet}: An efficient
+Qu, H., Wang, G.G., Li, Y., Qi, X., Zhang, M.: Convfishnet: An efficient
   backbone for fish classification from composited underwater images.
   Information Sciences  \textbf{679},  121078 (2024).
   \doi{10.1016/j.ins.2024.121078}
@@ -99,20 +113,26 @@ Radford, A., Kim, J.W., Hallacy, C., Ramesh, A., Goh, G., Agarwal, S., Sastry,
   International Conference on Machine Learning (ICML). pp. 8748--8763 (2021)
 
 \bibitem{sun2018fishnet}
-Sun, S., Pang, J., Shi, J., Yi, S., Ouyang, W.: {FishNet}: A versatile backbone
-  for image, region, and pixel level prediction. Advances in Neural Information
-  Processing Systems  \textbf{31},  754--764 (2018)
+Sun, S., Pang, J., Shi, J., Yi, S., Ouyang, W.: Fishnet: A versatile backbone
+  for image, region, and pixel level prediction. In: Advances in Neural
+  Information Processing Systems (NeurIPS). vol.~31, pp. 754--764 (2018)
 
 \bibitem{tan2019efficientnet}
-Tan, M., Le, Q.: {EfficientNet}: Rethinking model scaling for convolutional
+Tan, M., Le, Q.: Efficientnet: Rethinking model scaling for convolutional
   neural networks. In: International Conference on Machine Learning (ICML). pp.
-  6105--6114 (2019)
+  6105--6114. PMLR (2019)
 
 \bibitem{spiralmamba}
-Tang, X., Yao, Y., Ma, J., Zhang, X., Yang, Y., Wang, B., Jiao, L.:
-  {SpiralMamba}: Spatial-spectral complementary {Mamba} with spatial spiral
-  scan for hyperspectral image classification. IEEE Transactions on Geoscience
-  and Remote Sensing  (2025), iEEE Xplore document 10960652
+Tang, X., Yao, Y., Ma, J., Zhang, X., Yang, Y.M., Wang, B., Jiao, L.:
+  Spiralmamba: Spatial-spectral complementary mamba with spatial spiral scan
+  for hyperspectral image classification. IEEE Transactions on Geoscience and
+  Remote Sensing  (2025)
+
+\bibitem{touvron2021deit}
+Touvron, H., Cord, M., Douze, M., Massa, F., Sablayrolles, A., J{\'e}gou, H.:
+  Training data-efficient image transformers \& distillation through attention.
+  In: International Conference on Machine Learning (ICML). pp. 10347--10357.
+  PMLR (2021)
 
 \bibitem{touvron2021cait}
 Touvron, H., Cord, M., Sablayrolles, A., Synnaeve, G., J{\'e}gou, H.: Going
@@ -120,22 +140,21 @@ Touvron, H., Cord, M., Sablayrolles, A., Synnaeve, G., J{\'e}gou, H.: Going
   Computer Vision (ICCV). pp. 32--42 (2021)
 
 \bibitem{woo2018cbam}
-Woo, S., Park, J., Lee, J.Y., Kweon, I.S.: {CBAM}: Convolutional block
-  attention module. In: European Conference on Computer Vision (ECCV). pp.
-  3--19 (2018)
+Woo, S., Park, J., Lee, J.Y., Kweon, I.S.: Cbam: Convolutional block attention
+  module. In: European Conference on Computer Vision (ECCV). pp. 3--19 (2018)
 
 \bibitem{yang2024plainmamba}
 Yang, C., Chen, Z., Espinosa, M., Ericsson, L., Wang, Z., Liu, J., Crowley,
-  E.J.: {PlainMamba}: Improving non-hierarchical {Mamba} in visual recognition.
-  In: British Machine Vision Conference (BMVC) (2024)
+  E.J.: Plainmamba: Improving non-hierarchical mamba in visual recognition. In:
+  British Machine Vision Conference (BMVC) (2024)
 
 \bibitem{zhang2024visualmambasurvey}
 Zhang, H., Zhu, Y., Wang, D., Zhang, L., Chen, T., Ye, Z.: A survey on visual
-  {Mamba}. arXiv preprint arXiv:2404.15956  (2024).
+  mamba. arXiv preprint arXiv:2404.15956  (2024).
   \doi{10.48550/arXiv.2404.15956}
 
 \bibitem{zhu2024vim}
-Zhu, L., Liao, B., Zhang, Q., Wang, X., Liu, W., Wang, X.: Vision {Mamba}:
+Zhu, L., Liao, B., Zhang, Q., Wang, X., Liu, W., Wang, X.: Vision mamba:
   Efficient visual representation learning with bidirectional state space
   model. In: International Conference on Machine Learning (ICML) (2024)
 

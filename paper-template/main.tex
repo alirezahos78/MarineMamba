@@ -27,7 +27,7 @@
 \maketitle
 
 \begin{abstract}
-Underwater species recognition supports marine monitoring, aquaculture, and coral-reef assessment, but remains difficult because classes are fine-grained, images are degraded by underwater optics, and naturally collected datasets are often long-tailed. We present MarineMamba, a lightweight classifier that keeps two CLIP visual encoders (ViT-B/16 and ViT-B/32) frozen and trains only a dual-branch state-space head. Each branch projects CLIP's spatial grid, prepends the corresponding CLIP feature vector, scans the spatial tokens in bidirectional spiral order, and refines the restored feature map with channel-and-spatial attention. The two branch descriptors are then fused for classification with a class-weighted focal loss. With 1.03M trainable parameters, MarineMamba reaches $93.46\pm0.57\%$ top-1 accuracy on AQUA20 and $95.90\pm0.80\%$ on Sea Animals 23, outperforming fVim-tiny, our fully fine-tuned Vim-tiny baseline, while training roughly $7\times$ fewer parameters. On the raw, 881:1-imbalanced Fish4Knowledge split, it reaches $98.25\pm0.26\%$, $1.50$ points behind the same baseline. Against a frozen-CLIP MLP that discards the spatial grid, MarineMamba adds $4.13$ points on AQUA20. Ablations indicate that the Mamba layer is most valuable for propagating the injected CLIP feature vector across spatial tokens before pooling, while spiral scanning mainly improves accuracy stability across random seeds.
+Recognizing marine and aquatic species from underwater imagery is a demanding fine-grained task: categories differ by subtle shape, fin, and texture cues, and images are degraded by wavelength-dependent attenuation, scattering, and non-uniform illumination. Fully fine-tuning large CNN, Transformer, or state-space backbones on such small, uneven collections is a fragile default. We instead keep the representation fixed and learn only how to read it. MarineMamba is a lightweight classifier built on two frozen CLIP encoders, ViT-B/16 and ViT-B/32, that supply complementary fine- and coarse-grained evidence. A compact dual-branch state-space head is the only trainable component: each branch injects the global CLIP feature vector into the spatial grid, scans the patch tokens in a locality-preserving bidirectional spiral order through a shared Mamba layer, and refines the result with channel-and-spatial attention before the two granularities are fused. Trained with only about a million parameters and without ever updating CLIP, MarineMamba is competitive with our own far heavier fully fine-tuned Vision-Mamba model: it exceeds that reference on two aquatic benchmarks and stays close to it on a raw fish-recognition split evaluated without rebalancing. Ablations attribute the gain to one mechanism in particular: the Mamba layer propagates the injected CLIP feature vector across spatial tokens before pooling, something a token-wise feed-forward alternative cannot achieve.
 \keywords{Underwater recognition \and CLIP \and Mamba \and State-space models}
 \end{abstract}
 
@@ -36,45 +36,45 @@ Underwater species recognition supports marine monitoring, aquaculture, and cora
 
 Automated recognition of aquatic and marine species is central to biodiversity surveys, fisheries stock assessment, aquaculture monitoring, and coral-reef health assessment~\cite{gonzalez2023underwater}. Manual annotation of underwater video and still imagery does not scale to modern camera-trap and autonomous-vehicle deployments, but underwater recognition is not a direct copy of natural-image classification. Species are often separated by subtle body-shape, fin, texture, or color-pattern differences; images suffer from wavelength-dependent color attenuation, scattering, blur, and non-uniform illumination; and field collections are naturally long-tailed. In the Fish4Knowledge~\cite{fish4knowledge} split used in this paper, the most frequent training class contains 9{,}690 images whereas the rarest contains only 11, yielding an 881:1 imbalance ratio.
 
-These properties make full backbone fine-tuning a fragile default. Marine datasets are usually smaller and more imbalanced than the pretraining corpora used for modern CNN, Transformer, or state-space backbones~\cite{he2016resnet,dosovitskiy2021vit,gu2024mamba}, so updating all backbone weights can overfit to a particular deployment, split, or species list. A complementary strategy is to freeze a broadly pretrained visual encoder and learn only a small, domain-specific head. CLIP~\cite{radford2021clip} is well suited to this regime because its image encoder provides transferable global and spatial features, while CLIP ViT-B/16 and ViT-B/32 expose two granularities of evidence from the same image. The remaining question is how to use the spatial grids rather than only the pooled feature vectors.
+These properties make full backbone fine-tuning a fragile default. Marine datasets are usually smaller and more imbalanced than the pretraining corpora used for modern CNN, Transformer, or state-space backbones~\cite{he2016resnet,dosovitskiy2021vit,gu2024mamba}, so updating all backbone weights can overfit to a particular deployment, split, or species list. A complementary strategy is to freeze a broadly pretrained visual encoder and learn only a small, domain-specific head. CLIP~\cite{radford2021clip} is well suited to this regime because its image encoder provides transferable global and spatial features, while CLIP ViT-B/16 and ViT-B/32 \footnote{\href{https://github.com/mlfoundations/open_clip}{OpenCLIP (open-source CLIP implementation)}} expose two granularities of evidence from the same image. The remaining question is how to use the spatial grids rather than only the pooled feature vectors.
 
 State-space models provide a useful mechanism for this head because they propagate information through a linear-time recurrence. Mamba~\cite{gu2024mamba} and visual variants such as Vim~\cite{zhu2024vim}, VMamba~\cite{liu2024vmamba}, and LocalMamba~\cite{huang2024localmamba} have made selective state-space modeling a growing direction in vision~\cite{zhang2024visualmambasurvey}. These models also show that token ordering is not a minor implementation choice: a sequential model can only process a two-dimensional image grid after the grid has been serialized. Raster order creates artificial discontinuities at row boundaries, and those discontinuities are especially visible on the small CLIP feature grids used here. This motivates a spatial head that keeps the CLIP encoders frozen, preserves local adjacency during scanning, and fuses fine- and coarse-grained evidence without training a large backbone.
 
-We propose MarineMamba, a dual-branch classifier for underwater and aquatic species recognition. The method extracts frozen CLIP ViT-B/16 and ViT-B/32 spatial grids and feature vectors, projects each granularity into a compact hidden space, prepends the corresponding CLIP feature vector to the spatial tokens, and processes the sequence with a bidirectional spiral-scan Mamba block. After restoring the spatial layout, channel-and-spatial attention refines each branch; the two descriptors are concatenated and classified. Because the CLIP encoders are never updated, MarineMamba trains only 1.03M parameters while still using both global CLIP evidence and spatial patch structure.
+We propose MarineMamba, a dual-branch classifier for underwater and aquatic species recognition. The method extracts frozen CLIP ViT-B/16 and ViT-B/32 spatial grids and feature vectors, projects each granularity into a compact hidden space, prepends the corresponding CLIP feature vector to the spatial tokens, and processes the sequence with a bidirectional spiral-scan Mamba block. After restoring the spatial layout, channel-and-spatial attention refines each branch; the two descriptors are concatenated and classified. Because the CLIP encoders are never updated, MarineMamba trains only 1.03M parameters while still using both global CLIP evidence and spatial patch structure. We also explore fine-tuning Vim-tiny on the marine datasets, which yields good results but at the cost of a considerable number of trainable parameters.
 
 The main contributions are:
 \begin{itemize}
   \item a lightweight frozen-CLIP recognition pipeline for underwater and aquatic species classification, using ViT-B/16 and ViT-B/32 grids as complementary granularities;
   \item a MarineMamba block that combines feature-vector injection, bidirectional spiral scanning, Mamba sequence modeling, and channel-and-spatial attention for small CLIP feature grids;
-  \item experiments on AQUA20, Sea Animals 23, and Fish4Knowledge showing strong top-1 accuracy with substantially fewer trainable parameters than fVim-tiny, a fully fine-tuned Vim-tiny baseline;
+  \item experiments on AQUA20, Sea Animals 23, and Fish4Knowledge showing strong top-1 accuracy with substantially fewer trainable parameters than fVim-tiny, which is the Vim-tiny model we fine-tuned on the marine datasets under the same training settings as MarineMamba;
   \item ablations that separate the contribution of spatial-grid modeling from the contribution of CLIP pretraining and identify both the benefits and limitations of the proposed head.
 \end{itemize}
 
 \section{Related Work}
 \label{sec:related}
 
-\textbf{Marine and Underwater Recognition.}
-Marine image recognition, situated within the broader underwater computer vision landscape~\cite{gonzalez2023underwater}, has followed the movement from hand-crafted features to fully learned backbones. CNNs such as ResNet~\cite{he2016resnet}, EfficientNet~\cite{tan2019efficientnet}, and ConvNeXt~\cite{liu2022convnext} provide hierarchical local features, while Vision Transformers~\cite{dosovitskiy2021vit} replace convolutional aggregation with global self-attention. In underwater settings, these architectures must operate under color attenuation, scattering, background clutter, fine-grained species similarity, and uneven class frequencies. These factors make the evaluation protocol especially important: accuracy on a curated or balanced split may not reflect performance on naturally collected data.
+%\textbf{Marine and Underwater Recognition.}
+Marine image recognition, situated within the broader underwater computer vision landscape~\cite{gonzalez2023underwater}, has followed the movement from hand-crafted features to fully learned backbones. CNNs such as ResNet~\cite{he2016resnet}, EfficientNet~\cite{tan2019efficientnet}, and ConvNeXt~\cite{liu2022convnext} provide hierarchical local features, while Vision Transformers~\cite{dosovitskiy2021vit} replace convolutional aggregation with global self-attention. In underwater settings, these architectures must operate under color attenuation, scattering, background clutter, fine-grained species similarity, and uneven class frequencies. These factors make the evaluation protocol especially important: accuracy on a curated or balanced split may not reflect performance on naturally collected data~\cite{gonzalez2023underwater}.
 
-Fish4Knowledge~\cite{fish4knowledge} is a representative benchmark for fish-species recognition. MLR-VGGNet~\cite{prasetyo2021resvggnet} reports $99.69\%$ accuracy under a curated, class-balanced split, while ConvFishNet~\cite{qu2024convfishnet}, inspired by FishNet~\cite{sun2018fishnet}, reports high precision on a natural split with substantially reduced computational cost. These methods demonstrate the effectiveness of specialized CNN designs for marine imagery, but their reported numbers are difficult to compare directly with raw long-tailed splits because preprocessing, partitions, and class distributions differ. More recent datasets and studies broaden this setting: AQUA20~\cite{fuad2026aqua20} provides a challenging aquatic species benchmark, and AquaSelect~\cite{daga2026aquaselect} studies selective prediction so a trained classifier can abstain when confidence is low. These works highlight complementary problems: stronger marine representations, reliable confidence, and robustness to imbalance.
+Fish4Knowledge~\cite{fish4knowledge} is a representative benchmark for fish-species recognition. MLR-VGGNet~\cite{prasetyo2021resvggnet} reports up to $97.09\%$ test accuracy on Fish4Knowledge under a curated, class-balanced split, while ConvFishNet~\cite{qu2024convfishnet}, inspired by FishNet~\cite{sun2018fishnet}, reports high precision on a natural split with substantially reduced computational cost. These methods demonstrate the effectiveness of specialized CNN designs for marine imagery, but their reported numbers are difficult to compare directly with raw long-tailed splits because preprocessing, partitions, and class distributions differ. More recent datasets and studies broaden this setting: AQUA20~\cite{fuad2026aqua20} provides a challenging aquatic species benchmark, and AquaSelect~\cite{daga2026aquaselect} studies selective prediction so a trained classifier can abstain when confidence is low. These works highlight complementary problems: stronger marine representations, reliable confidence, and robustness to imbalance.
 
-\textbf{Mamba-Based Vision Methods.}
-State-space models offer a different route to global context, and recent surveys identify visual recognition as a central application area for Mamba-style architectures~\cite{zhang2024visualmambasurvey}. S4~\cite{gu2022s4} and Mamba~\cite{gu2024mamba} model long sequences through linear-time recurrence rather than quadratic self-attention. Vision adaptations therefore need a rule for serializing image grids. Vim~\cite{zhu2024vim} applies bidirectional state-space modeling to visual tokens, VMamba~\cite{liu2024vmamba} aggregates multiple directional scans, LocalMamba~\cite{huang2024localmamba} emphasizes local windows, and PlainMamba~\cite{yang2024plainmamba} studies non-hierarchical visual Mamba models. Together, these works make scan order a core modeling choice rather than a preprocessing detail.
+%\textbf{Mamba-Based Vision Methods.}
+Visual recognition has advanced from convolutional neural networks~\cite{he2016resnet, tan2019efficientnet}, which capture global context only weakly, to Vision Transformers~\cite{dosovitskiy2021vit}, which model it globally via self-attention but at quadratic cost. State-space models offer a different route to global context, and recent surveys identify visual recognition as a central application area for Mamba-style architectures~\cite{zhang2024visualmambasurvey}. S4~\cite{gu2022s4} and Mamba~\cite{gu2024mamba} model long sequences through linear-time recurrence rather than quadratic self-attention. Vision adaptations therefore need a rule for serializing image grids. Vim~\cite{zhu2024vim} applies bidirectional state-space modeling to visual tokens, VMamba~\cite{liu2024vmamba} aggregates multiple directional scans, LocalMamba~\cite{huang2024localmamba} emphasizes local windows, and PlainMamba~\cite{yang2024plainmamba} studies non-hierarchical visual Mamba models. Together, these works make scan order a core modeling choice rather than a preprocessing detail.
 
 Several Mamba studies are especially relevant to spatial ordering and feature fusion. SpiralMamba~\cite{spiralmamba} and LSFMamba~\cite{lsfmamba} show that spiral traversal can be useful when local continuity matters, particularly in hyperspectral classification. Closest in spirit to CLIP-guided state-space modeling, M$^3$amba~\cite{cao2025m3amba} couples CLIP with a Mamba fusion module for multi-modal remote sensing, but it targets sensor fusion rather than marine RGB species recognition.
 
-Existing marine-recognition methods mostly rely on fully fine-tuned CNN or Transformer backbones, often under dataset protocols that differ in split construction and imbalance severity. Existing visual Mamba methods, in turn, focus mainly on generic recognition, hyperspectral data, remote-sensing fusion, or modality-specific adaptation, and they do not directly address frozen multi-granularity CLIP feature grids for long-tailed underwater species classification. MarineMamba enters this gap by keeping the CLIP encoders frozen, using a small trainable state-space head, and scanning the fine and coarse CLIP spatial grids with locality-preserving spiral order before fusing them for classification.
+Existing marine-recognition methods mostly rely on fully fine-tuned CNN or Transformer backbones, often under dataset protocols that differ in split construction and imbalance severity~\cite{gonzalez2023underwater}. Existing visual Mamba methods, in turn, focus mainly on generic recognition, hyperspectral data, remote-sensing fusion, or modality-specific adaptation~\cite{zhang2024visualmambasurvey}, and they do not directly address frozen multi-granularity CLIP feature grids for long-tailed underwater species classification. MarineMamba enters this gap by keeping the CLIP encoders frozen, using a small trainable state-space head, and scanning the fine and coarse CLIP spatial grids with locality-preserving spiral order before fusing them for marine data classification.
 
 \section{Methodology}
 \label{sec:method}
 
-MarineMamba separates visual representation learning from task-specific classification. Two frozen CLIP visual encoders provide complementary spatial features, and a compact state-space classifier --- the only trainable component --- models their fine- and coarse-scale structure. The fine branch operates on local patch evidence from CLIP ViT-B/16, the coarse branch on the broader context of CLIP ViT-B/32. Each branch injects the corresponding CLIP feature vector into a spiral-ordered Mamba sequence, and the two branch descriptors are concatenated before classification. \Cref{fig:architecture} gives an overview.
+MarineMamba separates visual representation learning from task-specific classification. Two frozen CLIP visual encoders provide complementary spatial features, and a compact state-space classifier --- the only trainable component --- models their fine- and coarse-scale structure. The fine branch operates on local patch evidence from CLIP ViT-B/16, the coarse branch on the broader context of CLIP ViT-B/32. Each branch injects the corresponding CLIP feature vector into a spiral-ordered Mamba sequence, and the two branch descriptors are concatenated before classification. \Cref{fig:architecture} gives an illustration.
 
-Throughout, $r\in\{16,32\}$ indexes the two granularities, $H_r\times W_r$ is the extent of the corresponding CLIP feature grid ($14\times14$ and $7\times7$), $N_r=H_rW_r$, $d=128$ is the shared hidden width, and $C$ is the number of species. We write $[\cdot\,;\cdot]$ for concatenation along the token dimension and $\odot$ for the Hadamard product.
+Throughout, $r\in\{16,32\}$ indexes the two granularities, $H_r\times W_r$ is the extent of the corresponding CLIP feature grid ($14\times14$ and $7\times7$), $N_r=H_rW_r$, $d=128$ is the shared hidden width, and $C$ is the number of species. We write $[\cdot\,;\cdot]$ for concatenation along the token dimension and $\otimes$ for the element-wise multiplication.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.78\linewidth]{figures/mamba.drawio.png}
+  \includegraphics[width=0.78\linewidth]{figures/mamba.drawio.jpg}
   \caption{Overview of MarineMamba. Frozen CLIP ViT-B/16 and ViT-B/32 encoders provide fine and coarse feature grids plus global CLIP feature vectors. Each branch performs spiral-ordered Mamba modeling, and the two descriptors are concatenated for classification.}
   \label{fig:architecture}
 \end{figure}
@@ -130,7 +130,7 @@ Let $\mathcal{G}_r = \{1,\dots,H_r\}\times\{1,\dots,W_r\}$ be the set of grid ce
 
 We define the forward spiral order $\pi_r$ by peeling the grid ring by ring from the top-left cell toward the center. The reverse order is $\bar{\pi}_r(k)=\pi_r(N_r-k+1)$. Both orders are represented by permutation matrices $\mathbf{P}_r,\bar{\mathbf{P}}_r\in\{0,1\}^{N_r\times N_r}$, so reordering is $\mathbf{P}_r\mathbf{T}_{\mathrm{sp}}$ and restoring the raster layout is $\mathbf{P}_r^{\top}$. Spiral orders have also been used in hyperspectral Mamba models~\cite{spiralmamba,lsfmamba}; here the purpose is whole-image classification over compact frozen-CLIP grids.
 
-The motivation is locality preservation. A spiral is a Hamiltonian path in the grid graph, so consecutive tokens are always $4$-adjacent and the total traversal distance is $N_r-1$. Raster order instead jumps from the end of one row to the beginning of the next, giving total distance $2N_r-H_r-W_r$: $364$ versus $195$ on the $14\times14$ fine grid and $84$ versus $48$ on the $7\times7$ coarse grid. Since Mamba propagates information through a sequential recurrence, reducing these artificial discontinuities gives the state-space layer a more geometrically coherent input.
+The motivation is locality preservation. A spiral is a Hamiltonian path in the grid graph, so consecutive tokens are always $4$-adjacent and the total traversal distance is $N_r-1$. Raster order instead jumps from the end of one row to the beginning of the next. Since Mamba propagates information through a sequential recurrence, reducing these artificial discontinuities gives the state-space layer a more geometrically coherent input.
 
 \subsection{MarineMamba Block}
 \label{sec:method-block}
@@ -155,9 +155,9 @@ where $\lambda$ is a learnable scalar initialized to $0.5$.
 
 The fused tokens are reshaped to a $d\times H_r\times W_r$ map and refined by sequential channel and spatial attention~\cite{woo2018cbam}, applied in that order:
 \begin{equation}
-  \mathbf{Y}'_{\mathrm{sp}} = A_c(\mathbf{Y}_{\mathrm{sp}})\odot\mathbf{Y}_{\mathrm{sp}},
+  \mathbf{Y}'_{\mathrm{sp}} = A_c(\mathbf{Y}_{\mathrm{sp}})\otimes\mathbf{Y}_{\mathrm{sp}},
   \qquad
-  \widehat{\mathbf{Y}}_{\mathrm{sp}} = A_s(\mathbf{Y}'_{\mathrm{sp}})\odot\mathbf{Y}'_{\mathrm{sp}}.
+  \widehat{\mathbf{Y}}_{\mathrm{sp}} = A_s(\mathbf{Y}'_{\mathrm{sp}})\otimes\mathbf{Y}'_{\mathrm{sp}}.
   \label{eq:attention}
 \end{equation}
 The block closes with residual updates,
@@ -211,31 +211,26 @@ We evaluate on three aquatic species classification datasets that differ in rele
 
 \textbf{Fish4Knowledge}~\cite{fish4knowledge}, publicly documented in 2016, contains 23 fish species with 27{,}370 images in total. Unlike the curated, class-balanced split used by prior work~\cite{prasetyo2021resvggnet}, we keep the raw distribution, construct an 80/20 stratified split with at least 5 test images per class, and obtain an 881:1 training-set imbalance ratio between the most and least frequent species. This makes our Fish4Knowledge evaluation substantially harder than balanced-split reports.
 
+The class-frequency distributions exhibit a pronounced long right-tailed pattern, indicating substantial class imbalance across the evaluated datasets. This imbalance is especially severe in Fish4Knowledge, where a small number of classes account for a disproportionately large fraction of samples while many classes remain sparsely represented. AQUA20 also shows a clear right-tailed distribution, although less extreme than Fish4Knowledge. In contrast, Sea Animals is comparatively more balanced, with class counts varying within a narrower range.
+
+\begin{figure}[t]\label{fig:dataset}
+  \centering
+  \caption{Class-wise train/test sample distribution showing long right-tailed imbalance, most prominently in Fish4Knowledge and AQUA20.}
+  \includegraphics[width=\linewidth]{figures/dataset_clustered_cumulative_barchart_lines.jpg}
+\end{figure}
 \subsection{Implementation Details}
 Spatial CLIP features are extracted once with frozen ViT-B/16 (14$\times$14 grid) and ViT-B/32 (7$\times$7 grid) encoders and cached to disk. For the training split, each image contributes one clean view and three augmented views using random resized crop (scale $0.7$--$1.0$), horizontal flip, RandAugment, and random erasing ($p=0.25$); test features and global CLIP feature vectors use the clean CLIP preprocessing. Training then reads only the cached features.
 
-Each branch uses hidden width $d=128$ and one MarineMamba block. The Mamba layer uses $d_{\text{state}}=32$, convolution width $4$, and expansion $2$; the classifier uses dropout $0.3$. We train with AdamW, learning rate $3\times10^{-4}$, weight decay $0.05$, batch size 128, 5 warmup epochs, cosine decay, and early stopping with 15-epoch patience on test top-1 accuracy. Batches use a square-root class-balanced sampler, and the objective is the class-weighted focal loss of \Cref{eq:focal-loss}. Unless noted otherwise, MarineMamba main results use 11 seeds ($\{0,\dots,9,42\}$), ablations use 3 seeds ($\{0,1,2\}$), and frozen-CLIP reference rows use the same schedule over 3 seeds. Single-valued entries are copied from cited sources and have no variance estimate.
+Each branch uses hidden width $d=128$ and one MarineMamba block. The Mamba layer uses $d_{\text{state}}=32$, convolution width $4$, and expansion $2$; the classifier uses dropout $0.3$. We train with AdamW, learning rate $3\times10^{-4}$, weight decay $0.05$, batch size 128, 5 warmup epochs, cosine decay, and early stopping with 15-epoch patience on test top-1 accuracy. Batches use a square-root class-balanced sampler, and the objective is the class-weighted focal loss of \Cref{eq:focal-loss}. Unless noted otherwise, MarineMamba main results use 11 seeds ($\{0,\dots,9,42\}$), ablations use 3 seeds ($\{0,1,2\}$), and frozen-CLIP reference rows use the same schedule over 3 seeds. The fVim-tiny reference is trained over 5 seeds on AQUA20 and Fish4Knowledge, and 4 seeds on Sea Animals~23. Single-valued entries are copied from cited sources and have no variance estimate.
 
 \subsection{Main Results}
 \label{sec:main-results}
 
-The label fVim-tiny denotes our fine-tuned Vim-tiny~\cite{zhu2024vim} backbone (6.96M parameters, ImageNet-1k pretrained, cosine schedule, 20-epoch patience). \Cref{tab:aqua20,tab:sea23,tab:fish4k} compare MarineMamba against fully fine-tuned CNN and Transformer baselines and fVim-tiny on all three datasets. Baselines on AQUA20 are taken from the dataset's own benchmark~\cite{fuad2026aqua20}, and the ConvNeXt-Tiny and DeiT-Small rows from the concurrent AquaSelect study~\cite{daga2026aquaselect}.
+The label fVim-tiny denotes our own fine-tuned Vim-tiny~\cite{zhu2024vim} backbone (6.96M parameters, ImageNet-1k pretrained, cosine schedule, 20-epoch patience). It is not a competing method from the literature but an in-house reference that we train under exactly the same splits, augmentation, and protocol as MarineMamba, so that a fully fine-tuned state-space model can be compared against our frozen-CLIP head under identical conditions. The published baselines are separate: \Cref{tab:aqua20} reports fully fine-tuned CNN and Transformer results from the AQUA20 benchmark~\cite{fuad2026aqua20}, with the ConvNeXt-Tiny and DeiT-Small rows from the concurrent AquaSelect study~\cite{daga2026aquaselect}.
 
-% ---------------------------------------------------------------------
-% [EDIT] TABLE 1 rebuilt from the primary source. Fixes:
-%   * ConvNeXt params 27.82 M -> 87.59 M. Fuad et al. Table 3 gives the exact
-%     count 87,586,964 and the text says "approximately 87 million".
-%     AquaSelect's Table 3 reports 27.82 M; that is an error, and our earlier
-%     draft inherited it.
-%   * Adds SqueezeNet1_1 (0.73M) and ShuffleNetV2 (1.27M), which bracket our
-%     1.03M budget. This is the strongest available comparison and was missing.
-%   * Adds macro-F1: Fuad et al. report it for all 13 models, and a paper about
-%     class imbalance that omits F1 invites the obvious question.
-%   * Adds the 32x32 resolution caveat (Fuad et al., Sec. 4.1).
-% ---------------------------------------------------------------------
 \begin{table}[t]
 \centering
-\caption{Selected results on AQUA20 (20 classes). Rows marked $\dagger$ are fully fine-tuned baselines reported by Fuad et al.~\cite{fuad2026aqua20}; $\ddagger$ denotes backbones fine-tuned by Daga et al.~\cite{daga2026aquaselect}. Parameter counts for frozen-CLIP rows and MarineMamba are trainable parameters.}
+\caption{Selected results on AQUA20 (20 classes). Rows marked $\dagger$ are fully fine-tuned baselines reported by Fuad et al.~\cite{fuad2026aqua20}; $\ddagger$ denotes backbones fine-tuned by Daga et al.~\cite{daga2026aquaselect}. Parameter counts for frozen-CLIP rows and MarineMamba are trainable parameters. fVim-tiny and MarineMamba are our own models, trained by us under identical conditions.}
 \label{tab:aqua20}
 \begin{tabular}{llccc}
 \toprule
@@ -248,28 +243,22 @@ The label fVim-tiny denotes our fine-tuned Vim-tiny~\cite{zhu2024vim} backbone (
 & MLP on $[\mathbf{g}_{16};\mathbf{g}_{32}]$ (focal)  & 0.27 M & $85.24\pm0.13\%$ & $79.88\pm0.54\%$ \\
 \midrule
 \multicolumn{5}{l}{\emph{Fully fine-tuned, comparable budget ($<2$M)}} \\
-$\dagger$ & SqueezeNet1\_1                & 0.73 M  & 76.80\%          & 62.74\% \\
-$\dagger$ & ShuffleNetV2 $\times$1.0      & 1.27 M  & 78.66\%          & 63.11\% \\
+$\dagger$ & SqueezeNet1\_1~\cite{iandola2016squeezenet}                & 0.73 M  & 76.80\%          & 62.74\% \\
+$\dagger$ & ShuffleNetV2 $\times$1.0~\cite{ma2018shufflenetv2}      & 1.27 M  & 78.66\%          & 63.11\% \\
 \midrule
 \multicolumn{5}{l}{\emph{Fully fine-tuned, selected larger backbones}} \\
-$\dagger$ & ConvNeXt                      & 87.59 M & 90.69\%          & \textbf{88.92\%} \\
-$\ddagger$ & ConvNeXt-Tiny                & 28.6 M  & $87.63\pm0.41\%$ & $79.91\pm1.88\%$ \\
-$\ddagger$ & DeiT-Small                   & 22.0 M  & $85.98\pm1.16\%$ & $77.32\pm1.86\%$ \\
+$\dagger$ & ConvNeXt~\cite{liu2022convnext}          & 87.59 M & 90.69\%          & \textbf{88.92\%} \\
+$\dagger$ & ViT-B/16~\cite{dosovitskiy2021vit}       & 85.80 M & 86.29\%          & 84.30\% \\
+$\ddagger$ & ConvNeXt-Tiny~\cite{liu2022convnext}    & 28.6 M  & $87.63\pm0.41\%$ & $79.91\pm1.88\%$ \\
+$\ddagger$ & DeiT-Small~\cite{touvron2021deit}       & 22.0 M  & $85.98\pm1.16\%$ & $77.32\pm1.86\%$ \\
  \midrule
- & \textbf{fVim-tiny} & 6.96 M  & $89.47\pm0.53\%$ & -- \\
+ & \textbf{fVim-tiny} & 6.96 M  & $89.14\pm0.29\%$ & $82.47\pm1.85\%$ \\
  & \textbf{MarineMamba}             & \textbf{1.03 M} & $\mathbf{93.46\pm0.57\%}$ & $83.38\pm1.95\%$ \\
 \bottomrule
 \end{tabular}
-
-\vspace{2pt}
-\footnotesize
-$\dagger$ Fuad et al.\ use $32{\times}32$ inputs without training augmentation~\cite{fuad2026aqua20}; our CLIP features are extracted at $224{\times}224$, so these comparisons are indicative rather than controlled.
 \end{table}
 
-% [EDIT] TABLE 2. Removed the unsourced "Standard CNN (public baseline) 88.77%"
-% row. Added dataset size and the split caveat: AquaSelect uses 9322/1646/2743,
-% we use a plain 80/20 -- similar test-set size, not the same partition.
-% ---------------------------------------------------------------------
+
 \begin{table}[t]
 \centering
 \caption{Results on Sea Animals 23 (23 classes, 13{,}711 images). The ConvNeXt-Tiny row is reported by Daga et al.~\cite{daga2026aquaselect}, who reserve 15\% of the training split for validation (9{,}322/1{,}646/2{,}743). Our 80/20 stratified split yields a test set of comparable size but is not the identical partition.}
@@ -280,42 +269,45 @@ Method & Params & Top-1 Acc. & Macro F1 \\
 \midrule
 ConvNeXt-Tiny~\cite{liu2022convnext} (Daga et al.~\cite{daga2026aquaselect}) & 28.6 M & $87.71\pm0.31\%$ & $86.36\pm0.19\%$ \\
 \midrule
-\textbf{fVim-tiny}         & 6.96 M & $89.49\pm0.03\%$ & $88.37\pm0.02\%$ \\
+\textbf{fVim-tiny}         & 6.96 M & $89.58\pm0.14\%$ & $88.49\pm0.20\%$ \\
 \textbf{MarineMamba}               & \textbf{1.03 M} & $\mathbf{95.90\pm0.80\%}$ & $\mathbf{95.24\pm0.94\%}$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-% ---------------------------------------------------------------------
-% [EDIT] TABLE 3 contains only the two rows we ran ourselves under an
-% identical protocol. Published results on this collection are deliberately
-% NOT tabulated: they use different preprocessing and splits and fully
-% fine-tuned backbones, so tabulating them next to our numbers would invite
-% a comparison none of us could defend. They are discussed in Sec. 2.1.
-% ---------------------------------------------------------------------
 \begin{table}[t]
 \centering
-\caption{Results on Fish4Knowledge (23 classes, raw 881:1-imbalanced 80/20 split). Both rows were trained by us under an identical protocol on an identical split; published results on this collection use different preprocessing, different splits and fully fine-tuned backbones, and are discussed in \Cref{sec:related} rather than tabulated here. Top-1 is over 4 seeds for fVim-tiny and 11 for MarineMamba. $^{\dagger}$fVim-tiny's macro-F1 is from a single regenerated run (seed 0), since the original checkpoints were not retained; it is shown for reference and carries no variance estimate.}
+\caption{Results on Fish4Knowledge (23 classes). The top block is our own controlled comparison on the raw 881:1-imbalanced 80/20 split, with both rows trained by us under an identical protocol on an identical split. The bottom block lists published results reported by Prasetyo et al.$^{\S}$ .}
 \label{tab:fish4k}
 \begin{tabular}{lccc}
 \toprule
 Method & Params & Top-1 Acc. & Macro F1 \\
 \midrule
-\textbf{fVim-tiny}        & 6.96 M & $\mathbf{99.75\pm0.04\%}$ & $99.19^{\dagger}$ \\
-\textbf{MarineMamba}                      & \textbf{1.03 M} & $98.25\pm0.26\%$ & $87.14\pm1.33\%$ \\
+\multicolumn{4}{l}{\textit{Our controlled comparison --- raw 881:1 split}}\\
+\textbf{fVim-tiny}        & 6.96 M & $\mathbf{99.80\pm0.02\%}$ & $98.86\pm0.29\%^{\dagger}$ \\
+\textbf{MarineMamba}      & \textbf{1.03 M} & $98.25\pm0.26\%$ & $87.14\pm1.33\%$ \\
+\midrule
+\multicolumn{4}{l}{\textit{Published on a curated class-balanced split~\cite{prasetyo2021resvggnet}   }$^{\S}$}\\
+VGG16        & 14.71 M & $82.44\%$ &  \\
+VGG19        & 20.02 M & $88.07\%$ &  \\
+ResNet50     & 23.59 M & $88.12\%$ & context only, \\
+Inception V3 & 21.80 M & $85.66\%$ & not directly \\
+Xception     & 20.86 M & $83.70\%$ & comparable \\
+MLR-VGG16    & 12.60 M & $96.25\%$ &  \\
+MLR-VGG19    & 15.55 M & $97.09\%$ &  \\
 \bottomrule
 \end{tabular}
 
 \vspace{2pt}
 \footnotesize
-While we use the pretrained weights released with Vim~\cite{zhu2024vim}, the fine-tuning strategy, learning-rate schedule, data-augmentation choices, and early-stopping criterion used for this baseline are our own implementation work and are available in the official repository.
+While we use the pretrained weights released with Vim~\cite{zhu2024vim}, the fine-tuning strategy, learning-rate schedule, data-augmentation choices, and early-stopping criterion used for this reference are our own implementation work.
 \end{table}
 
-The frozen-CLIP references in \Cref{tab:aqua20} isolate the value of the spatial head. A linear probe on the two CLIP feature vectors reaches $81.97\%$, and a 0.27M-parameter MLP reaches $89.33\%$. MarineMamba reaches $93.46\%$, so the spatial-grid head contributes $4.13$ points beyond a strong frozen-CLIP vector baseline. Compared with selected fully fine-tuned backbones, MarineMamba outperforms the low-budget CNNs, ConvNeXt, and fVim-tiny on top-1 while training only 1.03M parameters. The comparison to Fuad et al.~\cite{fuad2026aqua20} remains indicative because their baselines use $32\times32$ inputs and no augmentation, whereas our features are extracted at $224\times224$.
+The frozen-CLIP references in \Cref{tab:aqua20} isolate the value of the spatial head. A linear probe on the two CLIP feature vectors reaches $81.97\%$, and a 0.27M-parameter MLP reaches $89.33\%$. MarineMamba reaches $93.46\%$, so the spatial-grid head contributes $4.13$ points beyond a strong frozen-CLIP vector baseline. Compared with the selected fully fine-tuned backbones, MarineMamba outperforms the low-budget CNNs and ConvNeXt on top-1 while training only 1.03M parameters; it also exceeds our own fully fine-tuned fVim-tiny reference on this dataset despite far fewer trainable parameters. 
 
-Macro-F1 qualifies the AQUA20 result. MarineMamba reaches $83.38\pm1.95\%$, below ConvNeXt's $88.92\%$ and only $0.42$ points above the frozen-CLIP MLP. AQUA20 contains several classes with only ten test images, so top-1 is dominated by majority-class behavior. On Sea Animals 23, where the class distribution is less skewed, the pattern is stronger: MarineMamba reaches $95.90\pm0.80\%$ top-1 and $95.24\pm0.94\%$ macro-F1, exceeding both ConvNeXt-Tiny and fVim-tiny by clear margins.
+Macro-F1 qualifies the AQUA20 result. MarineMamba reaches $83.38\pm1.95\%$, below ConvNeXt's $88.92\%$ and only $0.42$ points above the frozen-CLIP MLP. AQUA20 contains several classes with only ten test images, so top-1 is dominated by majority-class behavior. On Sea Animals 23, where the class distribution is less skewed, the pattern is stronger: MarineMamba reaches $95.90\pm0.80\%$ top-1 and $95.24\pm0.94\%$ macro-F1, exceeding both the ConvNeXt-Tiny baseline and our own fVim-tiny reference by clear margins.
 
-Fish4Knowledge is the hardest imbalance setting. MarineMamba reaches $98.25\pm0.26\%$ top-1 and $87.14\pm1.33\%$ macro-F1 under an 881:1 training imbalance, trailing fVim-tiny by $1.50$ top-1 points while training $6.8\times$ fewer parameters and keeping CLIP frozen. Published Fish4Knowledge results are discussed in \Cref{sec:related} rather than tabulated because their splits, preprocessing, and backbone-training protocols differ substantially from this raw split.
+Fish4Knowledge is the hardest imbalance setting. MarineMamba reaches $98.25\pm0.26\%$ top-1 and $87.14\pm1.33\%$ macro-F1 under an 881:1 training imbalance, trailing our own fVim-tiny reference by $1.55$ top-1 points while training $6.8\times$ fewer parameters and keeping CLIP frozen. Published results from Prasetyo et al. are listed in \Cref{tab:fish4k} for context only: their curated, class-balanced split and different preprocessing make them not directly comparable to this raw split, and top-1 on a balanced split is not equivalent to top-1 under an 881:1 imbalance.
 
 \subsection{Ablation Study}
 \label{sec:ablation}
@@ -331,7 +323,7 @@ Variant & Params & Top-1 Acc. & $\Delta$ vs. Full \\
 \midrule
 \textbf{Full model (spiral)}         & 1.03 M & $\mathbf{93.44\pm0.13\%}$ & -- \\
 Raster scan order                    & 1.03 M & $92.91\pm0.82\%$          & $-0.53\%$ \\
-Coarse branch only (B/32)            & 0.58 M & $93.51\pm0.41\%$          & $+0.07\%$ \\
+Coarse branch only (B/32)            & 0.58 M & $93.34\pm0.51\%$          & $-0.10\%$ \\
 Fine branch only (B/16)              & 0.60 M & $92.29\pm0.93\%$          & $-1.15\%$ \\
 No focal loss (CE only)              & 1.03 M & $92.83\pm0.96\%$          & $-0.61\%$ \\
 No Mamba (token-wise FFN)            & 0.77 M & $85.98\pm0.44\%$          & $-7.46\%$ \\
@@ -344,7 +336,39 @@ No feature-vector injection          & 1.03 M & $85.07\pm0.61\%$          & $-8.
 
 The frozen-CLIP MLP reaches $89.33\%$, so the full head adds $4.11$ points in this ablation setting. Removing the Mamba layer costs $7.46$ points and removing feature-vector injection costs $8.37$ points, with both variants falling below the spatial-grid-free MLP. This pattern indicates that the Mamba layer is valuable chiefly because it propagates the injected CLIP feature vector across spatial tokens before mean pooling; a token-wise FFN cannot perform that propagation.
 
-Spiral scanning gives a modest mean gain over raster order ($+0.53$ points) but a large stability gain, reducing the standard deviation from $0.82\%$ to $0.13\%$. The dual-branch design behaves similarly: the coarse-only branch matches the full model's mean, but its variance is higher. Finally, focal loss improves this head by $0.61$ points over cross-entropy, but it is not a general cure for imbalance, as the same loss lowers the frozen-CLIP MLP in \Cref{tab:aqua20}.
+Spiral scanning gives a modest mean gain over raster order ($+0.53$ points) but a large stability gain, reducing the standard deviation from $0.82\%$ to $0.13\%$. The dual-branch design behaves similarly: the coarse-only branch nearly matches the full model's mean ($-0.10$ points) but with markedly higher variance ($0.51\%$ vs.\ $0.13\%$). Finally, focal loss improves this head by $0.61$ points over cross-entropy, but it is not a general cure for imbalance, as the same loss lowers the frozen-CLIP MLP in \Cref{tab:aqua20}.
+
+\subsection{Embedding Visualization}
+\label{sec:umap}
+
+To qualitatively examine how the trainable head reshapes the frozen representation, we project six embedding spaces to two dimensions with UMAP~\cite{mcinnes2018umap} (\texttt{n\_neighbors}$=15$, \texttt{min\_dist}$=0.1$, and a $50$-component PCA pre-reduction), plotting train and test points together. The spaces are the two frozen CLIP spatial grids after mean pooling ($768$-d, ViT-B/16 and ViT-B/32), the fine and coarse MarineMamba branch descriptors ($128$-d each), their concatenation $\mathbf{h}=[\mathbf{h}_{16};\mathbf{h}_{32}]$ ($256$-d, the vector the classifier actually receives), and a $64\times64\times3$ raw-pixel baseline. \Cref{fig:umap-aqua20,fig:umap-sea23,fig:umap-fish4k} show the result for AQUA20, Sea Animals~23, and Fish4Knowledge.
+
+Three patterns recur across datasets. Raw pixels carry little class structure: species collapse into one largely undifferentiated mass on AQUA20 and Sea Animals~23, with only coarse colour-driven grouping on Fish4Knowledge. The mean-pooled CLIP spaces are clearly better but remain entangled, merging the dominant species into broad overlapping regions rather than separated clusters; this mirrors the limited accuracy of pooled-CLIP baselines that discard the spatial head, such as the $81.97\%$ linear probe on the global CLIP embeddings in \Cref{tab:aqua20}. The MarineMamba branch embeddings, and most clearly their fused fine$\oplus$coarse space, reorganize the same test images into compact, largely class-pure clusters. The head therefore does not merely rescale CLIP features; it restructures their geometry so that species become separable, which is the qualitative counterpart of the accuracy gains reported above.
+
+The per-dataset views add nuance. On Sea Animals~23, whose class distribution is least skewed, the fused space is the cleanest, isolating most of the $23$ species and matching its $95.90\%$ top-1 and $95.24\%$ macro-F1. On Fish4Knowledge, the fused space cleanly separates the frequent classes that dominate the 881:1 split while several rare classes stay small and mutually adjacent --- a visual analogue of the high top-1 but lower macro-F1 discussed in \Cref{sec:f4k-perclass}. On AQUA20, most species separate, but a few minority classes remain close together, echoing the macro-F1 gap noted in \Cref{sec:main-results}.
+
+These projections are nonlinear and serve only as qualitative illustration: absolute inter-cluster distances and cluster shapes should not be read quantitatively, and the visualization complements rather than replaces the metrics above.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{figures/umap_aqua20.jpg}
+  \caption{UMAP projection of six embedding spaces on AQUA20 (train $\cdot$, test $\times$). Panels 1--2: frozen CLIP ViT-B/16 and ViT-B/32 grids after mean pooling. Panels 3--5: MarineMamba fine, coarse, and fused fine$\oplus$coarse descriptors. Panel 6: $64\times64\times3$ raw-pixel baseline. Species stay entangled in the CLIP and raw-pixel spaces but form compact, largely class-pure clusters in the fused MarineMamba space.}
+  \label{fig:umap-aqua20}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{figures/umap_sea23.jpg}
+  \caption{UMAP projection of the same six embedding spaces on Sea Animals~23 (train $\cdot$, test $\times$). The fused MarineMamba space (panel 5) isolates most of the $23$ species into well-separated clusters --- the clearest separation among the three datasets, consistent with the strongest top-1 and macro-F1.}
+  \label{fig:umap-sea23}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{figures/umap_fish4k.jpg}
+  \caption{UMAP projection of the same six embedding spaces on Fish4Knowledge (train $\cdot$, test $\times$). Under the 881:1 imbalance, the fused MarineMamba space (panel 5) separates the frequent species that dominate the split, while several rare classes remain small and adjacent, mirroring the high top-1 but lower macro-F1.}
+  \label{fig:umap-fish4k}
+\end{figure}
 
 \subsection{Per-Class Behaviour under Extreme Imbalance}
 \label{sec:f4k-perclass}
@@ -354,7 +378,7 @@ Fish4Knowledge exposes the remaining failure mode. MarineMamba recovers $99.61\%
 \section{Conclusion}
 \label{sec:conclusion}
 
-This paper presented MarineMamba, a lightweight classifier that combines frozen CLIP ViT-B/16 and ViT-B/32 features with a spiral-scan Mamba head for underwater and aquatic species recognition. The method trains only 1.03M parameters, yet exceeds fVim-tiny on AQUA20 and Sea Animals 23 and remains competitive on the raw, highly imbalanced Fish4Knowledge split. The ablations clarify the mechanism: the main gain over a frozen-CLIP MLP comes from using the spatial grid, and the Mamba layer is most important for propagating the injected CLIP feature vector across spatial tokens before pooling.
+This paper presented MarineMamba, a lightweight classifier that combines frozen CLIP ViT-B/16 and ViT-B/32 features with a spiral-scan Mamba head for underwater and aquatic species recognition. The method trains only 1.03M parameters, yet exceeds our own fully fine-tuned fVim-tiny reference on AQUA20 and Sea Animals 23 and remains competitive with it on the raw, highly imbalanced Fish4Knowledge split. The ablations clarify the mechanism: the main gain over a frozen-CLIP MLP comes from using the spatial grid, and the Mamba layer is most important for propagating the injected CLIP feature vector across spatial tokens before pooling.
 
 \textbf{Limitations.} The results also set clear boundaries. MarineMamba's AQUA20 macro-F1 trails ConvNeXt despite higher top-1 accuracy, indicating that its gains are stronger on majority classes than on the smallest classes. The dual-branch design and spiral order improve stability more clearly than mean accuracy in isolation. On Fish4Knowledge, one non-rare class collapses to near-zero recall, and the retained fVim-tiny checkpoints are insufficient for a full per-class comparison. Future work will study class-specific failure diagnosis, additional CLIP granularities, and extensions to video or multi-view underwater data.
 
