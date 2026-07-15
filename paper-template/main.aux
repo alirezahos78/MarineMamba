@@ -3,7 +3,9 @@
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
 \citation{gonzalez2023underwater}
-\citation{fish4knowledge}
+\citation{he2016resnet,dosovitskiy2021vit,gu2024mamba}
+\citation{radford2021clip}
+\def\@LN@column{1}
 \@writefile{toc}{\contentsline {title}{MarineMamba: Multi-Granularity CLIP Feature Integration with Dual Mamba for Underwater Classification}{1}{chapter.1}\protected@file@percent }
 \@writefile{toc}{\authcount {1}}
 \@writefile{toc}{\contentsline {author}{Anonymous ECCV 2026{} Submission}{1}{chapter.1}\protected@file@percent }
@@ -11,14 +13,18 @@
 \newlabel{sec:intro}{{1}{1}{Introduction}{section.1}{}}
 \newlabel{sec:intro@cref}{{[section][1][]1}{[1][1][]1}{}{}{}}
 \@writefile{brf}{\backcite{gonzalez2023underwater}{{1}{1}{section.1}}}
-\citation{he2016resnet,dosovitskiy2021vit,gu2024mamba}
-\citation{radford2021clip}
 \citation{gu2024mamba}
 \citation{zhu2024vim}
 \citation{liu2024vmamba}
 \citation{huang2024localmamba}
 \citation{zhang2024visualmambasurvey}
-\@writefile{brf}{\backcite{fish4knowledge}{{2}{1}{section.1}}}
+\citation{gonzalez2023underwater}
+\citation{he2016resnet}
+\citation{tan2019efficientnet}
+\citation{liu2022convnext}
+\citation{dosovitskiy2021vit}
+\citation{gonzalez2023underwater}
+\def\@LN@column{1}
 \@writefile{brf}{\backcite{he2016resnet,dosovitskiy2021vit,gu2024mamba}{{2}{1}{section.1}}}
 \@writefile{brf}{\backcite{radford2021clip}{{2}{1}{section.1}}}
 \@writefile{brf}{\backcite{gu2024mamba}{{2}{1}{section.1}}}
@@ -26,12 +32,6 @@
 \@writefile{brf}{\backcite{liu2024vmamba}{{2}{1}{section.1}}}
 \@writefile{brf}{\backcite{huang2024localmamba}{{2}{1}{section.1}}}
 \@writefile{brf}{\backcite{zhang2024visualmambasurvey}{{2}{1}{section.1}}}
-\citation{gonzalez2023underwater}
-\citation{he2016resnet}
-\citation{tan2019efficientnet}
-\citation{liu2022convnext}
-\citation{dosovitskiy2021vit}
-\citation{gonzalez2023underwater}
 \citation{fish4knowledge}
 \citation{prasetyo2021resvggnet}
 \citation{qu2024convfishnet}
@@ -50,9 +50,12 @@
 \citation{spiralmamba}
 \citation{lsfmamba}
 \citation{cao2025m3amba}
+\citation{gonzalez2023underwater}
+\citation{zhang2024visualmambasurvey}
+\def\@LN@column{1}
 \@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{3}{section.2}\protected@file@percent }
 \newlabel{sec:related}{{2}{3}{Related Work}{section.2}{}}
-\newlabel{sec:related@cref}{{[section][2][]2}{[1][3][]3}{}{}{}}
+\newlabel{sec:related@cref}{{[section][2][]2}{[1][2][]3}{}{}{}}
 \@writefile{brf}{\backcite{gonzalez2023underwater}{{3}{2}{section.2}}}
 \@writefile{brf}{\backcite{he2016resnet}{{3}{2}{section.2}}}
 \@writefile{brf}{\backcite{tan2019efficientnet}{{3}{2}{section.2}}}
@@ -76,61 +79,61 @@
 \@writefile{brf}{\backcite{yang2024plainmamba}{{3}{2}{section.2}}}
 \@writefile{brf}{\backcite{spiralmamba}{{3}{2}{section.2}}}
 \@writefile{brf}{\backcite{lsfmamba}{{3}{2}{section.2}}}
-\citation{gonzalez2023underwater}
-\citation{zhang2024visualmambasurvey}
-\@writefile{brf}{\backcite{cao2025m3amba}{{4}{2}{section.2}}}
-\@writefile{brf}{\backcite{gonzalez2023underwater}{{4}{2}{section.2}}}
+\@writefile{brf}{\backcite{cao2025m3amba}{{3}{2}{section.2}}}
+\@writefile{brf}{\backcite{gonzalez2023underwater}{{3}{2}{section.2}}}
+\def\@LN@column{1}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Illustration of MarineMamba.}}{4}{figure.caption.2}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:architecture}{{1}{4}{Illustration of MarineMamba}{figure.caption.2}{}}
+\newlabel{fig:architecture@cref}{{[figure][1][]1}{[1][4][]4}{}{}{}}
 \@writefile{brf}{\backcite{zhang2024visualmambasurvey}{{4}{2}{section.2}}}
 \@writefile{toc}{\contentsline {section}{\numberline {3}Methodology}{4}{section.3}\protected@file@percent }
 \newlabel{sec:method}{{3}{4}{Methodology}{section.3}{}}
 \newlabel{sec:method@cref}{{[section][3][]3}{[1][4][]4}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Multi-Granularity CLIP Feature Extraction}{4}{subsection.3.1}\protected@file@percent }
-\newlabel{sec:method-clip}{{3.1}{4}{Multi-Granularity CLIP Feature Extraction}{subsection.3.1}{}}
-\newlabel{sec:method-clip@cref}{{[subsection][1][3]3.1}{[1][4][]4}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Dual-Branch Encoder}{4}{subsection.3.2}\protected@file@percent }
-\newlabel{sec:method-encoder}{{3.2}{4}{Dual-Branch Encoder}{subsection.3.2}{}}
-\newlabel{sec:method-encoder@cref}{{[subsection][2][3]3.2}{[1][4][]4}{}{}{}}
-\newlabel{eq:token-projection}{{1}{4}{Dual-Branch Encoder}{equation.1}{}}
-\newlabel{eq:token-projection@cref}{{[equation][1][]1}{[1][4][]4}{}{}{}}
 \citation{spiralmamba,lsfmamba}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Overview of MarineMamba. Frozen CLIP ViT-B/16 and ViT-B/32 encoders provide fine and coarse feature grids plus global CLIP feature vectors. Each branch performs spiral-ordered Mamba modeling, and the two descriptors are concatenated for classification.}}{5}{figure.caption.2}\protected@file@percent }
-\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{fig:architecture}{{1}{5}{Overview of MarineMamba. Frozen CLIP ViT-B/16 and ViT-B/32 encoders provide fine and coarse feature grids plus global CLIP feature vectors. Each branch performs spiral-ordered Mamba modeling, and the two descriptors are concatenated for classification}{figure.caption.2}{}}
-\newlabel{fig:architecture@cref}{{[figure][1][]1}{[1][4][]5}{}{}{}}
+\def\@LN@column{1}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Dual-Branch Encoder}{5}{subsection.3.1}\protected@file@percent }
+\newlabel{sec:method-dual-branch}{{3.1}{5}{Dual-Branch Encoder}{subsection.3.1}{}}
+\newlabel{sec:method-dual-branch@cref}{{[subsection][1][3]3.1}{[1][4][]5}{}{}{}}
+\newlabel{eq:token-projection}{{1}{5}{Dual-Branch Encoder}{equation.1}{}}
+\newlabel{eq:token-projection@cref}{{[equation][1][]1}{[1][5][]5}{}{}{}}
 \newlabel{eq:branch-pooling}{{2}{5}{Dual-Branch Encoder}{equation.2}{}}
 \newlabel{eq:branch-pooling@cref}{{[equation][2][]2}{[1][5][]5}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Spiral Token Order}{5}{subsection.3.3}\protected@file@percent }
-\newlabel{sec:method-spiral}{{3.3}{5}{Spiral Token Order}{subsection.3.3}{}}
-\newlabel{sec:method-spiral@cref}{{[subsection][3][3]3.3}{[1][5][]5}{}{}{}}
-\@writefile{brf}{\backcite{spiralmamba,lsfmamba}{{5}{3.3}{subsection.3.3}}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Spiral Token Order}{5}{subsection.3.2}\protected@file@percent }
+\newlabel{sec:method-spiral}{{3.2}{5}{Spiral Token Order}{subsection.3.2}{}}
+\newlabel{sec:method-spiral@cref}{{[subsection][2][3]3.2}{[1][5][]5}{}{}{}}
+\@writefile{brf}{\backcite{spiralmamba,lsfmamba}{{5}{3.2}{subsection.3.2}}}
 \citation{woo2018cbam}
 \citation{touvron2021cait}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}MarineMamba Block}{6}{subsection.3.4}\protected@file@percent }
-\newlabel{sec:method-block}{{3.4}{6}{MarineMamba Block}{subsection.3.4}{}}
-\newlabel{sec:method-block@cref}{{[subsection][4][3]3.4}{[1][6][]6}{}{}{}}
+\citation{lin2017focal}
+\def\@LN@column{1}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}MarineMamba Block}{6}{subsection.3.3}\protected@file@percent }
+\newlabel{sec:method-block}{{3.3}{6}{MarineMamba Block}{subsection.3.3}{}}
+\newlabel{sec:method-block@cref}{{[subsection][3][3]3.3}{[1][5][]6}{}{}{}}
 \newlabel{eq:spiral-mamba}{{3}{6}{MarineMamba Block}{equation.3}{}}
 \newlabel{eq:spiral-mamba@cref}{{[equation][3][]3}{[1][6][]6}{}{}{}}
 \newlabel{eq:direction-fusion}{{4}{6}{MarineMamba Block}{equation.4}{}}
 \newlabel{eq:direction-fusion@cref}{{[equation][4][]4}{[1][6][]6}{}{}{}}
-\@writefile{brf}{\backcite{woo2018cbam}{{6}{3.4}{equation.4}}}
+\@writefile{brf}{\backcite{woo2018cbam}{{6}{3.3}{equation.4}}}
 \newlabel{eq:attention}{{5}{6}{MarineMamba Block}{equation.5}{}}
 \newlabel{eq:attention@cref}{{[equation][5][]5}{[1][6][]6}{}{}{}}
 \newlabel{eq:block-update}{{6}{6}{MarineMamba Block}{equation.6}{}}
 \newlabel{eq:block-update@cref}{{[equation][6][]6}{[1][6][]6}{}{}{}}
-\@writefile{brf}{\backcite{touvron2021cait}{{6}{3.4}{equation.6}}}
+\@writefile{brf}{\backcite{touvron2021cait}{{6}{3.3}{equation.6}}}
 \newlabel{eq:classifier}{{7}{6}{MarineMamba Block}{equation.7}{}}
 \newlabel{eq:classifier@cref}{{[equation][7][]7}{[1][6][]6}{}{}{}}
-\citation{lin2017focal}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Objective Function}{6}{subsection.3.4}\protected@file@percent }
+\newlabel{sec:method-loss}{{3.4}{6}{Objective Function}{subsection.3.4}{}}
+\newlabel{sec:method-loss@cref}{{[subsection][4][3]3.4}{[1][6][]6}{}{}{}}
+\newlabel{eq:focal-loss}{{8}{6}{Objective Function}{equation.8}{}}
+\newlabel{eq:focal-loss@cref}{{[equation][8][]8}{[1][6][]6}{}{}{}}
 \citation{fuad2026aqua20}
 \citation{sea23}
 \citation{fish4knowledge}
 \citation{prasetyo2021resvggnet}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Objective Function}{7}{subsection.3.5}\protected@file@percent }
-\newlabel{sec:method-loss}{{3.5}{7}{Objective Function}{subsection.3.5}{}}
-\newlabel{sec:method-loss@cref}{{[subsection][5][3]3.5}{[1][6][]7}{}{}{}}
-\newlabel{eq:focal-loss}{{8}{7}{Objective Function}{equation.8}{}}
-\newlabel{eq:focal-loss@cref}{{[equation][8][]8}{[1][6][]7}{}{}{}}
-\@writefile{brf}{\backcite{lin2017focal}{{7}{3.5}{equation.8}}}
+\citation{zhu2024vim}
+\def\@LN@column{1}
+\@writefile{brf}{\backcite{lin2017focal}{{7}{3.4}{equation.8}}}
 \@writefile{toc}{\contentsline {section}{\numberline {4}Experiments}{7}{section.4}\protected@file@percent }
 \newlabel{sec:experiments}{{4}{7}{Experiments}{section.4}{}}
 \newlabel{sec:experiments@cref}{{[section][4][]4}{[1][7][]7}{}{}{}}
@@ -139,17 +142,8 @@
 \@writefile{brf}{\backcite{sea23}{{7}{4.1}{subsection.4.1}}}
 \@writefile{brf}{\backcite{fish4knowledge}{{7}{4.1}{subsection.4.1}}}
 \@writefile{brf}{\backcite{prasetyo2021resvggnet}{{7}{4.1}{subsection.4.1}}}
-\citation{zhu2024vim}
-\citation{fuad2026aqua20}
-\citation{daga2026aquaselect}
-\newlabel{fig:dataset}{{\caption@xref {fig:dataset}{ on input line 216}}{8}{Datasets}{figure.caption.3}{}}
-\newlabel{fig:dataset@cref}{{[subsection][1][4]4.1}{[1][7][]8}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Class-wise train/test sample distribution showing long right-tailed imbalance, most prominently in Fish4Knowledge and AQUA20.}}{8}{figure.caption.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Implementation Details}{8}{subsection.4.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Main Results}{8}{subsection.4.3}\protected@file@percent }
-\newlabel{sec:main-results}{{4.3}{8}{Main Results}{subsection.4.3}{}}
-\newlabel{sec:main-results@cref}{{[subsection][3][4]4.3}{[1][8][]8}{}{}{}}
-\@writefile{brf}{\backcite{zhu2024vim}{{8}{4.3}{subsection.4.3}}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Implementation Details}{7}{subsection.4.2}\protected@file@percent }
+\@writefile{brf}{\backcite{zhu2024vim}{{7}{4.2}{subsection.4.2}}}
 \citation{fuad2026aqua20}
 \citation{daga2026aquaselect}
 \citation{fuad2026aqua20}
@@ -165,61 +159,62 @@
 \citation{liu2022convnext}
 \citation{daga2026aquaselect}
 \citation{prasetyo2021resvggnet}
-\citation{zhu2024vim}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Selected results on AQUA20 (20 classes). Rows marked $\dagger $ are fully fine-tuned baselines reported by Fuad et al.~\cite  {fuad2026aqua20}; $\ddagger $ denotes backbones fine-tuned by Daga et al.~\cite  {daga2026aquaselect}. Parameter counts for frozen-CLIP rows and MarineMamba are trainable parameters. fVim-tiny and MarineMamba are our own models, trained by us under identical conditions.}}{9}{table.caption.4}\protected@file@percent }
+\citation{fuad2026aqua20}
+\citation{daga2026aquaselect}
+\def\@LN@column{1}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Class-wise train/test sample distribution showing long tailed imbalance, most prominently in Fish4Knowledge and AQUA20.}}{8}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:dataset}{{2}{8}{Class-wise train/test sample distribution showing long tailed imbalance, most prominently in Fish4Knowledge and AQUA20}{figure.caption.3}{}}
+\newlabel{fig:dataset@cref}{{[figure][2][]2}{[1][7][]8}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Main Results}{8}{subsection.4.3}\protected@file@percent }
+\newlabel{sec:main-results}{{4.3}{8}{Main Results}{subsection.4.3}{}}
+\newlabel{sec:main-results@cref}{{[subsection][3][4]4.3}{[1][8][]8}{}{}{}}
+\@writefile{brf}{\backcite{fuad2026aqua20}{{8}{4.3}{table.caption.6}}}
+\@writefile{brf}{\backcite{daga2026aquaselect}{{8}{4.3}{table.caption.6}}}
+\citation{mcinnes2018umap}
+\def\@LN@column{1}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Selected results on AQUA20 (20 classes). Rows marked $\dagger $ are fully fine-tuned baselines reported by Fuad et al.~\cite  {fuad2026aqua20}; $\ddagger $ denotes backbones fine-tuned by Daga et al.~\cite  {daga2026aquaselect}. Parameter counts are trainable parameters.}}{9}{table.caption.4}\protected@file@percent }
 \@writefile{brf}{\backcite{fuad2026aqua20}{{9}{1}{table.caption.4}}}
 \@writefile{brf}{\backcite{daga2026aquaselect}{{9}{1}{table.caption.4}}}
-\newlabel{tab:aqua20}{{1}{9}{Selected results on AQUA20 (20 classes). Rows marked $\dagger $ are fully fine-tuned baselines reported by Fuad et al.~\cite {fuad2026aqua20}; $\ddagger $ denotes backbones fine-tuned by Daga et al.~\cite {daga2026aquaselect}. Parameter counts for frozen-CLIP rows and MarineMamba are trainable parameters. fVim-tiny and MarineMamba are our own models, trained by us under identical conditions}{table.caption.4}{}}
-\newlabel{tab:aqua20@cref}{{[table][1][]1}{[1][9][]9}{}{}{}}
+\newlabel{tab:aqua20}{{1}{9}{Selected results on AQUA20 (20 classes). Rows marked $\dagger $ are fully fine-tuned baselines reported by Fuad et al.~\cite {fuad2026aqua20}; $\ddagger $ denotes backbones fine-tuned by Daga et al.~\cite {daga2026aquaselect}. Parameter counts are trainable parameters}{table.caption.4}{}}
+\newlabel{tab:aqua20@cref}{{[table][1][]1}{[1][8][]9}{}{}{}}
 \@writefile{brf}{\backcite{iandola2016squeezenet}{{9}{1}{table.caption.4}}}
 \@writefile{brf}{\backcite{ma2018shufflenetv2}{{9}{1}{table.caption.4}}}
 \@writefile{brf}{\backcite{liu2022convnext}{{9}{1}{table.caption.4}}}
 \@writefile{brf}{\backcite{dosovitskiy2021vit}{{9}{1}{table.caption.4}}}
 \@writefile{brf}{\backcite{liu2022convnext}{{9}{1}{table.caption.4}}}
 \@writefile{brf}{\backcite{touvron2021deit}{{9}{1}{table.caption.4}}}
-\@writefile{brf}{\backcite{fuad2026aqua20}{{9}{4.3}{subsection.4.3}}}
-\@writefile{brf}{\backcite{daga2026aquaselect}{{9}{4.3}{subsection.4.3}}}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Results on Sea Animals 23 (23 classes, 13{,}711 images). The ConvNeXt-Tiny row is reported by Daga et al.~\cite  {daga2026aquaselect}, who reserve 15\% of the training split for validation (9{,}322/1{,}646/2{,}743). Our 80/20 stratified split yields a test set of comparable size but is not the identical partition.}}{10}{table.caption.5}\protected@file@percent }
-\@writefile{brf}{\backcite{daga2026aquaselect}{{10}{2}{table.caption.5}}}
-\newlabel{tab:sea23}{{2}{10}{Results on Sea Animals 23 (23 classes, 13{,}711 images). The ConvNeXt-Tiny row is reported by Daga et al.~\cite {daga2026aquaselect}, who reserve 15\% of the training split for validation (9{,}322/1{,}646/2{,}743). Our 80/20 stratified split yields a test set of comparable size but is not the identical partition}{table.caption.5}{}}
-\newlabel{tab:sea23@cref}{{[table][2][]2}{[1][9][]10}{}{}{}}
-\@writefile{brf}{\backcite{liu2022convnext}{{10}{2}{table.caption.5}}}
-\@writefile{brf}{\backcite{daga2026aquaselect}{{10}{2}{table.caption.5}}}
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Results on Fish4Knowledge (23 classes). The top block is our own controlled comparison on the raw 881:1-imbalanced 80/20 split, with both rows trained by us under an identical protocol on an identical split. The bottom block lists published results reported by Prasetyo et al.$^{\S  }$ .}}{10}{table.caption.6}\protected@file@percent }
-\newlabel{tab:fish4k}{{3}{10}{Results on Fish4Knowledge (23 classes). The top block is our own controlled comparison on the raw 881:1-imbalanced 80/20 split, with both rows trained by us under an identical protocol on an identical split. The bottom block lists published results reported by Prasetyo et al.$^{\S }$ }{table.caption.6}{}}
-\newlabel{tab:fish4k@cref}{{[table][3][]3}{[1][9][]10}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Results on Sea Animals 23. The ConvNeXt-Tiny row is reported by Daga et al.~\cite  {daga2026aquaselect}, who reserve 15\% of the training split for validation. Our 80/20 stratified split yields a test set of comparable size but is not the identical partition.}}{9}{table.caption.5}\protected@file@percent }
+\@writefile{brf}{\backcite{daga2026aquaselect}{{9}{2}{table.caption.5}}}
+\newlabel{tab:sea23}{{2}{9}{Results on Sea Animals 23. The ConvNeXt-Tiny row is reported by Daga et al.~\cite {daga2026aquaselect}, who reserve 15\% of the training split for validation. Our 80/20 stratified split yields a test set of comparable size but is not the identical partition}{table.caption.5}{}}
+\newlabel{tab:sea23@cref}{{[table][2][]2}{[1][8][]9}{}{}{}}
+\@writefile{brf}{\backcite{liu2022convnext}{{9}{2}{table.caption.5}}}
+\@writefile{brf}{\backcite{daga2026aquaselect}{{9}{2}{table.caption.5}}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Embedding Visualization}{9}{subsection.4.4}\protected@file@percent }
+\newlabel{sec:umap}{{4.4}{9}{Embedding Visualization}{subsection.4.4}{}}
+\newlabel{sec:umap@cref}{{[subsection][4][4]4.4}{[1][9][]9}{}{}{}}
+\@writefile{brf}{\backcite{mcinnes2018umap}{{9}{4.4}{subsection.4.4}}}
+\def\@LN@column{1}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Results on Fish4Knowledge (23 classes). The bottom block lists published results reported by Prasetyo et al.$^{\S  }$ .}}{10}{table.caption.6}\protected@file@percent }
+\newlabel{tab:fish4k}{{3}{10}{Results on Fish4Knowledge (23 classes). The bottom block lists published results reported by Prasetyo et al.$^{\S }$ }{table.caption.6}{}}
+\newlabel{tab:fish4k@cref}{{[table][3][]3}{[1][8][]10}{}{}{}}
 \@writefile{brf}{\backcite{prasetyo2021resvggnet}{{10}{3}{table.caption.6}}}
-\@writefile{brf}{\backcite{zhu2024vim}{{10}{3}{table.caption.6}}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Ablation Study}{10}{subsection.4.4}\protected@file@percent }
-\newlabel{sec:ablation}{{4.4}{10}{Ablation Study}{subsection.4.4}{}}
-\newlabel{sec:ablation@cref}{{[subsection][4][4]4.4}{[1][10][]10}{}{}{}}
-\citation{mcinnes2018umap}
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Ablation study on AQUA20. The frozen-CLIP MLP row is a reference point rather than a model ablation because it discards the spatial grid.}}{11}{table.caption.7}\protected@file@percent }
-\newlabel{tab:ablation}{{4}{11}{Ablation study on AQUA20. The frozen-CLIP MLP row is a reference point rather than a model ablation because it discards the spatial grid}{table.caption.7}{}}
-\newlabel{tab:ablation@cref}{{[table][4][]4}{[1][10][]11}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Embedding Visualization}{11}{subsection.4.5}\protected@file@percent }
-\newlabel{sec:umap}{{4.5}{11}{Embedding Visualization}{subsection.4.5}{}}
-\newlabel{sec:umap@cref}{{[subsection][5][4]4.5}{[1][11][]11}{}{}{}}
-\@writefile{brf}{\backcite{mcinnes2018umap}{{11}{4.5}{subsection.4.5}}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces UMAP projection of six embedding spaces on AQUA20 (train $\cdot $, test $\times $). Panels 1--2: frozen CLIP ViT-B/16 and ViT-B/32 grids after mean pooling. Panels 3--5: MarineMamba fine, coarse, and fused fine$\oplus $coarse descriptors. Panel 6: $64\times 64\times 3$ raw-pixel baseline. Species stay entangled in the CLIP and raw-pixel spaces but form compact, largely class-pure clusters in the fused MarineMamba space.}}{12}{figure.caption.8}\protected@file@percent }
-\newlabel{fig:umap-aqua20}{{3}{12}{UMAP projection of six embedding spaces on AQUA20 (train $\cdot $, test $\times $). Panels 1--2: frozen CLIP ViT-B/16 and ViT-B/32 grids after mean pooling. Panels 3--5: MarineMamba fine, coarse, and fused fine$\oplus $coarse descriptors. Panel 6: $64\times 64\times 3$ raw-pixel baseline. Species stay entangled in the CLIP and raw-pixel spaces but form compact, largely class-pure clusters in the fused MarineMamba space}{figure.caption.8}{}}
-\newlabel{fig:umap-aqua20@cref}{{[figure][3][]3}{[1][12][]12}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces UMAP projection of the same six embedding spaces on Sea Animals~23 (train $\cdot $, test $\times $). The fused MarineMamba space (panel 5) isolates most of the $23$ species into well-separated clusters --- the clearest separation among the three datasets, consistent with the strongest top-1 and macro-F1.}}{13}{figure.caption.9}\protected@file@percent }
-\newlabel{fig:umap-sea23}{{4}{13}{UMAP projection of the same six embedding spaces on Sea Animals~23 (train $\cdot $, test $\times $). The fused MarineMamba space (panel 5) isolates most of the $23$ species into well-separated clusters --- the clearest separation among the three datasets, consistent with the strongest top-1 and macro-F1}{figure.caption.9}{}}
-\newlabel{fig:umap-sea23@cref}{{[figure][4][]4}{[1][12][]13}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Per-Class Behaviour under Extreme Imbalance}{13}{subsection.4.6}\protected@file@percent }
-\newlabel{sec:f4k-perclass}{{4.6}{13}{Per-Class Behaviour under Extreme Imbalance}{subsection.4.6}{}}
-\newlabel{sec:f4k-perclass@cref}{{[subsection][6][4]4.6}{[1][12][]13}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusion}{13}{section.5}\protected@file@percent }
-\newlabel{sec:conclusion}{{5}{13}{Conclusion}{section.5}{}}
-\newlabel{sec:conclusion@cref}{{[section][5][]5}{[1][13][]13}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Ablation study on AQUA20.}}{10}{table.caption.10}\protected@file@percent }
+\newlabel{tab:ablation}{{4}{10}{Ablation study on AQUA20}{table.caption.10}{}}
+\newlabel{tab:ablation@cref}{{[table][4][]4}{[1][10][]10}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Ablation Study}{10}{subsection.4.5}\protected@file@percent }
+\newlabel{sec:ablation}{{4.5}{10}{Ablation Study}{subsection.4.5}{}}
+\newlabel{sec:ablation@cref}{{[subsection][5][4]4.5}{[1][10][]10}{}{}{}}
 \bibstyle{splncs04}
 \bibdata{main}
 \bibcite{cao2025m3amba}{1}
+\def\@LN@column{1}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces UMAP projection of six embedding spaces on AQUA20.}}{11}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:umap-aqua20}{{3}{11}{UMAP projection of six embedding spaces on AQUA20}{figure.caption.7}{}}
+\newlabel{fig:umap-aqua20@cref}{{[figure][3][]3}{[1][9][]11}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusion}{11}{section.5}\protected@file@percent }
+\newlabel{sec:conclusion}{{5}{11}{Conclusion}{section.5}{}}
+\newlabel{sec:conclusion@cref}{{[section][5][]5}{[1][11][]11}{}{}{}}
 \bibcite{lsfmamba}{2}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces UMAP projection of the same six embedding spaces on Fish4Knowledge (train $\cdot $, test $\times $). Under the 881:1 imbalance, the fused MarineMamba space (panel 5) separates the frequent species that dominate the split, while several rare classes remain small and adjacent, mirroring the high top-1 but lower macro-F1.}}{14}{figure.caption.10}\protected@file@percent }
-\newlabel{fig:umap-fish4k}{{5}{14}{UMAP projection of the same six embedding spaces on Fish4Knowledge (train $\cdot $, test $\times $). Under the 881:1 imbalance, the fused MarineMamba space (panel 5) separates the frequent species that dominate the split, while several rare classes remain small and adjacent, mirroring the high top-1 but lower macro-F1}{figure.caption.10}{}}
-\newlabel{fig:umap-fish4k@cref}{{[figure][5][]5}{[1][12][]14}{}{}{}}
 \bibcite{daga2026aquaselect}{3}
 \bibcite{dosovitskiy2021vit}{4}
 \bibcite{fish4knowledge}{5}
@@ -228,6 +223,10 @@
 \bibcite{gu2024mamba}{8}
 \bibcite{gu2022s4}{9}
 \bibcite{he2016resnet}{10}
+\def\@LN@column{1}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces UMAP projection of the same six embedding spaces on Sea Animals~23.}}{12}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:umap-sea23}{{4}{12}{UMAP projection of the same six embedding spaces on Sea Animals~23}{figure.caption.8}{}}
+\newlabel{fig:umap-sea23@cref}{{[figure][4][]4}{[1][9][]12}{}{}{}}
 \bibcite{huang2024localmamba}{11}
 \bibcite{iandola2016squeezenet}{12}
 \bibcite{sea23}{13}
@@ -237,6 +236,10 @@
 \bibcite{ma2018shufflenetv2}{17}
 \bibcite{mcinnes2018umap}{18}
 \bibcite{prasetyo2021resvggnet}{19}
+\def\@LN@column{1}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces UMAP projection of the same six embedding spaces on Fish4Knowledge.}}{13}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:umap-fish4k}{{5}{13}{UMAP projection of the same six embedding spaces on Fish4Knowledge}{figure.caption.9}{}}
+\newlabel{fig:umap-fish4k@cref}{{[figure][5][]5}{[1][9][]13}{}{}{}}
 \bibcite{qu2024convfishnet}{20}
 \bibcite{radford2021clip}{21}
 \bibcite{sun2018fishnet}{22}
@@ -248,4 +251,5 @@
 \bibcite{yang2024plainmamba}{28}
 \bibcite{zhang2024visualmambasurvey}{29}
 \bibcite{zhu2024vim}{30}
-\gdef \@abspage@last{16}
+\def\@LN@column{1}
+\gdef \@abspage@last{14}
