@@ -55,7 +55,7 @@ from marinemamba.utils import set_seed, ensure_dir
 ##  ---── Vim model cache ───────────────────────────────────────────────────────────
 
 _FINETUNING_VIM = Path(
-    "/localhome/ehoseinz/PycharmProjects/EEG/finetuning vimamba/Vim"
+    os.environ.get("VIM_ROOT", str(PROJECT_ROOT / "data" / "_vim_repo" / "Vim"))
 )
 VIM_CACHE = (
     _FINETUNING_VIM / "vim"

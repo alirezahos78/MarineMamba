@@ -60,7 +60,9 @@ _IMAGENET_MEAN = (0.485, 0.456, 0.406)
 _IMAGENET_STD  = (0.229, 0.224, 0.225)
 
 # ── Paths (copied verbatim from baseline_vim.py) ─────────────────────────────
-_FINETUNING_VIM = Path("/localhome/ehoseinz/PycharmProjects/EEG/finetuning vimamba/Vim")
+_FINETUNING_VIM = Path(
+    os.environ.get("VIM_ROOT", str(Path(PROJECT_ROOT) / "data" / "_vim_repo" / "Vim"))
+)
 VIM_CACHE = (
     _FINETUNING_VIM / "vim"
     if _FINETUNING_VIM.exists()
