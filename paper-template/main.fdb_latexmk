@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex main"] 1784106214.81362 "main.aux" "main.bbl" "main" 1784106573.10988 0
+["bibtex main"] 1784116510.37877 "main.aux" "main.bbl" "main" 1784135356.26368 0
   "./main.bib" 1784062452 11090 598da3ce6f2056f55d2af9b8d8ce6749 ""
   "./splncs04.bst" 1783408066 32146 ee21ae2a29028dc8ad842a97200982c7 ""
-  "main.aux" 1784106572.80222 16030 c168c35f807e67f4eb2a06f04c84992f "pdflatex"
+  "main.aux" 1784135355.67877 15992 a690623996473ee405811bd25cabd48c "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1784106572.08511 "main.tex" "main.pdf" "main" 1784106573.11 0
+["pdflatex"] 1784135354.10141 "main.tex" "main.pdf" "main" 1784135356.264 0
   "/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1136849721 2971 def0b6c1f0b107b3b936def894055589 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1136849721 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -212,6 +212,7 @@
   "/usr/local/texlive/2026/texmf-dist/tex/latex/pgf/utilities/pgffor.sty" 1601326656 348 ee405e64380c11319f0e249fed57e6c5 ""
   "/usr/local/texlive/2026/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty" 1601326656 274 5ae372b7df79135d240456a1c6f2cf9a ""
   "/usr/local/texlive/2026/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty" 1601326656 325 f9f16d12354225b7dd52a3321f085955 ""
+  "/usr/local/texlive/2026/texmf-dist/tex/latex/placeins/placeins.sty" 1137110565 4087 636308456f60d2b31cbf97867db5708d ""
   "/usr/local/texlive/2026/texmf-dist/tex/latex/refcount/refcount.sty" 1576624809 9878 9e94e8fa600d95f9c7731bb21dfb67a4 ""
   "/usr/local/texlive/2026/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty" 1750533675 9684 a33a14b82ce60d6e77cb9be689d79ee6 ""
   "/usr/local/texlive/2026/texmf-dist/tex/latex/silence/silence.sty" 1342202217 17540 5aad5dddd881dee43ad1a83adb336af9 ""
@@ -231,11 +232,11 @@
   "figures/umap_fish4k.jpg" 1784097269.30505 939125 adc1399f54acb04a79c3e6183af7b998 ""
   "figures/umap_sea23.jpg" 1784097270.75653 840394 1014fcc5cbebc2811e16a00b70b8e10f ""
   "llncs.cls" 1783781330 42312 5c930e3a884976fbd3796e3ab18cc1af ""
-  "main.aux" 1784106572.80222 16030 c168c35f807e67f4eb2a06f04c84992f "pdflatex"
-  "main.bbl" 1784106214.94177 7228 c6f4f14fe24782703c28bb12de37bb19 "bibtex main"
-  "main.brf" 1784106572.80342 2979 79cfe2d9d61a6f53810c57c78579d167 "pdflatex"
-  "main.out" 1784106572.80334 578 9557b6171ae49dc553300fd5cf5ec702 "pdflatex"
-  "main.tex" 1784106566.18251 36596 47d108bc062635ae4d8339bda8639978 ""
+  "main.aux" 1784135355.67877 15992 a690623996473ee405811bd25cabd48c "pdflatex"
+  "main.bbl" 1784116510.58296 7228 c6f4f14fe24782703c28bb12de37bb19 "bibtex main"
+  "main.brf" 1784135355.68133 2979 92197d8b75e73fb3f25228aad8012753 "pdflatex"
+  "main.out" 1784135355.68107 578 9557b6171ae49dc553300fd5cf5ec702 "pdflatex"
+  "main.tex" 1784135350.58459 37208 e4d8d57033bda376aaf60c26ff13ee6e ""
   (generated)
   "main.aux"
   "main.brf"

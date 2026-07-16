@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.3.22)  15 JUL 2026 12:39
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.3.22)  15 JUL 2026 20:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -436,6 +436,9 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \float@box=\box104
 \@float@everytoks=\toks38
 \@floatcapt=\box105
+)
+(/usr/local/texlive/2026/texmf-dist/tex/latex/placeins/placeins.sty
+Package: placeins 2005/04/18  v 2.2
 )
 (/usr/local/texlive/2026/texmf-dist/tex/latex/axessibility/axessibility.sty
 Package: axessibility 
@@ -897,24 +900,24 @@ File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 (./main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
 
 (/usr/local/texlive/2026/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -985,18 +988,18 @@ Package caption Info: End \AtBeginDocument code.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring ON on input line 18.
+Package hyperref Info: Link coloring ON on input line 19.
 (./main.out) (./main.out)
 \@outlinefile=\write4
 \openout4 = `main.out'.
 
-LaTeX Font Info:    Trying to load font information for U+msa on input line 28.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 29.
 
 
 (/usr/local/texlive/2026/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 28.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 29.
 
 
 (/usr/local/texlive/2026/texmf-dist/tex/latex/amsfonts/umsb.fd
@@ -1005,40 +1008,21 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
 {/usr/local/texlive/2026/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/loc
 al/texlive/2026/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}{/usr/local
-/texlive/2026/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
-Overfull \hbox (4.82188pt too wide) in paragraph at lines 44--45
-[]\T1/cmr/m/n/10 We pro-pose Marine-Mamba, a dual-branch clas-si-fier for un-de
-r-wa-ter and aquatic
- []
-
-
-Underfull \vbox (badness 1852) has occurred while \output is active []
-
-
-Underfull \vbox (badness 1852) has occurred while \output is active []
-
- [2]
-[3]
-<figures/mamba.drawio.jpg, id=103, 2007.5pt x 1412.27625pt>
+/texlive/2026/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}] [2] [3]
+<figures/mamba.drawio.jpg, id=106, 2007.5pt x 1412.27625pt>
 File: figures/mamba.drawio.jpg Graphic file (type jpg)
 <use figures/mamba.drawio.jpg>
-Package pdftex.def Info: figures/mamba.drawio.jpg  used on input line 78.
-(pdftex.def)             Requested size: 270.75598pt x 190.47667pt.
+Package pdftex.def Info: figures/mamba.drawio.jpg  used on input line 79.
+(pdftex.def)             Requested size: 295.05717pt x 207.56548pt.
 
-Underfull \vbox (badness 4108) has occurred while \output is active []
-
-
-Underfull \vbox (badness 4108) has occurred while \output is active []
-
- [4 <./figures/mamba.drawio.jpg>]
-Overfull \hbox (5.69852pt too wide) in paragraph at lines 99--100
+Overfull \hbox (5.69852pt too wide) in paragraph at lines 100--101
 []\T1/cmr/m/n/10 For each res-o-lu-tion, the spa-tial grid is flat-tened into $
 \OML/cmm/m/it/10 N[]$ \T1/cmr/m/n/10 patch to-kens, $[]\OT1/cmr/m/n/10 (\OT1/cm
 r/bx/n/10 S[]\OT1/cmr/m/n/10 ) \OMS/cmsy/m/n/10 2
  []
 
-
-Overfull \hbox (4.67702pt too wide) in paragraph at lines 128--129
+[4]
+Overfull \hbox (4.67702pt too wide) in paragraph at lines 129--130
 \T1/cmr/m/n/10 Let $\OMS/cmsy/m/n/10 G[] \OT1/cmr/m/n/10 = \OMS/cmsy/m/n/10 f\O
 T1/cmr/m/n/10 1\OML/cmm/m/it/10 ; [] ; H[]\OMS/cmsy/m/n/10 g ^^B f\OT1/cmr/m/n/
 10 1\OML/cmm/m/it/10 ; [] ; W[]\OMS/cmsy/m/n/10 g$ \T1/cmr/m/n/10 be the set of
@@ -1046,53 +1030,45 @@ T1/cmr/m/n/10 1\OML/cmm/m/it/10 ; [] ; H[]\OMS/cmsy/m/n/10 g ^^B f\OT1/cmr/m/n/
 1/cmr/m/n/10 1\OML/cmm/m/it/10 ; [] ; N[]\OMS/cmsy/m/n/10 g !
  []
 
-[5] [6]
-<figures/dataset_clustered_cumulative_barchart_lines.jpg, id=151, 2990.17125pt 
+[5 <./figures/mamba.drawio.jpg>] [6]
+<figures/dataset_clustered_cumulative_barchart_lines.jpg, id=154, 2990.17125pt 
 x 1384.17125pt>
 File: figures/dataset_clustered_cumulative_barchart_lines.jpg Graphic file (typ
 e jpg)
 <use figures/dataset_clustered_cumulative_barchart_lines.jpg>
 Package pdftex.def Info: figures/dataset_clustered_cumulative_barchart_lines.jp
-g  used on input line 219.
+g  used on input line 220.
 (pdftex.def)             Requested size: 347.12361pt x 160.66536pt.
  [7] [8 <./figures/dataset_clustered_cumulative_barchart_lines.jpg>]
-<figures/umap_aqua20.jpg, id=198, 1438.173pt x 987.2082pt>
+<figures/umap_aqua20.jpg, id=201, 1438.173pt x 987.2082pt>
 File: figures/umap_aqua20.jpg Graphic file (type jpg)
 <use figures/umap_aqua20.jpg>
-Package pdftex.def Info: figures/umap_aqua20.jpg  used on input line 321.
-(pdftex.def)             Requested size: 312.40912pt x 214.4449pt.
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-<figures/umap_sea23.jpg, id=199, 1438.173pt x 987.2082pt>
+Package pdftex.def Info: figures/umap_aqua20.jpg  used on input line 318.
+(pdftex.def)             Requested size: 329.76636pt x 226.36018pt.
+<figures/umap_sea23.jpg, id=202, 1438.173pt x 987.2082pt>
 File: figures/umap_sea23.jpg Graphic file (type jpg)
 <use figures/umap_sea23.jpg>
-Package pdftex.def Info: figures/umap_sea23.jpg  used on input line 328.
-(pdftex.def)             Requested size: 312.40912pt x 214.4449pt.
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-<figures/umap_fish4k.jpg, id=200, 1438.173pt x 987.2082pt>
+Package pdftex.def Info: figures/umap_sea23.jpg  used on input line 325.
+(pdftex.def)             Requested size: 329.76636pt x 226.36018pt.
+<figures/umap_fish4k.jpg, id=203, 1438.173pt x 987.2082pt>
 File: figures/umap_fish4k.jpg Graphic file (type jpg)
 <use figures/umap_fish4k.jpg>
-Package pdftex.def Info: figures/umap_fish4k.jpg  used on input line 335.
-(pdftex.def)             Requested size: 312.40912pt x 214.4449pt.
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-[9] [10]
-Overfull \hbox (2.06006pt too wide) in paragraph at lines 379--380
+Package pdftex.def Info: figures/umap_fish4k.jpg  used on input line 332.
+(pdftex.def)             Requested size: 329.76636pt x 226.36018pt.
+ [9] [10 <./figures/umap_aqua20.jpg>] [11 <./figures/umap_sea23.jpg> <./figures
+/umap_fish4k.jpg>]
+Overfull \hbox (2.06006pt too wide) in paragraph at lines 386--387
 []\T1/cmr/bx/n/10 Limitations. \T1/cmr/m/n/10 The re-sults also set clear bound
 -aries. Marine-Mamba's AQUA20
  []
 
-(./main.bbl (./main.brf)
+[12
+
+] (./main.bbl (./main.brf)
 \tf@brf=\write5
 \openout5 = `main.brf'.
 
- [11 <./figures/umap_aqua20.jpg>] [12 <./figures/umap_sea23.jpg>] [13 <./figure
-s/umap_fish4k.jpg>]) [14] (./main.aux)
+ [13]) [14] (./main.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
@@ -1100,16 +1076,16 @@ L3 programming layer <2026-01-19>
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 9557B6171AE49DC553300FD5CF5EC702;578.
 Package rerunfilecheck Info: File `main.brf' has not changed.
-(rerunfilecheck)             Checksum: 79CFE2D9D61A6F53810C57C78579D167;2979.
+(rerunfilecheck)             Checksum: 92197D8B75E73FB3F25228AAD8012753;2979.
  ) 
 Here is how much of TeX's memory you used:
- 26453 strings out of 467525
- 495563 string characters out of 5418982
- 939922 words of memory out of 5000000
- 54842 multiletter control sequences out of 15000+600000
+ 26479 strings out of 467525
+ 496214 string characters out of 5418982
+ 941066 words of memory out of 5000000
+ 54864 multiletter control sequences out of 15000+600000
  648695 words of font info for 86 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 99i,12n,108p,1516b,622s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 99i,12n,108p,1582b,618s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb><
 /usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></
@@ -1139,10 +1115,10 @@ ts/type1/public/cm-super/sfss0800.pfb></usr/local/texlive/2026/texmf-dist/fonts
 ype1/public/cm-super/sfti1000.pfb></usr/local/texlive/2026/texmf-dist/fonts/typ
 e1/public/cm-super/sftt0900.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1
 /public/cm-super/sftt1000.pfb>
-Output written on main.pdf (14 pages, 3960493 bytes).
+Output written on main.pdf (14 pages, 3963953 bytes).
 PDF statistics:
- 474 PDF objects out of 1000 (max. 8388607)
- 387 compressed objects within 4 object streams
+ 476 PDF objects out of 1000 (max. 8388607)
+ 389 compressed objects within 4 object streams
  80 named destinations out of 1000 (max. 500000)
  46 words of extra memory for PDF output out of 10000 (max. 10000000)
 
