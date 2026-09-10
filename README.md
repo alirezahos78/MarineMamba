@@ -1,18 +1,49 @@
 # MarineMamba: Multi-Granularity CLIP Feature Integration with Dual Mamba for Underwater Classification
 
-Lightweight dual-branch state-space model for aquatic and marine species classification. Operates on frozen CLIP spatial features extracted at two resolutions; only 1.03 M parameters are trained.
+**Alireza Hoseinzade, Mostafa Shahbazi Dil, Mohammad Mahmoudabadi, Mansoor Rezghi**  
+Tarbiat Modares University, Tehran, Iran  
+**2nd Workshop on Marine Vision · ECCV 2026**
+
+[Paper](https://openreview.net/forum?id=rCrRa9yBDQ) · [Poster](docs/poster.pdf) · [Quick start](#quick-start) · [Results](#results) · [Citation](#citation) · [License](#license)
+
+MarineMamba is a dual-branch state-space model for aquatic and marine species classification. It combines frozen CLIP spatial features at two resolutions with CLIP feature vectors, and trains **1.03 million parameters** in the downstream branches and classification head. The frozen CLIP encoders are additional to this trainable parameter count.
+
+The repository documents experiments on **AQUA20**, **Sea Animals 23**, and **Fish4Knowledge**, including multi-seed results, component ablations, and a Vim-tiny baseline.
+
+<!-- Author and workshop information is transcribed from the supplied poster. Confirm the citation against the official publication record before adding any proceedings details or DOI. -->
+
+## Contents
+
+- [Architecture](#architecture)
+- [Results](#results)
+- [Quick start](#quick-start)
+- [Datasets](#datasets)
+- [Experiments and reproducibility](#experiments-and-reproducibility)
+- [Ablation study](#ablation-study)
+- [Project layout](#project-layout)
+- [Feature cache format](#feature-cache-format)
+- [Poster](#poster)
+- [Citation](#citation)
+- [License](#license)
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    image["Input image"] --> fineclip["Frozen CLIP ViT-B/16"]
+    image --> coarseclip["Frozen CLIP ViT-B/32"]
+    fineclip --> fine["Fine branch: spatial tokens + CLIP vector"]
+    coarseclip --> coarse["Coarse branch: spatial tokens + CLIP vector"]
+    fine --> concat["Concatenate branch outputs: 256 dimensions"]
+    coarse --> concat
+    concat --> head["MLP classification head"]
+    head --> output["Class predictions"]
 ```
-Image
-  |
-  |-- CLIP ViT-B/16 (frozen) --> spatial [768, 14, 14]  -->  Fine MarineMamba Branch (dim=128)  --> 128-d -|
-  |                           +  CLIP Feature Vector [512] -->  (injected into sequence)                    |
-  |                                                                                                          |--> concat 256-d --> MLP Head --> C classes
-  |-- CLIP ViT-B/32 (frozen) --> spatial [768,  7,  7]  -->  Coarse MarineMamba Branch (dim=128) --> 128-d -|
-                              +  CLIP Feature Vector [512] -->  (injected into sequence)
-```
+
+| Branch | Spatial feature shape | CLIP feature vector | Branch output |
+| --- | --- | --- | --- |
+| Fine, ViT-B/16 | 768 × 14 × 14 | 512 dimensions | 128 dimensions |
+| Coarse, ViT-B/32 | 768 × 7 × 7 | 512 dimensions | 128 dimensions |
 
 **MarineMambaBlock** — the core building block:
 - LayerNorm → SpiralScanner reorders spatial tokens (outside-in and center-out)
@@ -21,26 +52,28 @@ Image
 - CBAM channel-and-spatial attention applied to the spatial output
 - LayerScale + DropPath residual for stable deep training
 
-**Why spiral scanning?** Raster order breaks 2-D spatial locality at each row boundary. Spiral traversal keeps geometrically adjacent patches adjacent in the sequence throughout, giving Mamba's causal recurrence geometrically coherent context.
+**Why spiral scanning?** The model uses outside-in and center-out spiral traversals to order spatial tokens for Mamba. The scan-order ablation below compares this design with raster scanning.
 
 **MLP Head:** LayerNorm(256) → Linear(256→512) → GELU → Dropout(0.3) → Linear(512→C)
 
-| Component | Params |
+| Component | Trainable params |
 |-----------|--------|
 | Fine branch (ViT-B/16, 14×14) | 0.453 M |
 | Coarse branch (ViT-B/32, 7×7) | 0.434 M |
 | MLP head | 0.144 M |
 | **Total** | **1.031 M** |
 
----
+Parameter counts in this table cover the downstream model; they exclude both frozen CLIP encoders and do not describe end-to-end feature-extraction cost.
 
 ## Results
 
-MarineMamba: 11 seeds (0–9 + 42). Vim-tiny baseline: 5 seeds (0–4).
+Results reported in this repository. MarineMamba: 11 seeds (0–9 + 42). Vim-tiny baseline: 5 seeds (0–4). Values with uncertainty are mean ± standard deviation across seeds.
+
+**Comparison notes:** MarineMamba parameter counts refer to trainable downstream parameters and exclude frozen CLIP encoders. External baseline values below are retained from the original README; source references and matching evaluation protocols must be documented before treating them as directly comparable.
 
 ### AQUA20 — 20 aquatic species
 
-| Method | Params | Top-1 Acc |
+| Method | Reported params | Top-1 Acc |
 |--------|--------|-----------|
 | ResNet-50 (fine-tuned) | 25 M | ~92% |
 | EfficientNet-B4 | 19 M | ~93% |
@@ -49,7 +82,7 @@ MarineMamba: 11 seeds (0–9 + 42). Vim-tiny baseline: 5 seeds (0–4).
 
 ### Sea Animals 23 — 23 sea species
 
-| Method | Params | Top-1 Acc |
+| Method | Reported params | Top-1 Acc |
 |--------|--------|-----------|
 | Standard CNN (public baseline) | — | 88.77% |
 | Vim-tiny (fine-tuned, 5 seeds) | 6.96 M | 89.71 ± 0.33% |
@@ -63,70 +96,19 @@ MarineMamba: 11 seeds (0–9 + 42). Vim-tiny baseline: 5 seeds (0–4).
 | Vim-tiny (fine-tuned, 5 seeds) | imbalanced | 99.79 ± 0.01% |
 | **MarineMamba (ours)** | **imbalanced** | **98.25 ± 0.26%** |
 
-> The ResVGGNet result uses a curated balanced split; our split preserves the raw 1100:1 class imbalance, making it a strictly harder evaluation.
+> The ResVGGNet result is reported on a curated balanced split, while the MarineMamba and Vim-tiny experiments above use an imbalanced split. These are different evaluation settings; their accuracies should not be treated as a direct comparison. Vim-tiny has higher reported top-1 accuracy than MarineMamba on the imbalanced Fish4Knowledge split.
 
----
-
-## Ablation Study (AQUA20, seeds 0/1/2)
-
-### Scan order
-
-| Variant | Top-1 Acc | Δ vs Full |
-|---------|-----------|-----------|
-| **Spiral (ours)** | **93.44 ± 0.13%** | — |
-| Raster | 92.91 ± 0.82% | −0.53% |
-
-### Model components
-
-| Variant | Top-1 Acc | Δ vs Full |
-|---------|-----------|-----------|
-| **Full model (spiral)** | **93.44 ± 0.13%** | — |
-| Coarse branch only (B/32) | 93.34 ± 0.51% | −0.10% |
-| Fine branch only (B/16) | 92.29 ± 0.93% | −1.15% |
-| No focal loss (CE only) | 92.83 ± 0.96% | −0.61% |
-| No Mamba (FFN only) | 85.98 ± 0.44% | −7.46% |
-| No CLIP Feature Vector injection | 85.07 ± 0.61% | −8.37% |
-
-> The dual branch improves both accuracy and stability: coarse-only trails by 0.10pp with 4× higher std (0.51% vs 0.13%). Removing Mamba (FFN-only) or the CLIP Feature Vector injection causes the largest drops (>7pp), confirming both are critical components.
-
----
-
-## Project Layout
-
-```
-MarineMamba/
-├── main.py                         # entry point — train across multiple seeds
-├── requirements.txt
-├── results.json                    # populated by main.py after training
-├── ablation_results.json           # all ablation results (scan + model components)
-├── marinemamba/
-│   ├── model.py                    # MarineMamba, MarineMambaBlock, SpiralScanner, CBAM
-│   ├── trainer.py                  # training loop, multi-seed orchestration, checkpointing
-│   ├── config.py                   # named experiment configurations
-│   ├── data.py                     # DualCLIPFeatureDataset, build_dataloaders
-│   ├── losses.py                   # FocalLoss, build_criterion
-│   ├── paths.py                    # all filesystem paths
-│   └── utils.py                    # Logger, set_seed, ensure_dir
-├── scripts/
-│   ├── download_aqua20.py          # download AQUA20 dataset
-│   ├── download_fish4k.py          # download Fish4Knowledge dataset
-│   ├── prepare_sea23.py            # 80/20 stratified split for Sea23
-│   ├── build_clip_features.py      # extract and cache CLIP spatial + CLS features
-│   ├── confusion_matrix.py         # per-checkpoint confusion matrix and F1 report
-│   ├── ablation.py                 # all ablations on AQUA20 (scan order + model components)
-│   ├── baseline_vim.py             # Vim-tiny baseline fine-tuning + macro-F1 evaluation
-│   └── umap_vis.py                 # 6-panel UMAP visualisation (all 3 datasets)
-├── data/                           # feature caches and raw images (not tracked by git)
-└── logs/                           # per-seed training logs and plots (not tracked by git)
-```
-
----
+<!-- Add primary references for ResNet-50, EfficientNet-B4, the Sea Animals 23 public baseline, and ResVGGNet. State dataset versions, split construction, and model-selection protocol. -->
 
 ## Quick Start
 
 **Requirements:** CUDA GPU (mamba-ssm requires CUDA), Python >= 3.10.
 
 ```bash
+git clone https://github.com/alirezahos78/MarineMamba.git
+cd MarineMamba
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
@@ -186,7 +168,31 @@ python3 main.py --configs \
     fish4k_dual_hybrid_128_focal_balanced
 ```
 
----
+<!-- Add the tested Python, PyTorch, CUDA, and mamba-ssm versions and reference GPU. Runtime and download-size estimates above are inherited from the original README. -->
+
+## Datasets
+
+| Dataset | Classes | Preparation entry point |
+| --- | --- | --- |
+| AQUA20 | 20 | `scripts/download_aqua20.py` |
+| Sea Animals 23 | 23 | Download the raw images, then run `scripts/prepare_sea23.py`; the documented split is 80/20 stratified |
+| Fish4Knowledge | 23 | `scripts/download_fish4k.py`; the reported experiment preserves class imbalance |
+
+See the dataset-specific commands in [Quick Start](#quick-start).
+
+<!-- Add official dataset/download links, dataset terms, exact train/validation/test counts, split seeds or manifests, and the source for the Sea Animals 23 raw download. Do not invent a validation split if none was used. -->
+
+## Experiments and Reproducibility
+
+The following sections provide the documented commands for custom seeds, ablations, baseline training, and visualizations.
+
+| Experiment | Documented seeds | Summary output |
+| --- | --- | --- |
+| MarineMamba main results | 0–9 and 42 | `results.json` |
+| AQUA20 ablations | 0, 1, 2 | `ablation_results.json` |
+| Vim-tiny baseline | 0–4 | `results_vim_{dataset}.json` |
+
+<!-- Complete docs/reproducibility.md with dataset splits, tested environment, hardware, hyperparameters, checkpoint-selection rules, and the command/configuration corresponding to each paper table. Add verified checkpoint links if weights are released. -->
 
 ## Custom Seeds
 
@@ -203,7 +209,29 @@ Output after all seeds finish:
 
 Results are also written to `results.json`.
 
----
+## Ablation Study
+
+AQUA20, seeds 0, 1, and 2. These use a different seed set from the 11-seed main results. Deltas are **percentage points (pp)** relative to the full model.
+
+### Scan order
+
+| Variant | Top-1 Acc | Δ vs Full (pp) |
+|---------|-----------|-----------|
+| **Spiral (ours)** | **93.44 ± 0.13%** | — |
+| Raster | 92.91 ± 0.82% | −0.53 |
+
+### Model components
+
+| Variant | Top-1 Acc | Δ vs Full (pp) |
+|---------|-----------|-----------|
+| **Full model (spiral)** | **93.44 ± 0.13%** | — |
+| Coarse branch only (B/32) | 93.34 ± 0.51% | −0.10 |
+| Fine branch only (B/16) | 92.29 ± 0.93% | −1.15 |
+| No focal loss (CE only) | 92.83 ± 0.96% | −0.61 |
+| No Mamba (FFN only) | 85.98 ± 0.44% | −7.46 |
+| No CLIP Feature Vector injection | 85.07 ± 0.61% | −8.37 |
+
+> Across these three seeds, the full model has a 0.10 pp higher mean accuracy and a lower observed standard deviation than the coarse-only variant. Removing Mamba or CLIP feature-vector injection produces the largest observed drops, exceeding 7 pp. These descriptive results alone do not establish statistical significance.
 
 ## Ablation Scripts
 
@@ -220,8 +248,6 @@ Available variants: `spiral`, `raster`, `no_focal_loss`, `no_mamba`, `no_cls`, `
 
 Results are written to `ablation_results.json`.
 
----
-
 ## UMAP Visualisation
 
 ```bash
@@ -233,11 +259,9 @@ python3 scripts/umap_vis.py --config fish4k_dual_hybrid_128_focal_balanced --see
 
 Panels: CLIP B/16 · CLIP B/32 · Mamba fine branch · Mamba coarse branch · Concat · Raw images.
 
----
-
 ## Vim-tiny Baseline
 
-Evaluates pretrained Vim-tiny (ImageNet-1k, 76.1% top-1) with full fine-tuning so the comparison against MarineMamba is explicit and fair. Also saves the best checkpoint per seed and computes macro-F1 / weighted-F1 from the checkpoint.
+Evaluates pretrained Vim-tiny (ImageNet-1k, 76.1% top-1) with full fine-tuning. MarineMamba uses frozen CLIP encoders, so the methods differ in pretraining and in which parameters are updated. Also saves the best checkpoint per seed and computes macro-F1 / weighted-F1 from the checkpoint.
 
 **Citation:** Zhu et al., "Vision Mamba: Efficient Visual Representation Learning with Bidirectional State Space Model", ICML 2024. [arXiv:2401.13586](https://arxiv.org/abs/2401.13586)
 
@@ -261,15 +285,40 @@ Outputs per dataset:
 
 Resumes automatically: if a checkpoint exists for a seed, training is skipped and only evaluation runs.
 
----
-
 ## Confusion Matrix
 
 ```bash
 python3 scripts/confusion_matrix.py --config aqua20_dual_hybrid_128_focal_balanced --seed 4 --save-png
 ```
 
----
+## Project Layout
+
+The source modules and commands below follow the supplied repository documentation. Generated data and logs are not tracked by Git.
+
+| Path | Purpose |
+| --- | --- |
+| `main.py` | Training entry point across experiment configurations and seeds |
+| `requirements.txt` | Python dependencies |
+| `marinemamba/model.py` | MarineMamba, MarineMambaBlock, SpiralScanner, and CBAM |
+| `marinemamba/trainer.py` | Training, multi-seed orchestration, and checkpointing |
+| `marinemamba/config.py` | Named experiment configurations |
+| `marinemamba/data.py` | Feature dataset and data loaders |
+| `marinemamba/losses.py` | Loss functions |
+| `marinemamba/paths.py` | Filesystem paths |
+| `marinemamba/utils.py` | Logging, random seeds, and directory helpers |
+| `scripts/` | Dataset preparation, feature extraction, ablation, baseline, and visualization commands |
+| `results.json` | Main training results |
+| `ablation_results.json` | Scan-order and component-ablation results |
+| `results_vim_{dataset}.json` | Vim-tiny top-1 summaries |
+| `results/` | Evaluation metrics and checkpoint outputs described below |
+| `data/` | Raw images and feature caches; generated locally |
+| `logs/` | Per-seed logs and plots; generated locally |
+| `docs/poster.pdf` | Workshop poster |
+| `assets/poster-preview.png` | Poster preview used in this README |
+| `CITATION.cff` | Machine-readable citation metadata |
+| `LICENSE` | MIT license |
+
+<!-- Suggested future documentation additions: assets/architecture.png, docs/reproducibility.md, results/README.md. Keep current output paths until any code references have been checked. -->
 
 ## Feature Cache Format
 
@@ -284,3 +333,32 @@ Features are extracted once and cached as `.pt` files. Training loads directly f
 | `*_dual_clip_pooled_features.pt` | CLIP Feature Vectors for B/16 and B/32 (clean, 1 view) |
 
 The `aug` suffix means 3 augmented crops are extracted per training image at build time (random resized crop, color jitter, horizontal flip, grid-shuffle), giving 4 views per image total.
+
+## Poster
+
+[![MarineMamba workshop poster: motivation, method, and results](assets/poster-preview.png)](docs/poster.pdf)
+
+[Download the poster (PDF)](docs/poster.pdf), presented at the **2nd Workshop on Marine Vision, ECCV 2026**.
+
+## Citation
+
+If you use MarineMamba in your research, please cite the [paper on OpenReview](https://openreview.net/forum?id=rCrRa9yBDQ).
+
+```bibtex
+@inproceedings{hoseinzade2026marinemamba,
+  title     = {{MarineMamba}: Multi-Granularity {CLIP} Feature Integration with Dual {Mamba} for Underwater Classification},
+  author    = {Hoseinzade, Alireza and Shahbazi Dil, Mostafa and Mahmoudabadi, Mohammad and Rezghi, Mansoor},
+  booktitle = {2nd Workshop on Marine Vision},
+  year      = {2026},
+  note      = {ECCV 2026 workshop},
+  url       = {https://openreview.net/forum?id=rCrRa9yBDQ}
+}
+```
+
+Citation metadata is also provided in [`CITATION.cff`](CITATION.cff).
+
+<!-- Bibliographic fields above are based on the supplied poster and paper URL, not an exported publisher/OpenReview citation. Confirm official venue wording; add DOI, pages, or proceedings identifiers only after verification. -->
+
+## License
+
+This repository is licensed under the [MIT License](LICENSE). Dataset and pretrained-model terms should be checked at their respective sources.

@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use MarineMamba, please cite the associated paper."
+type: software
+title: "MarineMamba"
+authors:
+  - family-names: "Hoseinzade"
+    given-names: "Alireza"
+  - family-names: "Shahbazi Dil"
+    given-names: "Mostafa"
+  - family-names: "Mahmoudabadi"
+    given-names: "Mohammad"
+  - family-names: "Rezghi"
+    given-names: "Mansoor"
+repository-code: "https://github.com/alirezahos78/MarineMamba"
+license: MIT
+# Bibliographic metadata transcribed from the supplied workshop poster.
+# Confirm official publication wording before adding proceedings details or a DOI.
+preferred-citation:
+  type: conference-paper
+  title: "MarineMamba: Multi-Granularity CLIP Feature Integration with Dual Mamba for Underwater Classification"
+  authors:
+    - family-names: "Hoseinzade"
+      given-names: "Alireza"
+    - family-names: "Shahbazi Dil"
+      given-names: "Mostafa"
+    - family-names: "Mahmoudabadi"
+      given-names: "Mohammad"
+    - family-names: "Rezghi"
+      given-names: "Mansoor"
+  collection-title: "2nd Workshop on Marine Vision"
+  year: 2026
+  notes: "ECCV 2026 workshop"
+  url: "https://openreview.net/forum?id=rCrRa9yBDQ"
