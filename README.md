@@ -28,17 +28,7 @@ The repository documents experiments on **AQUA20**, **Sea Animals 23**, and **Fi
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    image["Input image"] --> fineclip["Frozen CLIP ViT-B/16"]
-    image --> coarseclip["Frozen CLIP ViT-B/32"]
-    fineclip --> fine["Fine branch: spatial tokens + CLIP vector"]
-    coarseclip --> coarse["Coarse branch: spatial tokens + CLIP vector"]
-    fine --> concat["Concatenate branch outputs: 256 dimensions"]
-    coarse --> concat
-    concat --> head["MLP classification head"]
-    head --> output["Class predictions"]
-```
+[![MarineMamba workshop poster: motivation, method, and results](assets/poster-preview.png)](docs/poster.pdf)
 
 | Branch | Spatial feature shape | CLIP feature vector | Branch output |
 | --- | --- | --- | --- |
@@ -318,7 +308,7 @@ The source modules and commands below follow the supplied repository documentati
 | `CITATION.cff` | Machine-readable citation metadata |
 | `LICENSE` | MIT license |
 
-<!-- Suggested future documentation additions: assets/architecture.png, docs/reproducibility.md, results/README.md. Keep current output paths until any code references have been checked. -->
+<!-- Suggested future documentation additions: docs/reproducibility.md, results/README.md. Keep current output paths until any code references have been checked. -->
 
 ## Feature Cache Format
 
@@ -335,8 +325,6 @@ Features are extracted once and cached as `.pt` files. Training loads directly f
 The `aug` suffix means 3 augmented crops are extracted per training image at build time (random resized crop, color jitter, horizontal flip, grid-shuffle), giving 4 views per image total.
 
 ## Poster
-
-[![MarineMamba workshop poster: motivation, method, and results](assets/poster-preview.png)](docs/poster.pdf)
 
 [Download the poster (PDF)](docs/poster.pdf), presented at the **2nd Workshop on Marine Vision, ECCV 2026**.
 
